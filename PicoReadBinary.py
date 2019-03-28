@@ -1,7 +1,6 @@
-import os
 import yaml
-from controller.picosdk.functions import adc2mV
-from controller.picosdk.ps5000a import ps5000a as ps
+from picosdk.functions import adc2mV
+from picosdk.ps5000a import ps5000a as ps
 import struct
 import numpy as np
 import ctypes
@@ -53,6 +52,7 @@ def scan_V(metadatafile):
     return {'Window average difference': scandata[1], Settings['Analyse']['ScanLabel']: scandata[0]}
 
 if __name__ == '__main__':
+    import os
     import matplotlib.pyplot as plt
     file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', 'DefaultData_1553531088_3874035_metadata.yml')
     '''

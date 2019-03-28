@@ -5,8 +5,8 @@ from pint import UnitRegistry
 import numpy as np
 from time import sleep
 from controller.PicoControl import Pico5000Controller
-from controller.picosdk.ps5000a import ps5000a as ps
-from controller.picosdk.functions import adc2mV, assert_pico_ok, mV2adc
+from picosdk.ps5000a import ps5000a as ps
+from picosdk.functions import adc2mV, assert_pico_ok, mV2adc
 import PicoReadBinary as prb
 import struct
 

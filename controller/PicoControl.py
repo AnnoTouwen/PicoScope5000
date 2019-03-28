@@ -1,7 +1,7 @@
 import ctypes
 import numpy as np
-from controller.picosdk.ps5000a import ps5000a as ps
-from controller.picosdk.functions import adc2mV, assert_pico_ok, mV2adc
+from picosdk.ps5000a import ps5000a as ps
+from picosdk.functions import adc2mV, assert_pico_ok, mV2adc
 
 class Pico5000Controller:
     def __init__(self):
