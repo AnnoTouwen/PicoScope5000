@@ -49,7 +49,7 @@ def scan_V(metadatafile):
     f = open(scandatafile, 'r')
     scandata = yaml.load(f)
     f.close()
-    return {'Window average difference': scandata[1], Settings['Analyse']['ScanLabel']: scandata[0]}
+    return {'Window average difference': scandata[1], Settings['Analyse']['ScanLabel']: scandata[0]}, Settings['Analyse']['ScanLabel']
 
 if __name__ == '__main__':
     import os
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     '''
     settings = load_settings(file)[0]
     scandata = scan_V(file)
-    plt.plot(scandata[str(settings['Analyse']['ScanLabel'])], scandata['Window average difference'])
+    plt.plot(scandata[0][scandata[1]], scandata[0]['Window average difference'])
     plt.xlabel(str(settings['Analyse']['ScanLabel']))
     plt.ylabel('Window average difference (V)')
     plt.show()

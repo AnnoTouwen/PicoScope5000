@@ -21,7 +21,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 	>>> pip install Pyqtgraph
 	>>> pip install Matplotlib
 
-## How to use the software
+## How to use the PicoScope software
 
 Run start.py by double clicking if Python 3 is set to be the standard for executing .py files.
 Alternatively you could naviate to the directory in the terminal and run
@@ -52,8 +52,51 @@ The trigger is also set in this menu. If you want to measure without a trigger d
 
 ### Channels
 
-Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powersupply
+Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode.
 
 ### Measure
 
+Instead of separate scopereadouts one can also average over multiple signals. A delay between these signal readouts can be set. If the time between these readouts is less than the set interval a warning is displayed once, but readouts continue at the fastest pace possible.
+
+The scopeplot window can be show or closed here. It can also be expoted as png by clicking Save plot. The savelocation and filename are set in the save menu.
+
 ### Analyse
+
+On the scopereadout, or averages over multiple of those, windows can be selected over which the average voltage is calculated. These windows can be compared, which is called a scan. 
+
+This analysis can be activated or deactivted. The comparison of the windows can be set to either the first minus the second or vise versa. Multiple scans can be performed with a delay between them. If the time between these scan is less than the set interval a warning is displayed once, but scans continue at the fastest pace possible. 
+
+Windows can be shown in the scope plotwindow, where the boundaries can aso be slided to select the desired window. The boundaries can also be set by filling in their start and length. For every window also an active channel has to be selected.
+
+The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
+
+## Running measurements
+
+By pressing start a measurement is started with the settings described above. After the set number of measurements and scans is performed the measurement automatically stops. By pressing continuously a measurement is started that does not stop automatically. Pause breaks the measurement, either finite or continuous, untill it is continued by pressing the same button. Stop ends the measurement, it can only be restarted by starting a new measurement. 
+
+## How to read the datafiles in Python
+
+To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
+	>>> import PicoReadBinary as prb
+The script reads datafiles based on their metadatfile given as input. 
+
+### prb.load_settings()
+
+Asks (1) for a string with the metadatafilename and returns (3) a dictionary with the settings in this file, a string with the name of the user, a string with the name of the project
+
+### prb.time_ns()
+
+Asks (1) for a string with the metadatafilename and returns (1) a list with the timevalues in nanoseconds of readout of the scope starting at 0.
+
+### prb.block_mV()
+
+Asks (2 + 1) for a string with the metadatafilename, a sting with the channel, an integer with the readoutnumber if not averaged and returns (1) a list with the voltages in millivolts of readout of the scope of the given channel. If the channel is not in the data it returns a string with an errormessages including which channels are available in the datafile.
+
+### prb.scan_V()
+
+Asks (1) for a string with the metadatafilename and returns (2) a dictionary with 'Window average difference' and the scanlabel both lists with the voltage differences and scanvalues respectively, a string with the scanlabel.
+
+## Contact
+
+The programmers guide for the PicoScope5000 is included as picoscope-5000-series-a-api-programmers-guide.pdf for reference.
+Questions and suggestions for improvement can be sent to the developer Anno Touwen, a.p.touwen@rug.nl
