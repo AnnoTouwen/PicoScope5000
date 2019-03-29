@@ -39,4 +39,21 @@ As the programm is started the Default settings are loaded, but it is suggested 
 
 ### Save
 
-The save directory for all the data output from the program can be set here. Also the base filename can be set. Not however that the full filename will be different dependent on the datatype and time of the measurement. The full filename always includes the Unix time, seconds since January 1, 1970, 00:00:00 at UTC. For binary data of the scope readout binary will be added to the filename and the extension is .bin. If a measurement is the average of multiple readouts the readouts themselves are stored separately and numbers starting from 1 are added. 
+The save directory for all the data output from the program can be set here. Also the base filename can be set. Not however that the full filename will be different dependent on the datatype and time of the measurement. The full filename always includes the Unix time, seconds since January 1, 1970, 00:00:00 at UTC. For binary data of the scope readout binary will be added to the filename and the extension is .bin. If a measurement is the average of multiple readouts the readouts themselves are stored separately and numbers starting from 1 are added. For scans scan will be added to the filename and the extension is .yml. These datafiles are accompanied by metadatafiles with the same filname and time with metadata added and extension .yml. The plots for the scope and scan can also be saved, which will have the filename, Unix time and scope or scan respectively, with extension .png.
+
+The scandata are saved automatically, but you might want to save the raw binary data aswell. Save data lets you select to never, every scopereadout or every average over mutiple scope readouts (if applicable) save the binary data. The datafiles can be read and used by the PicoReadBinary.py script.
+
+### Time
+
+In this menu the resolution and timeresolution can be set. The PicoScope5000 can measure at 8 to 16 bit resolution and up to a time resolution of 1 ns, but not all combinations. Also not all combinations can be used with every number of channels. To find out the combinations read picoscope-5000-series-a-api-programmers-guide.pdf about Timebase or try combinations and note the feedback messages in the interface.
+The timeresolution is calculated from the measurementtime and the number of measurementpoints in this interval. Note that the timestep goes by powers of 2, not all timesteps are possible. The measurementlength is reset after the timestep has been determined.
+
+The trigger is also set in this menu. If you want to measure without a trigger deactivate it by unticking the box. The triggerposition and level can be shown in the plot of the scope readout. Any of the active channels can be used as trigger, but note that the PicoScope5000 also has an external trigger. The triggertype determines whether the trigger is activated on a rising or falling pass through the trigger level. The trigger level and sample position in the timewindow can be set by filling in a value, bu also by dragging the trigger lines if shown in the scope plot. A delay can be set to the trigger, to make the trigger happen a number of samples after the level crossing. An autotrigger sets the time after which a trigger occurs even without a crossing of the trigger level. The autotrigger is switched off by setting it to 0.
+
+### Channels
+
+Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powersupply
+
+### Measure
+
+### Analyse
