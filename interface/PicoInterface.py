@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QColorDialog
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer, pyqtSlot, Qt
 from PyQt5.QtGui import QIcon
@@ -9,7 +9,9 @@ import pyqtgraph as pg
 import pyqtgraph.exporters
 import os
 import yaml
+import random
 from time import sleep, time
+from datetime import date
 from functools import partial
 from pint import UnitRegistry
 ur = UnitRegistry()
@@ -32,10 +34,10 @@ class Pico5000Interface(QMainWindow):
         self.ChannelActive = {'A': self.AActive, 'B': self.BActive, 'C': self.CActive, 'D': self.DActive}
         self.ChannelRange = {'A': self.ARange, 'B': self.BRange, 'C': self.CRange, 'D': self.DRange}
         self.ChannelCoupling = {'A': self.ACoupling, 'B': self.BCoupling, 'C': self.CCoupling, 'D': self.DCoupling}
-        self.WindowActive = {'I': self.ActiveWI, 'II': self.ActiveWII}
-        self.WindowChannel = {'I': self.ChannelWI, 'II': self.ChannelWII}
-        self.WindowStart = {'I': self.StartWI, 'II': self.StartWII}
-        self.WindowLength = {'I': self.LengthWI, 'II': self.LengthWII}
+        #self.WindowActive = {'I': self.ActiveWI, 'II': self.ActiveWII}
+        #self.WindowChannel = {'I': self.ChannelWI, 'II': self.ChannelWII}
+        #self.WindowStart = {'I': self.StartWI, 'II': self.StartWII}
+        #self.WindowLength = {'I': self.LengthWI, 'II': self.LengthWII}
 
         # Define initial parameters
         self.channel_changed = {}
@@ -46,30 +48,34 @@ class Pico5000Interface(QMainWindow):
         self.continue_after_setting = True
         self.confirm_overwrite_personal = False
         self.channel_colour = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y', 'External': 'k'}
-        self.window_colour = {'I': 'c', 'II': 'm'}
+        #self.colours = ['r', 'r', 'y', 'g', 'b', 'm']
         self.channels = ['A', 'B', 'C', 'D']
-        self.windows = ['I', 'II']
-        self.load_personal_settings('DefaultUser', 'DefaultProject') # Set settings to Default
+        #self.windows = ['I', 'II']
+        f = open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'), 'r')
+        PreviousUser = yaml.safe_load(f)['PreviousUser']
+        f.close()
+        self.load_personal_settings(PreviousUser['Name'], PreviousUser['Project']) # Set settings to Default
         self.device_channels = 4
-        #self.two_channels()
-            # Plotparameters and objects
-        self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']]), movable=True, name='current_triggerlevel')
-        self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position']+1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']]), movable=True, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
+        self.two_channels()
+
+        # Plotparameters and objects
+        self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerlevel')
+        self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position']+1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
         self.window_start_draw = {}
         self.window_finish_draw = {}
         for window in self.windows:
-            self.window_start_draw[window] = pg.InfiniteLine(pos=(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.window_colour[window], style=Qt.DashLine), hoverPen=pg.mkPen(self.window_colour[window]), movable=True, bounds=[0, int(self.current_settings['Analyse']['Windows'][window]['Start'] + self.current_settings['Analyse']['Windows'][window]['Length']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], label='Window ' + window + ' start')
-            self.window_finish_draw[window] = pg.InfiniteLine(pos=(self.current_settings['Analyse']['Windows'][window]['Start'] + self.current_settings['Analyse']['Windows'][window]['Length']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.window_colour[window], style=Qt.DashLine), hoverPen=pg.mkPen(self.window_colour[window]), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')], label='Window ' + window + ' end')
+            self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
+            self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
         self.plot_font = pg.Qt.QtGui.QFont()
         self.change_fontsize()
 
         self.itp.start_device()
         self.itp.setup_device(self.current_settings['Time']['Resolution'])
-        if self.itp.dev.status["openunit"] == 282 or self.itp.dev.status["openunit"] == 286:
-            self.two_channels()
+        if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
+            self.four_channels()
 
         # Do a first measurement
-        self.start_thread()
+        #self.start_thread()
 
         # Show start-up message
         self.Messages.setText('Welcome to the PicoScope5000 interface\nPlease consider logging on with your name and project\n')
@@ -86,12 +92,12 @@ class Pico5000Interface(QMainWindow):
         self.Save_personal_settings_button.clicked.connect(self.save_personal_button_pressed)
         self.Import_personal_settings_metadata_button.clicked.connect(self.import_button_pressed)
 
-            # Save tab
+        # Save tab
         self.Directory.editingFinished.connect(self.change_save_directory)
         self.Filename.editingFinished.connect(self.change_save_filename)
         self.Autosave.currentTextChanged.connect(self.change_save_autosave)
 
-            # Time tab
+        # Time tab
         self.Resolution.currentTextChanged.connect(self.change_resolution)
         self.Samples.editingFinished.connect(self.change_samples)
         self.Blocklength.editingFinished.connect(self.change_blocklength)
@@ -104,47 +110,58 @@ class Pico5000Interface(QMainWindow):
         self.TPosition.editingFinished.connect(self.change_trigger_position)
         self.Autotrigger.editingFinished.connect(self.change_trigger_auto)
 
-            # Channels tab
+        # Channels tab
         for i in self.channels:
             self.ChannelActive[i].stateChanged.connect(partial(self.change_channel_active, i))
             self.ChannelRange[i].currentTextChanged.connect(partial(self.change_channel_range, i))
             self.ChannelCoupling[i].currentTextChanged.connect(partial(self.change_channel_coupling, i))
 
-            # Measurement tab
+        # Scope tab
         self.NumberOfMeasurements.editingFinished.connect(self.change_average_nom)
         self.Pause.editingFinished.connect(self.change_average_pause)
         self.ShowPlot.stateChanged.connect(self.change_showplot)
         self.Save_plot_button.clicked.connect(self.save_plot_window)
 
-            # Analysis tab
+        # Scan tab
         self.AnalysisActive.stateChanged.connect(self.change_analyse_active)
-        self.AnalysisCalculate.currentTextChanged.connect(self.change_analyse_calculate)
+        #self.AnalysisCalculate.currentTextChanged.connect(self.change_analyse_calculate)
         self.NumberOfScans.editingFinished.connect(self.change_analyse_scans)
         self.ScanPause.editingFinished.connect(self.change_analyse_pause)
-        for i in self.windows:
-            self.WindowActive[i].stateChanged.connect(partial(self.change_window_active, i))
-            self.WindowChannel[i].currentTextChanged.connect(partial(self.change_window_channel, i))
-            # self.WindowCalculate[i].currentTextChanged.connect(partial(self.change_window_calculate, i))
-            # self.WindowWindow[i].currentTextChanged.connect(partial(self.change_window_window, i))
-            self.WindowStart[i].editingFinished.connect(partial(self.change_window_start, i))
-            self.WindowLength[i].editingFinished.connect(partial(self.change_window_length, i))
+        # Windows
+        self.WindowSelect.currentTextChanged.connect(self.change_window)
+        self.WindowColour.clicked.connect(self.change_window_colour)
+        self.WindowShow.stateChanged.connect(self.change_window_show)
+        self.WindowChannel.currentTextChanged.connect(self.change_window_channel)
+        self.WindowStart.editingFinished.connect(self.change_window_start)
+        self.WindowLength.editingFinished.connect(self.change_window_length)
+        self.WindowDelete.clicked.connect(self.delete_window)
+        # Calculators
+        self.CalculatorSelect.currentTextChanged.connect(self.change_calculator)
+        self.CalculatorColour.clicked.connect(self.change_calculator_colour)
+        self.CalculatorShow.stateChanged.connect(self.change_calculator_show)
+        self.FirstWindow.currentTextChanged.connect(self.change_first_window)
+        self.Operation.currentTextChanged.connect(self.change_operation)
+        self.SecondWindow.currentTextChanged.connect(self.change_second_window)
+        self.CalculatorName.editingFinished.connect(self.change_calculator_name)
+        self.CalculatorDelete.clicked.connect(self.delete_calculator)
+        # Scanplot
         self.ShowScanPlot.stateChanged.connect(self.change_analyse_showplot)
         self.ScanValue.editingFinished.connect(self.change_analyse_scanvalue)
         self.ScanValueDifference.editingFinished.connect(self.change_analyse_scanvaluedifference)
         self.ScanLabel.editingFinished.connect(self.change_analyse_scanlabel)
         self.Save_scan_plot_button.clicked.connect(self.save_scan_plot_window)
 
-            # Device
+        # Device
         self.actionPicoScope5444D.triggered.connect(self.four_channels)
         self.actionPicoScope5244D.triggered.connect(self.two_channels)
 
-            # Main buttons
+        # Main buttons
         self.start_button.clicked.connect(self.start_thread)
         self.continuously_button.clicked.connect(partial(self.start_thread, continuously = True))
         self.pause_button.clicked.connect(self.pause_measurement)
         self.stop_button.clicked.connect(self.stop_measurement)
 
-            # Drag objects in plot
+        # Drag objects in plot
         self.current_triggerlevel.sigDragged.connect(self.change_trigger_level_drag)
         self.current_triggerposition.sigDragged.connect(self.change_trigger_position_drag)
         for window in self.windows:
@@ -161,15 +178,19 @@ class Pico5000Interface(QMainWindow):
                 self.TChannel.setCurrentText('A')
             for window in self.windows:
                 if self.current_settings['Analyse']['Windows'][window]['Channel'] in ['C', 'D']:
-                    self.WindowChannel[window].setCurrentText('A')
-                self.WindowChannel[window].removeItem(self.WindowChannel[window].findText('C'))
-                self.WindowChannel[window].removeItem(self.WindowChannel[window].findText('D'))
+                    self.current_settings['Analyse']['Windows'][window]['Channel'] = 'A'
+                if str(self.WindowChannel.currentText) in ['C', 'D']:
+                    self.WindowChannel.setCurrentText('A')
+                self.WindowChannel.removeItem(self.WindowChannel.findText('C'))
+                self.WindowChannel.removeItem(self.WindowChannel.findText('D'))
             self.ChannelC.hide()
             self.ChannelD.hide()
             self.TChannel.removeItem(self.TChannel.findText('C'))
             self.TChannel.removeItem(self.TChannel.findText('D'))
             self.device_channels = 2
             self.channels = ['A', 'B']
+            for i in self.channels:
+                self.channel_changed[i] = True
 
     def four_channels(self):
         if self.device_channels == 2:
@@ -178,13 +199,14 @@ class Pico5000Interface(QMainWindow):
             else:
                 self.ChannelC.show()
                 self.ChannelD.show()
-                for window in self.windows:
-                    self.WindowChannel[window].addItem('C')
-                    self.WindowChannel[window].addItem('D')
+                self.WindowChannel.addItem('C')
+                self.WindowChannel.addItem('D')
                 self.TChannel.addItem('C')
                 self.TChannel.addItem('D')
                 self.device_channels = 4
                 self.channels = ['A', 'B', 'C', 'D']
+                for i in self.channels:
+                    self.channel_changed[i] = True
 
     def start_thread(self, continuously = False):
         if not self.measurement_running:
@@ -204,6 +226,9 @@ class Pico5000Interface(QMainWindow):
     def start_measurement(self, continuously):
         self.measurement_running = True
         self.continuously = continuously
+        self.date = str(date.today())
+        if not os.path.isdir(os.path.join(self.current_settings['Save']['Folder'], self.date)):
+            os.makedirs(os.path.join(self.current_settings['Save']['Folder'], self.date))
         self.measurement_name = str(self.Name.text())
         self.measurement_project = str(self.Project.text())
         self.set_measurement_settings()
@@ -213,26 +238,39 @@ class Pico5000Interface(QMainWindow):
             os.makedirs(self.current_settings['Save']['Folder'])
         #self.Messages.append('Measurement started')
         if self.current_settings['Analyse']['Active']:
-            self.itp.reset_scandata()
+            self.scannumber = 1
+            self.scanfile = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_scan_{}.yml'.format(self.scannumber))
+            while os.path.isfile(self.scanfile):
+                self.scannumber += 1
+                self.scanfile = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_scan_{}.yml'.format(self.scannumber))
+            if not self.current_settings['Save']['Autosave'] in 'Never':
+                self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_scan_{}_scope'.format(self.scannumber))
+                if not os.path.isdir(self.binarydirectory):
+                    os.makedirs(self.binarydirectory)
+            self.itp.reset_scandata(self.calculators)
             self.scan_start_time = time()
-            self.save_personal_settings(self.measurement_name, self.measurement_project, os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.scan_start_time).replace('.', '_') + '_metadata.yml'), metadata=True)
+            self.save_personal_settings(self.measurement_name, self.measurement_project, self.scanfile.replace('.yml', '_metadata.yml'), metadata = True)#os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.scan_start_time).replace('.', '_') + '_metadata.yml'), metadata=True)
             if continuously:
                 scans = 1000000
             else:
                 scans = self.current_settings['Analyse']['Scans']
-            for scan in range(scans):
+            for self.averagenumber in range(scans):
                 self.meaurement_start_time = time()
                 self.run_measurement()
                 if not self.measurement_running:
                     break
                 else:
-                    self.itp.read_windows([int(self.current_settings['Analyse']['Windows']['I']['Start']), int(self.current_settings['Analyse']['Windows']['II']['Start'])], [int(self.current_settings['Analyse']['Windows']['I']['Start']) + int(self.current_settings['Analyse']['Windows']['I']['Length']), int(self.current_settings['Analyse']['Windows']['II']['Start']) + int(self.current_settings['Analyse']['Windows']['II']['Length'])],[self.current_settings['Analyse']['Windows']['I']['Channel'], self.current_settings['Analyse']['Windows']['II']['Channel']] )
-                    #print('Windows read after: ', time() - self.meaurement_start_time)
-                    self.itp.compute_scanpoint(float(self.current_settings['Analyse']['ScanValue']) + int(scan)*float(self.current_settings['Analyse']['ScanValueDifference']), str(self.current_settings['Analyse']['Calculate']), [str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows']['I']['Channel']]['Range']), str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows']['II']['Channel']]['Range'])], int(self.current_settings['Time']['maxADC']))
+                    for window in self.windows:
+                        self.itp.read_windows(window, int(self.current_settings['Analyse']['Windows'][window]['Start']), int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length']), self.current_settings['Analyse']['Windows'][window]['Channel'])
+                        # print('Windows read after: ', time() - self.meaurement_start_time)
+                    self.itp.compute_scanpoint_scanvalue(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference']))
+                    for calculator in self.calculators:
+                        if self.current_settings['Analyse']['Calculators'][calculator]['Show'] == 2:
+                            self.itp.compute_scanpoint(int(calculator), int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow']), str(self.current_settings['Analyse']['Calculators'][calculator]['Operation']), int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow']), [str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow'])]['Channel']]['Range']), str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow'])]['Channel']]['Range'])], int(self.current_settings['Time']['maxADC']))
                     #print('Scanpoint computed after: ', time() - self.meaurement_start_time)
-                    self.save_scandata(os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.scan_start_time).replace('.', '_') + '_scan.yml'))
+                    self.save_scandata(self.scanfile)
                     #print('Scandata saved after: ', time() - self.meaurement_start_time)
-                    if scan < self.current_settings['Analyse']['Scans']-1 or continuously:
+                    if self.averagenumber < self.current_settings['Analyse']['Scans']-1 or continuously:
                         if time() - self.meaurement_start_time > ur(self.current_settings['Analyse']['Pause'].replace(' ', '')).m_as('s'):
                             if not scan_too_slow:
                                 self.Messages.append('Can not keep up with scanrate, increase Time between scans ({})'.format(str(round(time() - self.meaurement_start_time, 4)) + ' s'))
@@ -243,6 +281,14 @@ class Pico5000Interface(QMainWindow):
                     else:
                         self.measurement_running = False
         else:
+            self.averagenumber = 0
+            self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber+1))
+            while os.path.isdir(self.binarydirectory):
+                self.averagenumber += 1
+                self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber + 1))
+            if not self.current_settings['Save']['Autosave'] in 'Never':
+                if not os.path.isdir(self.binarydirectory):
+                    os.makedirs(self.binarydirectory)
             while self.measurement_running:
                 self.meaurement_start_time = time()
                 self.run_measurement()
@@ -270,7 +316,7 @@ class Pico5000Interface(QMainWindow):
     def run_measurement(self):
             self.itp.reset_buffer_sum()
             #print('Measurement time: ', self.meaurement_start_time)
-            for i in range(self.current_settings['Average']['Blocks']):
+            for self.measurementnumber in range(self.current_settings['Average']['Blocks']):
                 while self.measurement_pause:
                     if self.continue_after_setting:
                         self.set_measurement_settings()
@@ -285,31 +331,43 @@ class Pico5000Interface(QMainWindow):
                     self.get_block()
                     #print('Block obtained after: ', time() - self.meaurement_start_time)
                     if self.current_settings['Save']['Autosave'] in 'Every scope':
-                        filename = os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.meaurement_start_time).replace('.', '_') + '_binary_' + str(i+1) + '.bin')
-                        self.itp.save_binary(filename, self.active_channels)
+                        if self.current_settings['Analyse']['Active'] == 2:
+                            filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_scan_{}_{}_{}.bin'.format(self.scannumber, self.averagenumber+1, self.measurementnumber+1)
+                        else:
+                            filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_measurement_{}_{}.bin'.format(self.averagenumber+1, self.measurementnumber+1)
+                        self.itp.save_binary(os.path.join(self.binarydirectory, filename), self.active_channels)
                         message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
                         #self.Messages.append(message)
-                    if i < self.current_settings['Average']['Blocks']-1:
-                        delay = (i + 1)*ur(self.current_settings['Average']['Pause'].replace(' ', '')).m_as('s')
-                        if time() - self.meaurement_start_time > delay:
-                            if not self.block_too_slow:
-                                self.Messages.append('Can not keep up with measurementrate, increase Time between measurements ({})'.format(str(round(time() - self.meaurement_start_time, 4)) + ' s'))
-                                self.block_too_slow = True
-                        else:
-                            while time() - self.meaurement_start_time < delay:
-                                pass
+                    #if self.measurementnumber < self.current_settings['Average']['Blocks']-1:
+                    delay = (self.measurementnumber + 1)*ur(self.current_settings['Average']['Pause'].replace(' ', '')).m_as('s')
+                    if time() - self.meaurement_start_time > delay:
+                        if not self.block_too_slow:
+                            self.Messages.append('Can not keep up with measurementrate, increase Time between measurements ({})'.format(str(round(time() - self.meaurement_start_time, 4)) + ' s'))
+                            self.block_too_slow = True
                     else:
+                        while time() - self.meaurement_start_time < delay:
+                            pass
+                    if self.measurementnumber == self.current_settings['Average']['Blocks'] - 1:
                         self.itp.block_average(self.current_settings['Time']['Samples'], self.current_settings['Average']['Blocks'])
                         #print('Averaged over blocks after: ', time() - self.meaurement_start_time)
                         if self.current_settings['Save']['Autosave'] in 'Every scope average':
-                            self.save_personal_settings(self.measurement_name, self.measurement_project, os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.meaurement_start_time).replace('.', '_') + '_metadata.yml'), metadata=True)
+                            if self.current_settings['Analyse']['Active'] == 2:
+                                filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_scan_{}_{}.bin'.format(self.scannumber, self.averagenumber + 1)
+                            else:
+                                filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_measurement_{}.bin'.format(self.averagenumber + 1)
+                            if self.current_settings['Analyse']['Active'] == 0:
+                                self.save_personal_settings(self.measurement_name, self.measurement_project, os.path.join(self.current_settings['Save'][ 'Folder'], self.date, filename.replace('.bin', '_metadata.yml')), metadata=True)
                             if self.current_settings['Save']['Autosave'] not in 'Every scope':
-                                filename = os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.meaurement_start_time).replace('.','_') + '_binary.bin')
-                                self.itp.save_binary(filename, self.active_channels, Average = True)
+                                self.itp.save_binary(os.path.join(self.binarydirectory, filename), self.active_channels, Average = True)
                                 message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
                                 #self.Messages.append(message)
 
     def plot_measurement(self):
+        try:
+            self.scope_legend.scene().removeItem(self.scope_legend)
+        except:
+            pass
+        self.scope_legend = self.plot_window.addLegend()
         try:
             for channel in self.active_channels:
                 self.itp.interpret_data(self.current_settings['Time']['Samples'], ur(str(self.current_settings['Time']['Timestep'])).m_as('ns'), channel, str(self.current_settings['Channels'][channel]['Range']))
@@ -320,7 +378,16 @@ class Pico5000Interface(QMainWindow):
     def plot_scan(self):
         try:
             self.scan_plot_window.clear()
-            self.scan_plot_window.plot(self.itp.scandata[0][:], self.itp.scandata[1][:], pen='b', symbol='s')
+            try:
+                self.scan_legend.scene().removeItem(self.scan_legend)
+            except:
+                pass
+            self.scan_legend = self.scan_plot_window.addLegend()
+            for calculator in self.calculators:
+                try:
+                    self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                except:
+                    pass
         except:
             pass
 
@@ -340,10 +407,19 @@ class Pico5000Interface(QMainWindow):
         self.plot_window.win.close()
 
     def save_plot_window(self):
+        if self.current_settings['Analyse']['Active']:
+            self.binarydirectory = self.scanfile.replace('.yml', '_scope')
+            if not os.path.isdir(self.binarydirectory):
+                os.makedirs(self.binarydirectory)
+            file = os.path.join(self.binarydirectory, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_scan_{}'.format(self.scannumber) + '_{}_scope.png'.format(str(self.averagenumber + 1)))#self.scanfile.replace('.yml', '_{}_scope.png'.format(str(self.averagenumber + 1)))
+        else:
+            self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber+1))
+            if not os.path.isdir(self.binarydirectory):
+                os.makedirs(self.binarydirectory)
+            file = os.path.join(self.binarydirectory, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope.png'.format(self.averagenumber + 1))
         exp = pg.exporters.ImageExporter(self.plot_window.plotItem)
-        exp.params.param('width').setValue(int(self.plot_window.width()*3), blockSignal=exp.widthChanged)
-        exp.params.param('height').setValue(int(self.plot_window.height()*3), blockSignal=exp.heightChanged)
-        file = os.path.join(self.current_settings['Save']['Folder'], str(self.current_settings['Save']['Filename']) + '_' + str(self.meaurement_start_time).replace('.', '_') + '_scope.png')
+        exp.params.param('width').setValue(int(self.plot_window.width() * 3), blockSignal=exp.widthChanged)
+        exp.params.param('height').setValue(int(self.plot_window.height() * 3), blockSignal=exp.heightChanged)
         save_plot_thread = threading.Thread(target = exp.export(file))
         save_plot_thread.daemon = True
         save_plot_thread.start()
@@ -353,6 +429,7 @@ class Pico5000Interface(QMainWindow):
         self.scan_plot_window = pg.plot(title='Picoscope5000 Scan', background='w')
         #self.scan_plot_window.setWindowIcon(QIcon(os.path.join(self.base_folder, 'icon.png')))
         self.scan_plot_window.showGrid(x=True, y=True)
+        self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue']) + float(self.current_settings['Analyse']['ScanValueDifference']) * (int(self.current_settings['Analyse']['Scans']) - 1))
         self.change_scan_plot_fontsize()
         if not self.measurement_running:
             try:
@@ -368,13 +445,13 @@ class Pico5000Interface(QMainWindow):
             exp = pg.exporters.ImageExporter(self.scan_plot_window.plotItem)
             exp.params.param('width').setValue(int(self.scan_plot_window.width()*3), blockSignal=exp.widthChanged)
             exp.params.param('height').setValue(int(self.scan_plot_window.height()*3), blockSignal=exp.heightChanged)
-            file = os.path.join(self.current_settings['Save']['Folder'], str(self.current_settings['Save']['Filename']) + '_' + str(self.scan_start_time).replace('.', '_') + '_scan.png')
+            file = self.scanfile.replace('yml', 'png') #os.path.join(self.current_settings['Save']['Folder'], str(self.current_settings['Save']['Filename']) + '_' + str(self.scan_start_time).replace('.', '_') + '_scan.png')
             save_plot_thread = threading.Thread(target = exp.export(file))
             save_plot_thread.daemon = True
             save_plot_thread.start()
             #self.Messages.append('Scan plot saved to {}'. format(str(file)))
         except AttributeError:
-            self.Messages.append('No scan plot available')
+            self.Messages.append('No scanplot available')
 
     def set_measurement_settings(self):
         #self.measurement_settings = self.current_settings
@@ -474,7 +551,7 @@ class Pico5000Interface(QMainWindow):
         for i in self.channels:
             if self.current_settings['Channels'][i]['Active'] == 2:
                 try:
-                    self.plot_window.plot([j/1000000000 for j in self.itp.block['Time']], [k/1000 for k in self.itp.block[i][:]], pen=self.channel_colour[i])
+                    self.plot_window.plot([j/1000000000 for j in self.itp.block['Time']], [k/1000 for k in self.itp.block[i][:]], pen=self.channel_colour[i], name = str(i))
                 except KeyError:
                     pass
 
@@ -514,8 +591,8 @@ class Pico5000Interface(QMainWindow):
         else:
             self.change_trigger_position()
             for window in self.windows:
-                self.change_window_start(window)
-                self.change_window_length(window)
+                self.change_window_start_drag(window)
+                self.change_window_finish_drag(window)
 
     def load_button_pressed(self):
         self.load_personal_settings(self.Name.text(), self.Project.text())
@@ -547,7 +624,7 @@ class Pico5000Interface(QMainWindow):
         else:
             users_file = os.path.join(base_dir, 'config', 'users.yml')
         f = open(users_file, 'r')
-        users = yaml.load(f)
+        users = yaml.safe_load(f)
         f.close()
         if name not in users and metadata is not True:
             message = 'No settings stored for ' + name
@@ -581,6 +658,7 @@ class Pico5000Interface(QMainWindow):
             self.NumberOfMeasurements.setText(str(self.current_settings['Average']['Blocks']))
             self.Pause.setText(str(self.current_settings['Average']['Pause']))
             self.ShowPlot.setCheckState(int(self.current_settings['Plot']['Show']))
+
             #self.StoreAll.setCheckState(int(self.current_settings['Average']['Store']))
             self.Directory.setText(str(self.current_settings['Save']['Folder']))
             self.Filename.setText(str(self.current_settings['Save']['Filename']))
@@ -615,19 +693,45 @@ class Pico5000Interface(QMainWindow):
             self.Blocklength.setText(str(self.current_settings['Time']['Blocklength']))
             self.AnalysisActive.setCheckState(int(self.current_settings['Analyse']['Active']))
             self.ShowScanPlot.setCheckState(int(self.current_settings['Analyse']['ShowPlot']))
-            self.AnalysisCalculate.setCurrentText(str(self.current_settings['Analyse']['Calculate']))
+            #self.AnalysisCalculate.setCurrentText(str(self.current_settings['Analyse']['Calculate']))
             self.ScanValue.setText(str(self.current_settings['Analyse']['ScanValue']))
             self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']))
             self.ScanLabel.setText(str(self.current_settings['Analyse']['ScanLabel']))
             self.NumberOfScans.setText(str(self.current_settings['Analyse']['Scans']))
             self.ScanPause.setText(str(self.current_settings['Analyse']['Pause']))
-            for i in self.windows:
+            self.windows = {window: window for window in self.current_settings['Analyse']['Windows']}
+            self.calculators = {calculator: calculator for calculator in self.current_settings['Analyse']['Calculators']}
+            for window in self.windows:
+                self.WindowSelect.addItem('Window {}'.format(window))
+                self.FirstWindow.addItem('Window {}'.format(window))
+                self.SecondWindow.addItem('Window {}'.format(window))
+            self.current_window = 1
+            self.WindowSelect.setCurrentText('Window 1')
+            self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
+            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['Windows'][1]['Show']))
+            self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][1]['Channel']))
+            self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][1]['Start']))
+            self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][1]['Length']))
+            for calculator in self.calculators:
+                self.CalculatorSelect.addItem('Calculator {}'.format(calculator))
+            self.current_calculator = 1
+            self.CalculatorSelect.setCurrentText('Calculator 1')
+            self.CalculatorColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][0], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][1], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][2]))
+            self.FirstWindow.setCurrentText('Window ' + str(self.current_settings['Analyse']['Calculators'][1]['FirstWindow']))
+            self.Operation.setCurrentText(str(self.current_settings['Analyse']['Calculators'][1]['Operation']))
+            self.SecondWindow.setCurrentText('Window ' + str(self.current_settings['Analyse']['Calculators'][1]['SecondWindow']))
+            self.CalculatorName.setText(str(self.current_settings['Analyse']['Calculators'][1]['Name']))
+            self.CalculatorShow.setCheckState(int(self.current_settings['Analyse']['Calculators'][1]['Show']))
+
+            '''
+            for window in self.windows:
                 self.WindowActive[i].setCheckState(int(self.current_settings['Analyse']['Windows'][i]['Show']))
                 self.WindowChannel[i].setCurrentText(str(self.current_settings['Analyse']['Windows'][i]['Channel']))
                 #self.WindowCalculate[i].setCurrentText(str(self.current_settings['Analyse']['Windows'][i]['Calculate']))
                 #self.WindowWindow[i].setCurrentText(str(self.current_settings['Analyse']['Windows'][i]['Window']))
                 self.WindowStart[i].setText(str(self.current_settings['Analyse']['Windows'][i]['Start']))
                 self.WindowLength[i].setText(str(self.current_settings['Analyse']['Windows'][i]['Length']))
+            '''
 
             self.resolution_changed = True # Mark that settings are changed
             for i in self.channels:
@@ -641,6 +745,10 @@ class Pico5000Interface(QMainWindow):
             if metadata == 1:
                 message = message + ' from metadata for ' + meta_project + ' by ' + meta_name
             #self.Messages.append(message)
+            if int(self.current_settings['Plot']['Show']) == 2:
+                self.open_plot_window()
+            if int(self.current_settings['Analyse']['ShowPlot']) == 2:
+                self.open_scan_plot_window()
         '''
             if self.current_settings['Plot']['Show'] == 2:
                 self.change_showplot()
@@ -661,7 +769,7 @@ class Pico5000Interface(QMainWindow):
                 self.Messages.append('Not allowed to overwrite Default settings')
             else:
                 f = open(file, 'r')
-                users = yaml.load(f)
+                users = yaml.safe_load(f)
                 f.close()
                 if name in users:
                     if project in users[name]:
@@ -685,29 +793,34 @@ class Pico5000Interface(QMainWindow):
             users[name] = {}
             users[name][project] = self.current_settings
             f = open(file, 'w')
-            yaml.dump(users, f)
+            yaml.safe_dump(users, f)
             f.close()
             #message = 'Metadata saved for ' + project + ' by ' + name + ' to ' + file
             #self.Messages.append(message)
         else:
             f = open(file, 'r')
-            users = yaml.load(f)
+            users = yaml.safe_load(f)
             f.close()
             if not name in users:
                 users[name] = {}
             users[name][project] = self.current_settings
+            users['PreviousUser'] = {'Name': name, 'Project': project}
             f = open(file, 'w')
-            yaml.dump(users, f)
+            yaml.safe_dump(users, f)
             f.close()
             #message = 'Settings saved for ' + project + ' by ' + name
             #self.Messages.append(message)
 
     def save_scandata(self, filename):
         f = open(filename, 'w')
-        yaml.dump(self.itp.scandata, f)
+        yaml.safe_dump(self.itp.scandata, f)
         f.close()
 
     def closeEvent(self, QCloseEvent): # Stop doing measurements and communication with device
+        if str(self.Name.text()) in 'DefaultUser':
+            self.save_personal_settings('AutoSaveDefaultUser', str(self.Project.text()), os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'))
+        else:
+            self.save_personal_settings(str(self.Name.text()), str(self.Project.text()), os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'))
         self.itp.stop_device()
         self.itp.close_device()
         super(Pico5000Interface, self).closeEvent(QCloseEvent)
@@ -740,6 +853,7 @@ class Pico5000Interface(QMainWindow):
             for window in self.windows:
                 if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
                     pass
+
         except AttributeError:
             pass
 
@@ -751,7 +865,7 @@ class Pico5000Interface(QMainWindow):
             self.scan_plot_window.getAxis("left").setStyle(tickTextOffset=int(self.Fontsize.text()))
             self.scan_plot_window.getAxis("bottom").setStyle(tickTextOffset=int(self.Fontsize.text()))
             fontStyle = {'color': '#999', 'font-size': '{}pt'.format(self.current_settings['User']['Fontsize'])}
-            self.scan_plot_window.setLabel('left', 'Window average difference', units='V', **fontStyle)
+            self.scan_plot_window.setLabel('left', 'Calculator', units='V', **fontStyle)
             self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], **fontStyle)
         except AttributeError:
             pass
@@ -825,10 +939,10 @@ class Pico5000Interface(QMainWindow):
 
     def change_trigger_channel(self):
         self.current_settings['Trigger']['Channel'] = str(self.TChannel.currentText())
-        self.current_triggerlevel.setPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine))
-        self.current_triggerposition.setPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine))
-        self.current_triggerlevel.setHoverPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']]))
-        self.current_triggerposition.setHoverPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']]))
+        self.current_triggerlevel.setPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2))
+        self.current_triggerposition.setPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2))
+        self.current_triggerlevel.setHoverPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2))
+        self.current_triggerposition.setHoverPen(pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2))
         if self.current_settings['Trigger']['Channel'] in 'External':
             if ur(str(self.current_settings['Trigger']['Level'])).m_as('V') > 5:
                 self.current_settings['Trigger']['Level'] = str(5) + ' V'
@@ -984,8 +1098,8 @@ class Pico5000Interface(QMainWindow):
         else:
             self.close_scan_plot_window()
 
-    def change_analyse_calculate(self):
-        self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
+    #def change_analyse_calculate(self):
+    #    self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
 
     def change_analyse_scanvalue(self):
         self.current_settings['Analyse']['ScanValue'] = float(self.ScanValue.text())
@@ -1013,42 +1127,162 @@ class Pico5000Interface(QMainWindow):
     def change_analyse_pause(self):
         self.current_settings['Analyse']['Pause'] = str(self.ScanPause.text())
 
-    def change_window_active(self, window):
-        self.current_settings['Analyse']['Windows'][window]['Show'] = int(self.WindowActive[window].checkState())
-        if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
-            self.plot_window.addItem(self.window_start_draw[window])
-            self.plot_window.addItem(self.window_finish_draw[window])
+    def change_window(self):
+        if str(self.WindowSelect.currentText()) in 'Add Window':
+            self.current_window = 3
+            while self.current_window in self.windows:
+                self.current_window += 1
+            self.windows[self.current_window] = [self.current_window]
+            self.current_settings['Analyse']['Windows'][self.current_window] = {}
+            self.current_settings['Analyse']['Windows'][self.current_window]['Colour'] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+            self.current_settings['Analyse']['Windows'][self.current_window]['Start'] = str(self.WindowStart.text())
+            self.current_settings['Analyse']['Windows'][self.current_window]['Length'] = str(self.WindowLength.text())
+            self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
+            self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            self.change_window_show()
+            self.change_window_channel()
+            self.WindowSelect.addItem('Window {}'.format(self.current_window))
+            self.FirstWindow.addItem('Window {}'.format(self.current_window))
+            self.SecondWindow.addItem('Window {}'.format(self.current_window))
+            self.WindowSelect.setCurrentText('Window {}'.format(self.current_window))
+            self.window_start_draw[self.current_window].sigDragged.connect(partial(self.change_window_start_drag, self.current_window))
+            self.window_finish_draw[self.current_window].sigDragged.connect(partial(self.change_window_finish_drag, self.current_window))
         else:
-            self.plot_window.removeItem(self.window_start_draw[window])
-            self.plot_window.removeItem(self.window_finish_draw[window])
+            self.current_window = int(str(self.WindowSelect.currentText()).replace('Window ', ''))
+            self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
+            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['Windows'][self.current_window]['Show']))
+            self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Channel']))
+            self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Start']))
+            self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
 
-    def change_window_channel(self, window):
-        self.current_settings['Analyse']['Windows'][window]['Channel'] = str(self.WindowChannel[window].currentText())
+    def delete_window(self):
+        if self.current_window in [1 ,2]:
+            self.Messages.append('Not permitted to delete Window 1 and Window 2')
+        else:
+            self.plot_window.removeItem(self.window_start_draw[self.current_window])
+            self.plot_window.removeItem(self.window_finish_draw[self.current_window])
+            self.windows.pop(self.current_window)
+            self.current_settings['Analyse']['Windows'].pop(self.current_window)
+            for calculator in self.calculators:
+                if self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow'] == self.current_window:
+                    self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow'] = 1
+                    if calculator == self.current_calculator:
+                        self.FirstWindow.setCurrentText('Window 1')
+                    self.Messages.append('First window for Calculator {} set to Window 1'.format(calculator))
+                if self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow'] == self.current_window:
+                    self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow'] = 1
+                    if calculator == self.current_calculator:
+                        self.SecondWindow.setCurrentText('Window 1')
+                    self.Messages.append('Second window for Calculator {} set to Window 1'.format(calculator))
+            self.FirstWindow.removeItem(self.FirstWindow.findText('Window {}'.format(self.current_window)))
+            self.SecondWindow.removeItem(self.SecondWindow.findText('Window {}'.format(self.current_window)))
+            self.WindowSelect.removeItem(self.WindowSelect.findText('Window {}'.format(self.current_window)))
+            self.WindowSelect.setCurrentText('Window 1')
+            self.current_window = 1
+
+    def change_window_colour(self):
+        self.current_settings['Analyse']['Windows'][self.current_window]['Colour'] = (QColorDialog.getColor()).getRgb()[:3]
+        self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
+        self.window_start_draw[self.current_window].setPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2))
+        self.window_finish_draw[self.current_window].setPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2))
+        self.window_start_draw[self.current_window].setHoverPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2))
+        self.window_finish_draw[self.current_window].setHoverPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2))
+
+    def change_window_show(self):
+        self.current_settings['Analyse']['Windows'][self.current_window]['Show'] = int(self.WindowShow.checkState())
+        if self.current_settings['Analyse']['Windows'][self.current_window]['Show'] == 2:
+            self.plot_window.addItem(self.window_start_draw[self.current_window])
+            self.plot_window.addItem(self.window_finish_draw[self.current_window])
+        else:
+            self.plot_window.removeItem(self.window_start_draw[self.current_window])
+            self.plot_window.removeItem(self.window_finish_draw[self.current_window])
+
+    def change_window_channel(self):
+        self.current_settings['Analyse']['Windows'][self.current_window]['Channel'] = str(self.WindowChannel.currentText())
 
     #def change_window_window(self, window):
     #    self.current_settings['Analyse']['Windows'][window]['Window'] = str(self.WindowWindow[window].currentText())
 
     def change_window_start_drag(self, window):
+        self.WindowSelect.setCurrentText('Window {}'.format(window))
+        self.change_window()
         self.current_settings['Analyse']['Windows'][window]['Start'] = int(round(self.window_start_draw[window].value()/ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')))
-        self.WindowStart[window].setText(str(self.current_settings['Analyse']['Windows'][window]['Start']))
         self.current_settings['Analyse']['Windows'][window]['Length'] = int(round(self.window_finish_draw[window].value()/ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))-int(self.current_settings['Analyse']['Windows'][window]['Start']))
-        self.WindowLength[window].setText(str(self.current_settings['Analyse']['Windows'][window]['Length']))
+        if window == self.current_window:
+            self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][window]['Start']))
+            self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][window]['Length']))
         self.window_start_draw[window].setBounds([0, int(self.current_settings['Analyse']['Windows'][window]['Start'] + self.current_settings['Analyse']['Windows'][window]['Length']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
         self.window_finish_draw[window].setBounds([int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
 
-    def change_window_start(self, window):
-        self.current_settings['Analyse']['Windows'][window]['Start'] = str(self.WindowStart[window].text())
-        self.window_start_draw[window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
-        self.window_finish_draw[window].setBounds([int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
-        self.window_finish_draw[window].setValue((int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length']))*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
-        self.window_start_draw[window].setValue(int(self.current_settings['Analyse']['Windows'][window]['Start'])*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
+    def change_window_start(self):
+        self.current_settings['Analyse']['Windows'][self.current_window]['Start'] = str(self.WindowStart.text())
+        self.window_start_draw[self.current_window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
+        self.window_finish_draw[self.current_window].setBounds([int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+        self.window_finish_draw[self.current_window].setValue((int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
+        self.window_start_draw[self.current_window].setValue(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
 
     def change_window_finish_drag(self, window):
+        self.WindowSelect.setCurrentText('Window {}'.format(window))
+        self.change_window()
         self.current_settings['Analyse']['Windows'][window]['Length'] = int(round(self.window_finish_draw[window].value()/ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))-int(self.current_settings['Analyse']['Windows'][window]['Start']))
-        self.WindowLength[window].setText(str(self.current_settings['Analyse']['Windows'][window]['Length']))
+        if window == self.current_window:
+            self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][window]['Length']))
         self.window_start_draw[window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
 
-    def change_window_length(self, window):
-        self.current_settings['Analyse']['Windows'][window]['Length'] = str(self.WindowLength[window].text())
-        self.window_finish_draw[window].setValue((int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length']))*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
-        self.window_start_draw[window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
+    def change_window_length(self):
+        self.current_settings['Analyse']['Windows'][self.current_window]['Length'] = str(self.WindowLength.text())
+        self.window_finish_draw[self.current_window].setValue((int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
+        self.window_start_draw[self.current_window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
+
+    def change_calculator(self):
+        if str(self.CalculatorSelect.currentText()) in 'Add Calculator':
+            self.current_calculator = 2
+            while self.current_calculator in self.calculators:
+                self.current_calculator += 1
+            self.calculators[self.current_calculator] = [self.current_calculator]
+            self.current_settings['Analyse']['Calculators'][self.current_calculator] = {}
+            self.change_calculator_show()
+            self.change_first_window()
+            self.change_operation()
+            self.change_second_window()
+            self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+            self.current_settings['Analyse']['Calculators'][self.current_calculator]['Name'] = 'Calculator ' + str(self.current_calculator)
+            self.CalculatorSelect.addItem('Calculator {}'.format(self.current_calculator))
+            self.CalculatorSelect.setCurrentText('Calculator {}'.format(self.current_calculator))
+        else:
+            self.current_calculator = int(str(self.CalculatorSelect.currentText()).replace('Calculator ', ''))
+            self.CalculatorColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][0], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][1], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][2]))
+            self.CalculatorShow.setCheckState(int(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Show']))
+            self.FirstWindow.setCurrentText('Window ' + str(self.current_settings['Analyse']['Calculators'][self.current_calculator]['FirstWindow']))
+            self.Operation.setCurrentText(str(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Operation']))
+            self.SecondWindow.setCurrentText('Window ' + str(self.current_settings['Analyse']['Calculators'][self.current_calculator]['SecondWindow']))
+            self.CalculatorName.setText(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Name'])
+
+    def change_calculator_colour(self):
+        self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'] = (QColorDialog.getColor()).getRgb()[:3]
+        self.CalculatorColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][0], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][1], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][2]))
+
+    def change_calculator_show(self):
+        self.current_settings['Analyse']['Calculators'][self.current_calculator]['Show'] = int(self.CalculatorShow.checkState())
+
+    def change_first_window(self):
+        self.current_settings['Analyse']['Calculators'][self.current_calculator]['FirstWindow'] = int(str(self.FirstWindow.currentText()).replace('Window ', ''))
+
+    def change_operation(self):
+        self.current_settings['Analyse']['Calculators'][self.current_calculator]['Operation'] = str(self.Operation.currentText())
+
+    def change_second_window(self):
+        self.current_settings['Analyse']['Calculators'][self.current_calculator]['SecondWindow'] = int(str(self.SecondWindow.currentText()).replace('Window ', ''))
+
+    def change_calculator_name(self):
+        self.current_settings['Analyse']['Calculators'][self.current_calculator]['Name'] = str(self.CalculatorName.text())
+
+    def delete_calculator(self):
+        if self.current_calculator == 1:
+            self.Messages.append('Not permitted to delete Calculator 1')
+        else:
+            self.calculators.pop(self.current_calculator)
+            self.current_settings['Analyse']['Calculators'].pop(self.current_calculator)
+            self.CalculatorSelect.removeItem(self.CalculatorSelect.findText('Calculator {}'.format(self.current_calculator)))
+            self.CalculatorSelect.setCurrentText('Calculator 1')
+            self.current_calculator = 1
