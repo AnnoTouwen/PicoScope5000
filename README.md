@@ -4,44 +4,44 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 
 ## How to get the software on Windows
 
-1. Download Python 3 (https://www.python.org/downloads/windows/) and add it to PATH (option in installation menu or append manually).
+1. Download [Python 3](https://www.python.org/downloads/windows/) and add it to PATH (option in installation menu or append manually).
 2. Install pip if it is not included in the Python installation already.
-3. Download git (https://git-scm.com/download/win).
+3. Download [git](https://git-scm.com/download/win).
 4. Make a directory in which you want to get the software.
 5. Open a terminal (windows + R) and navigate to the directory.
 6. Download the software by cloning the directory
-'''
+```
 	>>> git clone https://github.com/AnnoTouwen/PicoScope5000.git
-'''
+```
 7. Copy the picosdk directory to the python packages folder, which could be something like
-'''
+```
 	C:/Python/Lib/site-packages
-'''
+```
 8. Install the following Python packages using pip in the terminal
-'''
+```
 	>>> pip install Pint
 	>>> pip install PyYAML
 	>>> pip install PyQt5
 	>>> pip install numpy
 	>>> pip install Pyqtgraph
 	>>> pip install Matplotlib
-'''
+```
 
 ## How to get the latest update on Windows
 
 1. Open a terminal (windows + R) and navigate to the directory.
 2. Update the software by pulling it to the directory
-'''
+```
 	>>> git pull
-'''
+```
 
 ## How to use the PicoScope software
 
 Run start.py by double clicking if Python 3 is set to be the standard for executing .py files.
 Alternatively you could naviate to the directory in the terminal and run
-'''
+```
 	>>> python start.py
-'''
+```
 
 If a PicoScope5000 device is connected a window with the user interface should appear. The powersupply is checked and the device is set accordingly. The Default settings are loaded from config/users.yml. Dependent on these settings a first readout of the scope is also show in a seraprate window. In the user interface messages to the user are dislayed, settings can be changed and measurements can be started. Realtime analysis and plots are shown in separate windows.
 
@@ -95,9 +95,9 @@ By pressing start a measurement is started with the settings described above. Af
 ## How to read the datafiles in Python
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
-'''
+```
 	>>> import PicoReadBinary as prb'
-'''
+```
 The script reads datafiles based on their metadatfile given as input. 
 
 ### prb.load_settings()
