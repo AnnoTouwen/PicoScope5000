@@ -114,7 +114,7 @@ Asks (2 + 1) for a string with the metadatafilename, a sting with the channel, a
 
 ### prb.scan_V()
 
-Asks (1) for a string with the metadatafilename and returns (2) a dictionary with 'Window average difference' and the scanlabel both lists with the voltage differences and scanvalues respectively, a string with the scanlabel.
+Asks (1) for a string with the metadatafilename and returns (1) a dictionary with Scanvalue and the calculators, both lists with scanvalues and the voltage differences respectively, a string with the scanlabel.
 
 ## Contact
 
