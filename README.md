@@ -96,7 +96,7 @@ By pressing start a measurement is started with the settings described above. Af
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
 ```
-	>>> import PicoReadBinary as prb'
+	>>> import PicoReadBinary as prb
 ```
 The script reads datafiles based on their metadatfile given as input. 
 
