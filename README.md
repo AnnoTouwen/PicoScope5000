@@ -4,28 +4,44 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 
 ## How to get the software on Windows
 
-1. Download Python 3 (https://www.python.org/downloads/windows/) and add it to PATH (option in installation menu or append manually).
+1. Download [Python 3](https://www.python.org/downloads/windows/) and add it to PATH (option in installation menu or append manually).
 2. Install pip if it is not included in the Python installation already.
-3. Download git (https://git-scm.com/download/win).
+3. Download [git](https://git-scm.com/download/win).
 4. Make a directory in which you want to get the software.
 5. Open a terminal (windows + R) and navigate to the directory.
 6. Download the software by cloning the directory
+```
 	>>> git clone https://github.com/AnnoTouwen/PicoScope5000.git
+```
 7. Copy the picosdk directory to the python packages folder, which could be something like
+```
 	C:/Python/Lib/site-packages
+```
 8. Install the following Python packages using pip in the terminal
+```
 	>>> pip install Pint
 	>>> pip install PyYAML
 	>>> pip install PyQt5
 	>>> pip install numpy
 	>>> pip install Pyqtgraph
 	>>> pip install Matplotlib
+```
+
+## How to get the latest update on Windows
+
+1. Open a terminal (windows + R) and navigate to the directory.
+2. Update the software by pulling it to the directory
+```
+	>>> git pull
+```
 
 ## How to use the PicoScope software
 
 Run start.py by double clicking if Python 3 is set to be the standard for executing .py files.
 Alternatively you could naviate to the directory in the terminal and run
+```
 	>>> python start.py
+```
 
 If a PicoScope5000 device is connected a window with the user interface should appear. The powersupply is checked and the device is set accordingly. The Default settings are loaded from config/users.yml. Dependent on these settings a first readout of the scope is also show in a seraprate window. In the user interface messages to the user are dislayed, settings can be changed and measurements can be started. Realtime analysis and plots are shown in separate windows.
 
@@ -35,11 +51,11 @@ If the device has four input channels and an external powersupply is connected f
 
 ### User
 
-As the programm is started the Default settings are loaded, but it is suggested to login with your name and project, which you could fill in in the user menu. Your personal settings can be saved and loaded using the buttons on the right. The settings from a previous measurement can also be loaded from the metadata. In this menu the fontsize can also be changed. Note that this also changes the fontsize of the plots in the other windows.
+If the programm is started for the first time Default settings are loaded, but it is suggested to login with your name and project, which you could fill in in the user menu. If the program is closed properly the settings are saved and relaoded in the next startup. Your personal settings can also be saved manulally and loaded using the buttons on the right. The settings from a previous measurement can also be loaded from the metadata. In this menu the fontsize can also be changed. Note that this also changes the fontsize of the plots in the other windows.
 
 ### Save
 
-The save directory for all the data output from the program can be set here. Also the base filename can be set. Not however that the full filename will be different dependent on the datatype and time of the measurement. The full filename always includes the Unix time, seconds since January 1, 1970, 00:00:00 at UTC. For binary data of the scope readout binary will be added to the filename and the extension is .bin. If a measurement is the average of multiple readouts the readouts themselves are stored separately and numbers starting from 1 are added. For scans scan will be added to the filename and the extension is .yml. These datafiles are accompanied by metadatafiles with the same filname and time with metadata added and extension .yml. The plots for the scope and scan can also be saved, which will have the filename, Unix time and scope or scan respectively, with extension .png.
+The save directory for all the data output from the program can be set here, in which a folder will be created named by the current date set on your PC as YYYY-MM-DD. Also the base filename can be set. Note however that the full filename will be different dependent on the datatype and the numbers labelling the measurement or scan. For binary data of the scope readout a separate folder is created in which files will be saved with the extension .bin. These binary files are numbered, with measurementnumber and possibly blocknumber if all readouts are saved separately, not just the avereage over multiple of these. Scanfiles have the extension .yml. These datafiles are accompanied by metadatafiles with the same filname, but with metadata added and extension .yml. The plots for the scope and scan can also be saved, which will have a filename including scope or scan respectively, with extension .png.
 
 The scandata are saved automatically, but you might want to save the raw binary data aswell. Save data lets you select to never, every scopereadout or every average over mutiple scope readouts (if applicable) save the binary data. The datafiles can be read and used by the PicoReadBinary.py script.
 
@@ -54,19 +70,21 @@ The trigger is also set in this menu. If you want to measure without a trigger d
 
 Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode.
 
-### Measure
+### Scope
 
 Instead of separate scopereadouts one can also average over multiple signals. A delay between these signal readouts can be set. If the time between these readouts is less than the set interval a warning is displayed once, but readouts continue at the fastest pace possible.
 
 The scopeplot window can be show or closed here. It can also be expoted as png by clicking Save plot. The savelocation and filename are set in the save menu.
 
-### Analyse
+### Scan
 
 On the scopereadout, or averages over multiple of those, windows can be selected over which the average voltage is calculated. These windows can be compared, which is called a scan. 
 
-This analysis can be activated or deactivted. The comparison of the windows can be set to either the first minus the second or vise versa. Multiple scans can be performed with a delay between them. If the time between these scan is less than the set interval a warning is displayed once, but scans continue at the fastest pace possible. 
+This analysis can be activated or deactivted. Multiple scans can be performed with a delay between them. If the time between these scan is less than the set interval a warning is displayed once, but scans continue at the fastest pace possible.
 
-Windows can be shown in the scope plotwindow, where the boundaries can aso be slided to select the desired window. The boundaries can also be set by filling in their start and length. For every window also an active channel has to be selected.
+A window can be selected or added from the dropdownmenu to change its settings. The colour of the window in the scopereadout plotwindow can be set. It can be shown in the scope plotwindow, where the boundaries can be slided to select the desired window. The boundaries can also be set by filling in their start and length. For every window also an active channel has to be selected. Extra windows can be deleted, but not Window 1 and 2.
+
+A calculator can be selected or added from the dropdownmenu to change its settings. The colour of the calculator in the scan plotwindow can be set. It can be selected wether it is shown in the scan plotwindow. Two windows and the operation between these averages can be selected from the dropdownmenus. The name of the calculator can be changed for better labelling in plots. Extra calculators can be deleted, but not Calculator 1.
 
 The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
 
@@ -77,7 +95,9 @@ By pressing start a measurement is started with the settings described above. Af
 ## How to read the datafiles in Python
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
+```
 	>>> import PicoReadBinary as prb
+```
 The script reads datafiles based on their metadatfile given as input. 
 
 ### prb.load_settings()
@@ -94,7 +114,7 @@ Asks (2 + 1) for a string with the metadatafilename, a sting with the channel, a
 
 ### prb.scan_V()
 
-Asks (1) for a string with the metadatafilename and returns (2) a dictionary with 'Window average difference' and the scanlabel both lists with the voltage differences and scanvalues respectively, a string with the scanlabel.
+Asks (1) for a string with the metadatafilename and returns (1) a dictionary with Scanvalue and the calculators, both lists with scanvalues and the voltage differences respectively, a string with the scanlabel.
 
 ## Contact
 
