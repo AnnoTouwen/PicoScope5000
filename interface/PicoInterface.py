@@ -15,8 +15,7 @@ from datetime import date
 from functools import partial
 from pint import UnitRegistry
 ur = UnitRegistry()
-
-
+from interpreter.DelayInterpreter import SRSDG535Interpreter
 
 class Pico5000Interface(QMainWindow):
     def __init__(self, interpreter):
@@ -34,10 +33,17 @@ class Pico5000Interface(QMainWindow):
         self.ChannelActive = {'A': self.AActive, 'B': self.BActive, 'C': self.CActive, 'D': self.DActive}
         self.ChannelRange = {'A': self.ARange, 'B': self.BRange, 'C': self.CRange, 'D': self.DRange}
         self.ChannelCoupling = {'A': self.ACoupling, 'B': self.BCoupling, 'C': self.CCoupling, 'D': self.DCoupling}
-        #self.WindowActive = {'I': self.ActiveWI, 'II': self.ActiveWII}
-        #self.WindowChannel = {'I': self.ChannelWI, 'II': self.ChannelWII}
-        #self.WindowStart = {'I': self.StartWI, 'II': self.StartWII}
-        #self.WindowLength = {'I': self.LengthWI, 'II': self.LengthWII}
+        self.ChannelName = {'A': self.AName, 'B': self.BName, 'C': self.CName, 'D': self.DName}
+
+        # Delay generator parameters
+        self.connectors = ['Ext', 'T0', 'A', 'B', 'AB', 'C', 'D', 'CD']
+        self.primary_connectors = ['A', 'B', 'C', 'D']
+        self.impedances = ['50 Ohm', 'HighZ']
+        self.signalmodes = ['TTL', 'NIM', 'ECL', 'Variable']
+        self.triggermodes = ['Internal', 'External', 'Single shot', 'Burst']
+        self.Delay = {'A': self.Delay_A, 'B': self.Delay_B, 'C': self.Delay_C, 'D': self.Delay_D}
+        #self.Difference = {'A': self.Delay_difference_A, 'B': self.Delay_difference_B, 'C': self.Delay_difference_C, 'D': self.Delay_difference_D}
+        self.From = {'A': self.From_A, 'B': self.From_B, 'C': self.From_C, 'D': self.From_D}
 
         # Define initial parameters
         self.channel_changed = {}
@@ -77,6 +83,14 @@ class Pico5000Interface(QMainWindow):
         # Do a first measurement
         #self.start_thread()
 
+        # Setup Delay generator
+        if self.current_settings['Delay']['TriggerMode'] in 'Internal':
+            self.TriggerExt.hide()
+        else:
+            self.TriggerInt.hide()
+        if self.current_settings['Delay']['Active'] == 2:
+            self.delay_setup_connection()
+
         # Show start-up message
         self.Messages.setText('Welcome to the PicoScope5000 interface\nPlease consider logging on with your name and project\n')
         if self.itp.dev.status["openunit"] == 286:
@@ -115,6 +129,7 @@ class Pico5000Interface(QMainWindow):
             self.ChannelActive[i].stateChanged.connect(partial(self.change_channel_active, i))
             self.ChannelRange[i].currentTextChanged.connect(partial(self.change_channel_range, i))
             self.ChannelCoupling[i].currentTextChanged.connect(partial(self.change_channel_coupling, i))
+            self.ChannelName[i].editingFinished.connect(partial(self.change_channel_name, i))
 
         # Scope tab
         self.NumberOfMeasurements.editingFinished.connect(self.change_average_nom)
@@ -167,6 +182,23 @@ class Pico5000Interface(QMainWindow):
         for window in self.windows:
             self.window_start_draw[window].sigDragged.connect(partial(self.change_window_start_drag, window))
             self.window_finish_draw[window].sigDragged.connect(partial(self.change_window_finish_drag, window))
+
+        # Delay generator
+        self.Delay_connection_active.stateChanged.connect(self.delay_setup_connection)
+        self.Delay_connection_port.editingFinished.connect(self.delay_change_port)
+        self.Delay_signal_type.currentTextChanged.connect(self.delay_change_signal)
+        self.Delay_signal_load.currentTextChanged.connect(self.delay_change_load)
+        self.Delay_Ext_trigger_mode.currentTextChanged.connect(partial(self.delay_change_trigger_mode, 'External'))
+        self.Delay_trigger_load.currentTextChanged.connect(self.delay_change_trigger_load)
+        self.Delay_trigger_edge.currentTextChanged.connect(self.delay_change_trigger_edge)
+        self.Delay_trigger_level.editingFinished.connect(self.delay_change_trigger_level)
+        self.Delay_Int_trigger_mode.currentTextChanged.connect(partial(self.delay_change_trigger_mode, 'Internal'))
+        self.Delay_trigger_rate.editingFinished.connect(self.delay_change_trigger_rate)
+        for connector in self.primary_connectors:
+            self.Delay[connector].editingFinished.connect(partial(self.delay_change_delay, connector))
+            # self.Difference[connector].editingFinished.connect(partial(self.delay_change_difference, connector))
+            self.From[connector].currentTextChanged.connect(partial(self.delay_change_from, connector))
+
 
 # -------------------------------------------------------------------------------
 
@@ -238,6 +270,9 @@ class Pico5000Interface(QMainWindow):
             os.makedirs(self.current_settings['Save']['Folder'])
         #self.Messages.append('Measurement started')
         if self.current_settings['Analyse']['Active']:
+            if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
+                self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue'])) + ' s')
+                self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
             self.scannumber = 1
             self.scanfile = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_scan_{}.yml'.format(self.scannumber))
             while os.path.isfile(self.scanfile):
@@ -264,6 +299,9 @@ class Pico5000Interface(QMainWindow):
                         self.itp.read_windows(window, int(self.current_settings['Analyse']['Windows'][window]['Start']), int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length']), self.current_settings['Analyse']['Windows'][window]['Channel'])
                         # print('Windows read after: ', time() - self.meaurement_start_time)
                     self.itp.compute_scanpoint_scanvalue(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference']))
+                    if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
+                        self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference'])) + ' s')
+                        self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
                     for calculator in self.calculators:
                         if self.current_settings['Analyse']['Calculators'][calculator]['Show'] == 2:
                             self.itp.compute_scanpoint(int(calculator), int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow']), str(self.current_settings['Analyse']['Calculators'][calculator]['Operation']), int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow']), [str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow'])]['Channel']]['Range']), str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow'])]['Channel']]['Range'])], int(self.current_settings['Time']['maxADC']))
@@ -551,7 +589,7 @@ class Pico5000Interface(QMainWindow):
         for i in self.channels:
             if self.current_settings['Channels'][i]['Active'] == 2:
                 try:
-                    self.plot_window.plot([j/1000000000 for j in self.itp.block['Time']], [k/1000 for k in self.itp.block[i][:]], pen=self.channel_colour[i], name = str(i))
+                    self.plot_window.plot([j/1000000000 for j in self.itp.block['Time']], [k/1000 for k in self.itp.block[i][:]], pen=self.channel_colour[i], name = self.current_settings['Channels'][i]['Name'])
                 except KeyError:
                     pass
 
@@ -672,6 +710,7 @@ class Pico5000Interface(QMainWindow):
                 self.ChannelActive[i].setCheckState(self.current_settings['Channels'][i]['Active'])
                 self.ChannelRange[i].setCurrentText(str(self.current_settings['Channels'][i]['Range']))
                 self.ChannelCoupling[i].setCurrentText(str(self.current_settings['Channels'][i]['CouplingType']))
+                self.ChannelName[i].setText(str(self.current_settings['Channels'][i]['Name']))
                 '''
                 self.ChannelSave[i].setCheckState(int(self.current_settings['Channels'][i]['Save']))
                 self.ChannelSave2[i].setCheckState(int(self.current_settings['Channels'][i]['Save']))
@@ -694,8 +733,12 @@ class Pico5000Interface(QMainWindow):
             self.AnalysisActive.setCheckState(int(self.current_settings['Analyse']['Active']))
             self.ShowScanPlot.setCheckState(int(self.current_settings['Analyse']['ShowPlot']))
             #self.AnalysisCalculate.setCurrentText(str(self.current_settings['Analyse']['Calculate']))
-            self.ScanValue.setText(str(self.current_settings['Analyse']['ScanValue']))
-            self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']))
+            if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
+                self.ScanValue.setText(str(self.current_settings['Analyse']['ScanValue']) + ' s')
+                self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']) + ' s')
+            else:
+                self.ScanValue.setText(str(self.current_settings['Analyse']['ScanValue']))
+                self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']))
             self.ScanLabel.setText(str(self.current_settings['Analyse']['ScanLabel']))
             self.NumberOfScans.setText(str(self.current_settings['Analyse']['Scans']))
             self.ScanPause.setText(str(self.current_settings['Analyse']['Pause']))
@@ -722,16 +765,21 @@ class Pico5000Interface(QMainWindow):
             self.SecondWindow.setCurrentText('Window ' + str(self.current_settings['Analyse']['Calculators'][1]['SecondWindow']))
             self.CalculatorName.setText(str(self.current_settings['Analyse']['Calculators'][1]['Name']))
             self.CalculatorShow.setCheckState(int(self.current_settings['Analyse']['Calculators'][1]['Show']))
-
-            '''
-            for window in self.windows:
-                self.WindowActive[i].setCheckState(int(self.current_settings['Analyse']['Windows'][i]['Show']))
-                self.WindowChannel[i].setCurrentText(str(self.current_settings['Analyse']['Windows'][i]['Channel']))
-                #self.WindowCalculate[i].setCurrentText(str(self.current_settings['Analyse']['Windows'][i]['Calculate']))
-                #self.WindowWindow[i].setCurrentText(str(self.current_settings['Analyse']['Windows'][i]['Window']))
-                self.WindowStart[i].setText(str(self.current_settings['Analyse']['Windows'][i]['Start']))
-                self.WindowLength[i].setText(str(self.current_settings['Analyse']['Windows'][i]['Length']))
-            '''
+            # Delay generator settings
+            self.Delay_connection_active.setCheckState(int(self.current_settings['Delay']['Active']))
+            self.Delay_connection_port.setText(str(self.current_settings['Delay']['Port']))
+            self.Delay_signal_type.setCurrentText(str(self.current_settings['Delay']['Type']))
+            self.Delay_signal_load.setCurrentText(str(self.current_settings['Delay']['Load']))
+            self.Delay_Ext_trigger_mode.setCurrentText(str(self.current_settings['Delay']['TriggerMode']))
+            self.Delay_trigger_load.setCurrentText(str(self.current_settings['Delay']['TriggerLoad']))
+            self.Delay_trigger_edge.setCurrentText(str(self.current_settings['Delay']['TriggerEdge']))
+            self.Delay_trigger_level.setText(str(self.current_settings['Delay']['TriggerLevel']))
+            self.Delay_Int_trigger_mode.setCurrentText(str(self.current_settings['Delay']['TriggerMode']))
+            self.Delay_trigger_rate.setText(str(self.current_settings['Delay']['TriggerRate']))
+            for connector in self.primary_connectors:
+                self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+                #self.Difference[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Difference']))
+                self.From[connector].setCurrentText(str(self.current_settings['Delay']['Connectors'][connector]['From']))
 
             self.resolution_changed = True # Mark that settings are changed
             for i in self.channels:
@@ -825,6 +873,11 @@ class Pico5000Interface(QMainWindow):
         self.itp.close_device()
         super(Pico5000Interface, self).closeEvent(QCloseEvent)
         QApplication.closeAllWindows()
+        try:
+            self.ditp.set_display('Connection Closed')
+            self.ditp.close_connection()
+        except:
+            pass
 
     def change_fontsize(self): # Apply Fontsize
         self.current_settings['User']['Fontsize'] = self.Fontsize.text()
@@ -866,7 +919,10 @@ class Pico5000Interface(QMainWindow):
             self.scan_plot_window.getAxis("bottom").setStyle(tickTextOffset=int(self.Fontsize.text()))
             fontStyle = {'color': '#999', 'font-size': '{}pt'.format(self.current_settings['User']['Fontsize'])}
             self.scan_plot_window.setLabel('left', 'Calculator', units='V', **fontStyle)
-            self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], **fontStyle)
+            if 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+                self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units = 's', **fontStyle)
+            else:
+                self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], **fontStyle)
         except AttributeError:
             pass
 
@@ -1051,6 +1107,9 @@ class Pico5000Interface(QMainWindow):
             self.measurement_pause = True
             self.continue_after_setting = True
 
+    def change_channel_name(self, channel):
+        self.current_settings['Channels'][channel]['Name'] = str(self.ChannelName[channel].text())
+
     def change_average_nom(self):
         self.current_settings['Average']['Blocks'] = int(self.NumberOfMeasurements.text())
 
@@ -1102,20 +1161,32 @@ class Pico5000Interface(QMainWindow):
     #    self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
 
     def change_analyse_scanvalue(self):
-        self.current_settings['Analyse']['ScanValue'] = float(self.ScanValue.text())
+        if self.current_settings['Delay']['Active'] == 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+            self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.ScanValue.text())).m_as('s'))
+        else:
+            self.current_settings['Analyse']['ScanValue'] = float(self.ScanValue.text())
         if self.current_settings['Analyse']['ShowPlot'] == 2:
             self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue'])+float(self.current_settings['Analyse']['ScanValueDifference'])*(int(self.current_settings['Analyse']['Scans'])-1))
 
     def change_analyse_scanvaluedifference(self):
-        self.current_settings['Analyse']['ScanValueDifference'] = float(self.ScanValueDifference.text())
+        if self.current_settings['Delay']['Active'] == 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+            self.current_settings['Analyse']['ScanValueDifference'] = float(ur(str(self.ScanValueDifference.text())).m_as('s'))
+        else:
+            self.current_settings['Analyse']['ScanValueDifference'] = float(self.ScanValueDifference.text())
         if self.current_settings['Analyse']['ShowPlot'] == 2:
             self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue'])+float(self.current_settings['Analyse']['ScanValueDifference'])*(int(self.current_settings['Analyse']['Scans'])-1))
 
     def change_analyse_scanlabel(self):
         self.current_settings['Analyse']['ScanLabel'] = str(self.ScanLabel.text())
-        if self.current_settings['Analyse']['ShowPlot'] == 2:
-            self.analyse_plot_widget.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'])
-
+        if self.current_settings['Delay']['Active'] == 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+            self.ScanValue.setText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])
+            self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])).m_as('s'))
+            self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']) + ' s')
+            if self.current_settings['Analyse']['ShowPlot'] == 2:
+                self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units = 's')
+        else:
+            if self.current_settings['Analyse']['ShowPlot'] == 2:
+                self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units='')
     def change_analyse_calculate(self):
         self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
 
@@ -1286,3 +1357,108 @@ class Pico5000Interface(QMainWindow):
             self.CalculatorSelect.removeItem(self.CalculatorSelect.findText('Calculator {}'.format(self.current_calculator)))
             self.CalculatorSelect.setCurrentText('Calculator 1')
             self.current_calculator = 1
+
+    # Delay generator
+
+    def delay_setup_connection(self):
+        self.current_settings['Delay']['Active'] = int(self.Delay_connection_active.checkState())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp = SRSDG535Interpreter()
+            self.ditp.start_control()
+            self.ditp.setup_connection(self.current_settings['Delay']['Port'])
+            status = self.ditp.clear()
+            if status:
+                self.Delay_connection_active.setCheckState(0)
+                self.current_settings['Delay']['Active'] = 0
+                self.Messages.append('Device not responding, check port and connection')
+            else:
+                self.ditp.set_display('Remote Control Mode')
+                for connector in self.connectors:
+                    if connector not in 'Ext':
+                        self.ditp.set_output_mode(connector, str(self.current_settings['Delay']['Type']))
+                        self.ditp.set_termination_impedance(connector, str(self.current_settings['Delay']['Load']))
+                self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
+                if self.current_settings['Delay']['TriggerMode'] in 'Internal':
+                    self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
+                else:
+                    self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
+                    self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
+                    self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
+                for connector in self.primary_connectors:
+                    self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+        else:
+            self.ditp.set_display('Connection Closed')
+            self.ditp.close_connection()
+
+    def delay_change_port(self):
+        self.current_settings['Delay']['Port'] = str(self.Delay_connection_port.text())
+
+    def delay_change_signal(self):
+        self.current_settings['Delay']['Type'] = str(self.Delay_signal_type.currentText())
+        if self.current_settings['Delay']['Active'] == 2:
+            for connector in self.connectors:
+                if connector not in 'Ext':
+                    self.ditp.set_output_mode(connector, str(self.current_settings['Delay']['Type']))
+
+    def delay_change_load(self):
+        self.current_settings['Delay']['Load'] = str(self.Delay_signal_load.currentText())
+        if self.current_settings['Delay']['Active'] == 2:
+            for connector in self.connectors:
+                if connector not in 'Ext':
+                    self.ditp.set_termination_impedance(connector, str(self.current_settings['Delay']['Load']))
+
+    def delay_change_trigger_mode(self, current):
+        if current in 'Internal':
+            self.current_settings['Delay']['TriggerMode'] = 'External'
+            self.Delay_Ext_trigger_mode.setCurrentText('External')
+            self.TriggerExt.show()
+            self.TriggerInt.hide()
+            if self.current_settings['Delay']['Active'] == 2:
+                self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
+                self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
+                self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
+                self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
+        else:
+            self.current_settings['Delay']['TriggerMode'] = 'Internal'
+            self.Delay_Int_trigger_mode.setCurrentText('Internal')
+            self.TriggerInt.show()
+            self.TriggerExt.hide()
+            if self.current_settings['Delay']['Active'] == 2:
+                self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
+                self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
+
+    def delay_change_trigger_load(self):
+        self.current_settings['Delay']['TriggerLoad'] = str(self.Delay_trigger_load.currentText())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
+
+    def delay_change_trigger_edge(self):
+        self.current_settings['Delay']['TriggerEdge'] = str(self.Delay_trigger_edge.currentText())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
+
+    def delay_change_trigger_level(self):
+        self.current_settings['Delay']['TriggerLevel'] = str(self.Delay_trigger_level.text())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
+
+    def delay_change_trigger_rate(self):
+        self.current_settings['Delay']['TriggerRate'] = str(self.Delay_trigger_rate.text())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
+
+    def delay_change_delay(self, connector):
+        self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+
+    '''
+    def delay_change_difference(self, connector):
+        pass
+    '''
+
+    def delay_change_from(self, connector):
+        self.current_settings['Delay']['Connectors'][connector]['From'] = str(self.From[connector].currentText())
+        if self.current_settings['Delay']['Active'] == 2:
+            self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+
