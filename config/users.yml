@@ -1,132 +1,115 @@
-Anno:
-  DemoScan:
+DefaultUser:
+  DefaultProject:
     Analyse:
-      Active: 2
-      Calculate: Window II - Window I
+      Active: 0
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
       Pause: 1 s
       ScanLabel: Scannumber
       ScanValue: 1
       ScanValueDifference: 1
-      Scans: 1
-      ShowPlot: 2
+      Scans: 10
+      ShowPlot: 0
       Windows:
-        I:
-          Calculate: Average
+        1:
           Channel: A
-          Length: 221
-          Show: 2
-          Start: 131
-        II:
-          Calculate: Average
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 500
+          Show: 0
+          Start: 20
+        2:
           Channel: A
-          Length: 38
-          Show: 2
-          Start: 576
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 500
+          Show: 0
+          Start: 20
     Average:
-      Blocks: 1
+      Blocks: 10
       Pause: 0.1 s
       Store: 0
     Channels:
+<<<<<<< HEAD
+      A: {Active: 2, CouplingType: DC, Range: 1 V}
+      B: {Active: 2, CouplingType: DC, Range: 1 V}
+      C: {Active: 0, CouplingType: DC, Range: 1 V}
+      D: {Active: 0, CouplingType: DC, Range: 1 V}
+    Metadata: {Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml}
+    Plot: {Show: 2}
+    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: BaseDirectory\PicoscopeData}
+    Time: {Blocklength: 959904 nanosecond, Resolution: 12BIT, Samples: 10000, Timebase: 9,
+      Timestep: 96 ns, maxADC: 32767}
+    Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Level: 200 mV, Position: 5000,
+      Show: 0, Type: Rising}
+    User: {Fontsize: '11'}
+PreviousUser: {Name: AutoSaveDefaultUser, Project: DefaultProject}
+=======
       A:
         Active: 2
         CouplingType: DC
+        Name: A
         Range: 1 V
       B:
-        Active: 0
+        Active: 2
         CouplingType: DC
-        Range: 10 mV
+        Name: B
+        Range: 1 V
       C:
         Active: 0
         CouplingType: DC
+        Name: C
         Range: 1 V
       D:
         Active: 0
         CouplingType: DC
+        Name: D
         Range: 1 V
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: Internal
+      TriggerRate: 10 Hz
+      Type: TTL
     Metadata:
-      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+      Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml
     Plot:
       Show: 2
     Save:
       Autosave: Never
       Channels: All Activated
       Filename: DefaultData
-      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
-      Metadata: 2
-      Overwriteprevention: Time
-    Time:
-      Blocklength: 1998 nanosecond
-      Resolution: 12BIT
-      Samples: 1000
-      Timebase: 1
-      Timestep: 2 ns
-      maxADC: 32767
-    Trigger:
-      Active: 2
-      Auto: 0 ms
-      Channel: External
-      Delay: 0
-      Level: 1 V
-      Position: 500
-      Show: 0
-      Type: Falling
-    User:
-      Fontsize: '11'
-  VUTest:
-    Analyse:
-      Active: 0
-      Calculate: Window I - Window II
-      Pause: 1 s
-      ScanLabel: Scannumber
-      ScanValue: 1
-      ScanValueDifference: 1
-      Scans: 1
-      ShowPlot: 0
-      Windows:
-        I:
-          Calculate: Average
-          Channel: A
-          Length: 500
-          Show: 0
-          Start: 20
-        II:
-          Calculate: Average
-          Channel: A
-          Length: 500
-          Show: 0
-          Start: 5000
-    Average:
-      Blocks: 1
-      Pause: 0.1 s
-      Store: 0
-    Channels:
-      A:
-        Active: 2
-        CouplingType: DC
-        Range: 1 V
-      B:
-        Active: 2
-        CouplingType: DC
-        Range: 1 V
-      C:
-        Active: 0
-        CouplingType: DC
-        Range: 1 V
-      D:
-        Active: 0
-        CouplingType: DC
-        Range: 1 V
-    Metadata:
-      Importfile: C:\Users\annot\Documents\eEDM\PicoscopeData\DefaultData_start_time_metadata.yml
-    Plot:
-      Show: 2
-    Save:
-      Autosave: Never
-      Channels: All Activated
-      Filename: VUTestData
-      Folder: C:\Users\annot\Documents\eEDM\PicoscopeTestVU
-      Metadata: 2
-      Overwriteprevention: Time
+      Folder: BaseDirectory\PicoscopeData
     Time:
       Blocklength: 959904 nanosecond
       Resolution: 12BIT
@@ -136,7 +119,7 @@ Anno:
       maxADC: 32767
     Trigger:
       Active: 2
-      Auto: 1 ms
+      Auto: 100 ms
       Channel: A
       Delay: 0
       Level: 200 mV
@@ -145,77 +128,6 @@ Anno:
       Type: Rising
     User:
       Fontsize: '11'
-DefaultUser:
-  DefaultProject:
-    Analyse:
-      Active: 0
-      Calculate: Window I - Window II
-      Pause: 1 s
-      ScanLabel: Scannumber
-      ScanValue: 1
-      ScanValueDifference: 1
-      Scans: 1
-      ShowPlot: 0
-      Windows:
-        I:
-          Calculate: Average
-          Channel: A
-          Length: 500
-          Show: 0
-          Start: 20
-        II:
-          Calculate: Average
-          Channel: A
-          Length: 500
-          Show: 0
-          Start: 5000
-    Average:
-      Blocks: 1
-      Pause: 0.1 s
-      Store: 0
-    Channels:
-      A:
-        Active: 2
-        CouplingType: DC
-        Range: 1 V
-      B:
-        Active: 2
-        CouplingType: DC
-        Range: 1 V
-      C:
-        Active: 0
-        CouplingType: DC
-        Range: 1 V
-      D:
-        Active: 0
-        CouplingType: DC
-        Range: 1 V
-    Metadata:
-      Importfile: File from datafolder in basedirectory
-    Plot:
-      Show: 2
-    Save:
-      Autosave: Never
-      Channels: All Activated
-      Filename: DefaultData
-      Folder: Datafolder in basedirectory
-      Metadata: 2
-      Overwriteprevention: Time
-    Time:
-      Blocklength: 1 ms
-      Resolution: 12BIT
-      Samples: 10000
-      Timebase: Computed in the program
-      Timestep: Computed in the program
-      maxADC: Computed in the program
-    Trigger:
-      Active: 2
-      Auto: 1 ms
-      Channel: A
-      Delay: 0
-      Level: 200 mV
-      Position: 5000
-      Show: 0
-      Type: Rising
-    User:
-      Fontsize: 11
+PreviousUser:
+  Name: DefaultUser
+  Project: DefaultProject

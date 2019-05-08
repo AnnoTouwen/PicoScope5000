@@ -7,8 +7,9 @@ from time import sleep
 from controller.PicoControl import Pico5000Controller
 from picosdk.ps5000a import ps5000a as ps
 from picosdk.functions import adc2mV, assert_pico_ok, mV2adc
-import PicoReadBinary as prb
-import struct
+import operator
+#import PicoReadBinary as prb
+#import struct
 
 ur = UnitRegistry()
 PS5000A_CHANNEL_FLAGS = {'A': 1, 'B': 2, 'C': 4, 'D': 8}
@@ -16,6 +17,8 @@ class Pico5000Interpreter:
     def __init__(self):
         self.buffer = {}
         self.scandata = {}
+        self.windowAverage = {}
+        self.operators = {'+' : operator.add, '-' : operator.sub, '*' : operator.mul, '/' : operator.truediv}
 
     '''
     def load_settings(self, filename):
@@ -228,23 +231,26 @@ class Pico5000Interpreter:
             for i in range(Samples):
                 self.buffer[channel]['Average'][i] = round(self.buffer[channel]['Sum'][i]/numberofblocks)
 
-    def read_windows(self, start_window, stop_window, channel):
-        self.windowAverage = [0, 0]
-        for window in [0, 1]:
-            samples_in_window = stop_window[window] - start_window[window] + 1
-            for i in np.linspace(start_window[window]-1, stop_window[window]-1, samples_in_window):
-                self.windowAverage[window] += self.buffer[channel[window]]['Average'][int(i)]
-            self.windowAverage[window] = self.windowAverage[window]/samples_in_window
+    def read_windows(self, window, start_window, stop_window, channel):
+        self.windowAverage[window] = 0
+        samples_in_window = stop_window - start_window + 1
+        for i in np.linspace(start_window, stop_window, samples_in_window):
+            self.windowAverage[window] += self.buffer[channel]['Average'][int(i)]
+        self.windowAverage[window] = self.windowAverage[window]/samples_in_window
 
-    def reset_scandata(self):
-        self.scandata = [[], []]
+    def reset_scandata(self, calculators):
+        self.scandata = {}
+        self.scandata['Scanvalue'] = []
+        for calculator in calculators:
+            self.scandata[calculator] = []
 
-    def compute_scanpoint(self, scanvalue, mode, range, maxADC):
-        self.scandata[0].append(scanvalue)
-        if mode in 'Window I - Window II':
-            self.scandata[1].append(self.windowAverage[0]/maxADC*ur(range[0]).m_as('V')-self.windowAverage[1]/maxADC*ur(range[1]).m_as('V'))
-        elif mode in 'Window II - Window I':
-            self.scandata[1].append(self.windowAverage[1]/maxADC*ur(range[1]).m_as('V')-self.windowAverage[0]/maxADC*ur(range[0]).m_as('V'))
+    def compute_scanpoint_scanvalue(self, scanvalue):
+        self.scandata['Scanvalue'].append(scanvalue)
+
+    def compute_scanpoint(self, calculator, first_window, operation, second_window, range, maxADC):
+        if calculator not in self.scandata:
+            self.scandata[calculator] = [np.nan] * (len(self.scandata['Scanvalue'])-1)
+        self.scandata[calculator].append(self.operators[operation](self.windowAverage[first_window]/maxADC*ur(range[0]).m_as('V'), self.windowAverage[second_window]/maxADC*ur(range[1]).m_as('V')))
 
     def interpret_data(self, Samples, timestep, channel, Range, Average = True):
         # Create time data

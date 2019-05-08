@@ -1,5 +1,5 @@
 import ctypes
-import numpy as np
+#import numpy as np
 from picosdk.ps5000a import ps5000a as ps
 from picosdk.functions import adc2mV, assert_pico_ok, mV2adc
 
@@ -18,7 +18,7 @@ class Pico5000Controller:
         try:
             assert_pico_ok(self.status["openunit"]) # Check if the openstatus is ok (=0)
         except: # PicoNotOkError:
-            self.change_powersupply()
+            self.change_powersupply(self.status["openunit"])
         #assert_pico_ok(self.status["maximumValue"])
         # find maximum ADC count value
         # handle = self.chandle
@@ -26,13 +26,13 @@ class Pico5000Controller:
         self.maxADC = ctypes.c_int16()
         #self.status["maximumValue"] = ps.ps5000aMaximumValue(self.chandle, ctypes.byref(self.maxADC))
 
-    def change_powersupply(self):
-        if self.status["openunit"] == 286:  # USB3_0_DEVICE_NON_USB3_0_PORT (Does this work?)
-            self.status["changePowerSource"] = ps.ps5000aChangePowerSource(self.chandle, self.status["openunit"])  # Change powersource to USB2
-        elif self.status["openunit"] == 282:  # POWER_SUPPLY_NOT_CONNECTED
-            self.status["changePowerSource"] = ps.ps5000aChangePowerSource(self.chandle, self.status["openunit"])  # Change powersource to USB3
+    def change_powersupply(self, state):
+        if state == 286:  # USB3_0_DEVICE_NON_USB3_0_PORT (Does this work?)
+            self.status["changePowerSource"] = ps.ps5000aChangePowerSource(self.chandle, state)  # Change powersource to USB2
+        elif state == 282:  # POWER_SUPPLY_NOT_CONNECTED
+            self.status["changePowerSource"] = ps.ps5000aChangePowerSource(self.chandle, state)  # Change powersource to USB3
         else:
-            self.status["changePowerSource"] = assert_pico_ok(self.status["openunit"])
+            self.status["changePowerSource"] = state
         assert_pico_ok(self.status["changePowerSource"])  # Check whether the powerchange was successful
 
     def set_resolution(self, resolution): # Change resolution
