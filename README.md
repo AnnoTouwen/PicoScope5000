@@ -25,6 +25,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 	>>> pip install numpy
 	>>> pip install Pyqtgraph
 	>>> pip install Matplotlib
+	>>> pip install PySerial
 ```
 
 ## How to get the latest update on Windows
