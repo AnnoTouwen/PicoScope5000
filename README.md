@@ -35,6 +35,12 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 	>>> git pull
 ```
 
+## How to implement the Stanford Research Systems Delay Generator DG535
+
+1. Connect the Delay Generator via the Prologix GPIB-USB controller and USB cable.
+2. Run the setup.exe from PicoScope5000/drivers/GPIB-USB connector to install the drivers for the converter.
+3. Open the Device Manager (start + search: Device Manager) to check the connection port (COM), COM3 is default, but if this port is already in use another is selected. The port can be changed manually. This port has to be selected in the PicoScope interface.
+
 ## How to use the PicoScope software
 
 Run start.py by double clicking if Python 3 is set to be the standard for executing .py files.
@@ -68,7 +74,7 @@ The trigger is also set in this menu. If you want to measure without a trigger d
 
 ### Channels
 
-Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode.
+Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode. One can also rename channels to make the more destinguishable and easier to retrace afterwards.
 
 ### Scope
 
@@ -88,6 +94,20 @@ A calculator can be selected or added from the dropdownmenu to change its settin
 
 The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
 
+## Delay
+
+If a Stanford Research Systems Delay Generator DG535 is connected correctly it can also be controlled from the PicoScope software. To establish the connection set the communication port for the device and selecting Active. Note that only one communication channel can be active at the same time, close any other connections via this port before trying to connect.
+
+The output signals from the BNC connectors of the delay generator can be set to TTL, NIM or ECL logic. The output impedance can be set to 50 Ohm or HighZ.
+
+The Delay Generator can be triggered internally or externally. For the internal trigger insert a trigger frequency. For the external trigger set the input impedance for the external trigger BNC connector to 50 Ohm or HighZ. Also select the edge and level of the signal at which the trigger has to occur.
+
+The delay generator can generate four delays, labelled A to D. For every delay the delay time and reference point have to be selected, either another delay or the trigger time T0. Note that the delay generator sets the outputsignals to high after the delay time and only sets the outputsignals back to low after the full cycle has completed, skipping any intermediate triggers. Signals of specific lengths can be set using the A^B, A_B, C^D and C_D connectors.
+
+## Using delay for scans
+
+A scan over different delays can be performed by setting the Scanpoint label in the Scan tab to Delay A up to Delay D. The initial Scanpoint value is set to the set delaytime, the Scanpoint value difference is converted to seconds, but can be changed manually. If now a scan is performed the delaytime for the selected delay is changed by the Scanpoind value difference time, as can be seen by the changing delaytime value in the Delay tab.
+
 ## Running measurements
 
 By pressing start a measurement is started with the settings described above. After the set number of measurements and scans is performed the measurement automatically stops. By pressing continuously a measurement is started that does not stop automatically. Pause breaks the measurement, either finite or continuous, untill it is continued by pressing the same button. Stop ends the measurement, it can only be restarted by starting a new measurement. 
@@ -96,7 +116,7 @@ By pressing start a measurement is started with the settings described above. Af
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
 ```
-	>>> import PicoReadBinary as prb'
+	>>> import PicoReadBinary as prb
 ```
 The script reads datafiles based on their metadatfile given as input. 
 
@@ -114,7 +134,7 @@ Asks (2 + 1) for a string with the metadatafilename, a sting with the channel, a
 
 ### prb.scan_V()
 
-Asks (1) for a string with the metadatafilename and returns (2) a dictionary with 'Window average difference' and the scanlabel both lists with the voltage differences and scanvalues respectively, a string with the scanlabel.
+Asks (1) for a string with the metadatafilename and returns (1) a dictionary with Scanvalue and the calculators, both lists with scanvalues and the voltage differences respectively, a string with the scanlabel.
 
 ## Contact
 
