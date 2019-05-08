@@ -39,7 +39,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 ## How to implement the Stanford Research Systems Delay Generator DG535
 
 1. Connect the Delay Generator via the Prologix GPIB-USB controller and USB cable.
-2. Run the setup.exe from PicoScope5000/drivers/GPIB-USB connector to install the drivers for the converter.
+2. Run the CDM21228_Setup.exe from PicoScope5000/drivers/GPIB-USB connector to install the drivers for the converter.
 3. Open the Device Manager (start + search: Device Manager) to check the connection port (COM), COM3 is default, but if this port is already in use another is selected. The port can be changed manually. This port has to be selected in the PicoScope interface.
 
 ## How to use the PicoScope software
