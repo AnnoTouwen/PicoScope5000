@@ -47,7 +47,7 @@ class Pico5000Interface(QMainWindow):
         self.confirm_overwrite_personal = False
         self.channel_colour = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y', 'External': 'k'}
         self.window_colour = {'I': 'c', 'II': 'm'}
-        self.channels = ['A', 'B', 'C', 'D']
+        self.channels = ['A', 'B'] #, 'C', 'D']
         self.windows = ['I', 'II']
         self.load_personal_settings('DefaultUser', 'DefaultProject') # Set settings to Default
         self.device_channels = 4

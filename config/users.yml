@@ -1,4 +1,77 @@
 Anno:
+  DemoScan:
+    Analyse:
+      Active: 2
+      Calculate: Window II - Window I
+      Pause: 1 s
+      ScanLabel: Scannumber
+      ScanValue: 1
+      ScanValueDifference: 1
+      Scans: 1
+      ShowPlot: 2
+      Windows:
+        I:
+          Calculate: Average
+          Channel: A
+          Length: 221
+          Show: 2
+          Start: 131
+        II:
+          Calculate: Average
+          Channel: A
+          Length: 38
+          Show: 2
+          Start: 576
+    Average:
+      Blocks: 1
+      Pause: 0.1 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Range: 1 V
+      B:
+        Active: 0
+        CouplingType: DC
+        Range: 10 mV
+      C:
+        Active: 0
+        CouplingType: DC
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Range: 1 V
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+      Metadata: 2
+      Overwriteprevention: Time
+    Time:
+      Blocklength: 1998 nanosecond
+      Resolution: 12BIT
+      Samples: 1000
+      Timebase: 1
+      Timestep: 2 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 0 ms
+      Channel: External
+      Delay: 0
+      Level: 1 V
+      Position: 500
+      Show: 0
+      Type: Falling
+    User:
+      Fontsize: '11'
   VUTest:
     Analyse:
       Active: 0
@@ -10,23 +83,68 @@ Anno:
       Scans: 1
       ShowPlot: 0
       Windows:
-        I: {Calculate: Average, Channel: A, Length: 500, Show: 0, Start: 20}
-        II: {Calculate: Average, Channel: A, Length: 500, Show: 0, Start: 5000}
-    Average: {Blocks: 1, Pause: 0.1 s, Store: 0}
+        I:
+          Calculate: Average
+          Channel: A
+          Length: 500
+          Show: 0
+          Start: 20
+        II:
+          Calculate: Average
+          Channel: A
+          Length: 500
+          Show: 0
+          Start: 5000
+    Average:
+      Blocks: 1
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Range: 1 V}
-      B: {Active: 2, CouplingType: DC, Range: 1 V}
-      C: {Active: 0, CouplingType: DC, Range: 1 V}
-      D: {Active: 0, CouplingType: DC, Range: 1 V}
-    Metadata: {Importfile: 'C:\Users\annot\Documents\eEDM\PicoscopeData\DefaultData_start_time_metadata.yml'}
-    Plot: {Show: 2}
-    Save: {Autosave: Never, Channels: All Activated, Filename: VUTestData, Folder: 'C:\Users\annot\Documents\eEDM\PicoscopeTestVU',
-      Metadata: 2, Overwriteprevention: Time}
-    Time: {Blocklength: 959904 nanosecond, Resolution: 12BIT, Samples: 10000, Timebase: 9,
-      Timestep: 96 ns, maxADC: 32767}
-    Trigger: {Active: 2, Auto: 1 ms, Channel: A, Delay: 0, Level: 200 mV, Position: 5000,
-      Show: 0, Type: Rising}
-    User: {Fontsize: '11'}
+      A:
+        Active: 2
+        CouplingType: DC
+        Range: 1 V
+      B:
+        Active: 2
+        CouplingType: DC
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Range: 1 V
+    Metadata:
+      Importfile: C:\Users\annot\Documents\eEDM\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: VUTestData
+      Folder: C:\Users\annot\Documents\eEDM\PicoscopeTestVU
+      Metadata: 2
+      Overwriteprevention: Time
+    Time:
+      Blocklength: 959904 nanosecond
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 1 ms
+      Channel: A
+      Delay: 0
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: '11'
 DefaultUser:
   DefaultProject:
     Analyse:
@@ -39,21 +157,65 @@ DefaultUser:
       Scans: 1
       ShowPlot: 0
       Windows:
-        I: {Calculate: Average, Channel: A, Length: 500, Show: 0, Start: 20}
-        II: {Calculate: Average, Channel: A, Length: 500, Show: 0, Start: 5000}
-    Average: {Blocks: 1, Pause: 0.1 s, Store: 0}
+        I:
+          Calculate: Average
+          Channel: A
+          Length: 500
+          Show: 0
+          Start: 20
+        II:
+          Calculate: Average
+          Channel: A
+          Length: 500
+          Show: 0
+          Start: 5000
+    Average:
+      Blocks: 1
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Range: 1 V}
-      B: {Active: 2, CouplingType: DC, Range: 1 V}
-      C: {Active: 0, CouplingType: DC, Range: 1 V}
-      D: {Active: 0, CouplingType: DC, Range: 1 V}
-    Metadata: {Importfile: File from datafolder in basedirectory}
-    Plot: {Show: 2}
-    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: Datafolder
-        in basedirectory, Metadata: 2, Overwriteprevention: Time}
-    Time: {Blocklength: 1 ms, Resolution: 12BIT, Samples: 10000, Timebase: Computed
-        in the program, Timestep: Computed in the program, maxADC: Computed in the
-        program}
-    Trigger: {Active: 2, Auto: 1 ms, Channel: A, Delay: 0, Level: 200 mV, Position: 5000,
-      Show: 0, Type: Rising}
-    User: {Fontsize: 11}
+      A:
+        Active: 2
+        CouplingType: DC
+        Range: 1 V
+      B:
+        Active: 2
+        CouplingType: DC
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Range: 1 V
+    Metadata:
+      Importfile: File from datafolder in basedirectory
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: Datafolder in basedirectory
+      Metadata: 2
+      Overwriteprevention: Time
+    Time:
+      Blocklength: 1 ms
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: Computed in the program
+      Timestep: Computed in the program
+      maxADC: Computed in the program
+    Trigger:
+      Active: 2
+      Auto: 1 ms
+      Channel: A
+      Delay: 0
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 11
