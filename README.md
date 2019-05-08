@@ -96,7 +96,7 @@ By pressing start a measurement is started with the settings described above. Af
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
 ```
-	>>> import PicoReadBinary as prb
+	>>> import PicoReadBinary as prb'
 ```
 The script reads datafiles based on their metadatfile given as input. 
 
@@ -114,7 +114,7 @@ Asks (2 + 1) for a string with the metadatafilename, a sting with the channel, a
 
 ### prb.scan_V()
 
-Asks (1) for a string with the metadatafilename and returns (1) a dictionary with Scanvalue and the calculators, both lists with scanvalues and the voltage differences respectively, a string with the scanlabel.
+Asks (1) for a string with the metadatafilename and returns (2) a dictionary with 'Window average difference' and the scanlabel both lists with the voltage differences and scanvalues respectively, a string with the scanlabel.
 
 ## Contact
 

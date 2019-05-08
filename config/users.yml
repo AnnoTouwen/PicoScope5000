@@ -1,3 +1,87 @@
+AutoSaveDefaultUser:
+  DefaultProject:
+    Analyse:
+      Active: 2
+      Calculators:
+        1:
+          Colour: [170, 0, 0]
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+        2:
+          Colour: [170, 85, 255]
+          FirstWindow: 3
+          Name: Calculator 2
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+        3:
+          Colour: [0, 85, 0]
+          FirstWindow: 4
+          Name: Calculator 3
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+        4:
+          Colour: [128, 10, 213]
+          FirstWindow: 5
+          Name: Calculator 4
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+      Pause: 0.1 s
+      ScanLabel: Scannumber
+      ScanValue: 1
+      ScanValueDifference: 1
+      Scans: 10
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: A
+          Colour: [255, 170, 0]
+          Length: 685
+          Show: 2
+          Start: 3513
+        2:
+          Channel: A
+          Colour: [0, 170, 0]
+          Length: 142
+          Show: 2
+          Start: 1635
+        3:
+          Channel: A
+          Colour: [235, 35, 195]
+          Length: 790
+          Show: 2
+          Start: 5638
+        4:
+          Channel: A
+          Colour: [0, 255, 255]
+          Length: 595
+          Show: 2
+          Start: 7463
+        5:
+          Channel: A
+          Colour: [170, 170, 255]
+          Length: 345
+          Show: 2
+          Start: 4364
+    Average: {Blocks: 10, Pause: 0.01 s, Store: 0}
+    Channels:
+      A: {Active: 2, CouplingType: DC, Range: 2 V}
+      B: {Active: 0, CouplingType: DC, Range: 1 V}
+      C: {Active: 0, CouplingType: DC, Range: 1 V}
+      D: {Active: 0, CouplingType: DC, Range: 1 V}
+    Metadata: {Importfile: 'C:\Users\annot\Documents\eEDM\GitHubTest\PicoscopeData\DefaultData_start_time_metadata.yml'}
+    Plot: {Show: 2}
+    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: 'C:\Users\annot\Documents\eEDM\GitHubTest\PicoscopeData'}
+    Time: {Blocklength: 30076992 nanosecond, Resolution: 15BIT, Samples: 10000, Timebase: 378,
+      Timestep: 3008 ns, maxADC: 32767}
+    Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Level: 1 V, Position: 5000,
+      Show: 0, Type: Rising}
+    User: {Fontsize: '12'}
 DefaultUser:
   DefaultProject:
     Analyse:
@@ -43,4 +127,4 @@ DefaultUser:
     Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Level: 200 mV, Position: 5000,
       Show: 0, Type: Rising}
     User: {Fontsize: '11'}
-PreviousUser: {Name: DefaultUser, Project: DefaultProject}
+PreviousUser: {Name: AutoSaveDefaultUser, Project: DefaultProject}
