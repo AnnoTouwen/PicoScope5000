@@ -25,6 +25,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 	>>> pip install numpy
 	>>> pip install Pyqtgraph
 	>>> pip install Matplotlib
+	>>> pip install PySerial
 ```
 
 ## How to get the latest update on Windows
@@ -34,6 +35,12 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 ```
 	>>> git pull
 ```
+
+## How to implement the Stanford Research Systems Delay Generator DG535
+
+1. Connect the Delay Generator via the Prologix GPIB-USB controller and USB cable.
+2. Run the CDM21228_Setup.exe from PicoScope5000/drivers/GPIB-USB connector to install the drivers for the converter.
+3. Open the Device Manager (start + search: Device Manager) to check the connection port (COM), COM3 is default, but if this port is already in use another is selected. The port can be changed manually. This port has to be selected in the PicoScope interface.
 
 ## How to use the PicoScope software
 
@@ -68,7 +75,7 @@ The trigger is also set in this menu. If you want to measure without a trigger d
 
 ### Channels
 
-Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode.
+Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode. One can also rename channels to make the more destinguishable and easier to retrace afterwards.
 
 ### Scope
 
@@ -87,6 +94,20 @@ A window can be selected or added from the dropdownmenu to change its settings. 
 A calculator can be selected or added from the dropdownmenu to change its settings. The colour of the calculator in the scan plotwindow can be set. It can be selected wether it is shown in the scan plotwindow. Two windows and the operation between these averages can be selected from the dropdownmenus. The name of the calculator can be changed for better labelling in plots. Extra calculators can be deleted, but not Calculator 1.
 
 The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
+
+## Delay
+
+If a Stanford Research Systems Delay Generator DG535 is connected correctly it can also be controlled from the PicoScope software. To establish the connection set the communication port for the device and selecting Active. Note that only one communication channel can be active at the same time, close any other connections via this port before trying to connect.
+
+The output signals from the BNC connectors of the delay generator can be set to TTL, NIM or ECL logic. The output impedance can be set to 50 Ohm or HighZ.
+
+The Delay Generator can be triggered internally or externally. For the internal trigger insert a trigger frequency. For the external trigger set the input impedance for the external trigger BNC connector to 50 Ohm or HighZ. Also select the edge and level of the signal at which the trigger has to occur.
+
+The delay generator can generate four delays, labelled A to D. For every delay the delay time and reference point have to be selected, either another delay or the trigger time T0. Note that the delay generator sets the outputsignals to high after the delay time and only sets the outputsignals back to low after the full cycle has completed, skipping any intermediate triggers. Signals of specific lengths can be set using the A^B, A_B, C^D and C_D connectors.
+
+## Using delay for scans
+
+A scan over different delays can be performed by setting the Scanpoint label in the Scan tab to Delay A up to Delay D. The initial Scanpoint value is set to the set delaytime, the Scanpoint value difference is converted to seconds, but can be changed manually. If now a scan is performed the delaytime for the selected delay is changed by the Scanpoind value difference time, as can be seen by the changing delaytime value in the Delay tab.
 
 ## Running measurements
 

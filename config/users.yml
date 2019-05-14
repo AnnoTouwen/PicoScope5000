@@ -382,5 +382,5 @@ DefaultUser:
     User:
       Fontsize: '11'
 PreviousUser:
-  Name: Anno
-  Project: HeartBeat
+  Name: DefaultUser
+  Project: DefaultProject
