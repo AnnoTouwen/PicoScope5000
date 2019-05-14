@@ -140,28 +140,18 @@ AutoSaveDefaultUser:
         1:
           Colour:
           - 0
-          - 170
-          - 255
-          FirstWindow: 1
+          - 0
+          - 0
+          FirstWindow: 2
           Name: Calculator 1
           Operation: '-'
-          SecondWindow: 3
+          SecondWindow: 1
           Show: 2
-        2:
-          Colour:
-          - 20
-          - 97
-          - 74
-          FirstWindow: 2
-          Name: Calculator 2
-          Operation: '-'
-          SecondWindow: 3
-          Show: 2
-      Pause: 0.1 s
+      Pause: 1 s
       ScanLabel: Delay A
-      ScanValue: 0.0
-      ScanValueDifference: 0.001
-      Scans: 100
+      ScanValue: 2.0
+      ScanValueDifference: 1.0
+      Scans: 10
       ShowPlot: 2
       Windows:
         1:
@@ -170,29 +160,20 @@ AutoSaveDefaultUser:
           - 255
           - 170
           - 0
-          Length: 1093
+          Length: 1097
           Show: 2
-          Start: 2845
+          Start: 2107
         2:
           Channel: A
           Colour:
           - 0
           - 170
           - 0
-          Length: 466
+          Length: 918
           Show: 2
-          Start: 4952
-        3:
-          Channel: A
-          Colour:
-          - 73
-          - 65
-          - 62
-          Length: 9999
-          Show: 2
-          Start: 0
+          Start: 7409
     Average:
-      Blocks: 1
+      Blocks: 10
       Pause: 0.1 s
       Store: 0
     Channels:
@@ -200,12 +181,12 @@ AutoSaveDefaultUser:
         Active: 2
         CouplingType: DC
         Name: A
-        Range: 5 V
+        Range: 50 mV
       B:
-        Active: 0
+        Active: 2
         CouplingType: DC
         Name: B
-        Range: 5 V
+        Range: 50 mV
       C:
         Active: 0
         CouplingType: DC
@@ -217,27 +198,27 @@ AutoSaveDefaultUser:
         Name: D
         Range: 1 V
     Delay:
-      Active: 2
+      Active: 1
       Connectors:
         A:
-          Delay: 0.099 s
+          Delay: 1 ms
           From: T0
         B:
-          Delay: 2 ms
-          From: A
+          Delay: 0.011000000000000001 s
+          From: T0
         C:
-          Delay: 0 ms
+          Delay: 3 ms
           From: T0
         D:
-          Delay: 0 ms
+          Delay: 4 ms
           From: T0
       Load: 50 Ohm
       Port: COM1
       TriggerEdge: Rising
       TriggerLevel: 1 V
-      TriggerLoad: HighZ
-      TriggerMode: External
-      TriggerRate: 10 Hz
+      TriggerLoad: 50 Ohm
+      TriggerMode: Internal
+      TriggerRate: 100 Hz
       Type: TTL
     Metadata:
       Importfile: C:\Users\P275171\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
@@ -249,23 +230,23 @@ AutoSaveDefaultUser:
       Filename: DefaultData
       Folder: C:\Users\P275171\Documents\PicoscopeData
     Time:
-      Blocklength: 99990000 nanosecond
+      Blocklength: 959904 nanosecond
       Resolution: 12BIT
       Samples: 10000
-      Timebase: 628
-      Timestep: 10000 ns
+      Timebase: 9
+      Timestep: 96 ns
       maxADC: 32767
     Trigger:
       Active: 2
       Auto: 100 ms
-      Channel: External
+      Channel: A
       Delay: 0
-      Level: 3 V
+      Level: 200 mV
       Position: 5000
       Show: 0
       Type: Rising
     User:
-      Fontsize: '11'
+      Fontsize: '10'
 DefaultUser:
   DefaultProject:
     Analyse:
@@ -382,5 +363,5 @@ DefaultUser:
     User:
       Fontsize: '11'
 PreviousUser:
-  Name: DefaultUser
+  Name: AutoSaveDefaultUser
   Project: DefaultProject

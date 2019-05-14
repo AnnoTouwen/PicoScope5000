@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QColorDialog
+from PyQt5.QtWidgets import QMainWindow, QApplication, QColorDialog, QWidget
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer, pyqtSlot, Qt
 from PyQt5.QtGui import QIcon
@@ -184,8 +184,11 @@ class Pico5000Interface(QMainWindow):
             self.window_finish_draw[window].sigDragged.connect(partial(self.change_window_finish_drag, window))
 
         # Delay generator
-        self.Delay_connection_active.stateChanged.connect(self.delay_setup_connection)
-        self.Delay_connection_port.editingFinished.connect(self.delay_change_port)
+        self.SRS_Connect.triggered.connect(self.connect_delay_generator)
+        self.SRS_Connect_and_Control.triggered.connect(self.connect_and_control_delay_generator)
+        self.SRS_Disconnect.triggered.connect(self.disconnect_delay_generator)
+        #self.Delay_connection_active.stateChanged.connect(self.delay_setup_connection)
+        #self.Delay_connection_port.editingFinished.connect(self.delay_change_port)
         self.Delay_signal_type.currentTextChanged.connect(self.delay_change_signal)
         self.Delay_signal_load.currentTextChanged.connect(self.delay_change_load)
         self.Delay_Ext_trigger_mode.currentTextChanged.connect(partial(self.delay_change_trigger_mode, 'External'))
@@ -766,8 +769,8 @@ class Pico5000Interface(QMainWindow):
             self.CalculatorName.setText(str(self.current_settings['Analyse']['Calculators'][1]['Name']))
             self.CalculatorShow.setCheckState(int(self.current_settings['Analyse']['Calculators'][1]['Show']))
             # Delay generator settings
-            self.Delay_connection_active.setCheckState(int(self.current_settings['Delay']['Active']))
-            self.Delay_connection_port.setText(str(self.current_settings['Delay']['Port']))
+            #self.Delay_connection_active.setCheckState(int(self.current_settings['Delay']['Active']))
+            #self.Delay_connection_port.setText(str(self.current_settings['Delay']['Port']))
             self.Delay_signal_type.setCurrentText(str(self.current_settings['Delay']['Type']))
             self.Delay_signal_load.setCurrentText(str(self.current_settings['Delay']['Load']))
             self.Delay_Ext_trigger_mode.setCurrentText(str(self.current_settings['Delay']['TriggerMode']))
@@ -1359,7 +1362,35 @@ class Pico5000Interface(QMainWindow):
             self.current_calculator = 1
 
     # Delay generator
+    def connect_delay_generator(self):
+        #uic.loadUi(os.path.join(self.base_folder, 'delay_connect.ui'), self)
+        self.confirm = QWidget()
+        self.confirm.show()
 
+        self.ditp = SRSDG535Interpreter()
+        self.ditp.start_control()
+        portnumber = 1
+        while portnumber < 32:
+            try:
+                self.ditp.setup_connection('COM' + str(portnumber))
+                self.ditp.set_display('Remote Access Mode')
+                self.Messages.append('Connected to Delay Generator via COM' + str(portnumber))
+                self.current_settings['Delay']['Active'] = 1
+                break
+            except:
+                portnumber += 1
+                if portnumber == 32:
+                    self.Messages.append('Delay Generator not responding, check the connection')
+                    self.current_settings['Delay']['Active'] = 0
+
+
+    def connect_and_control_delay_generator(self):
+        pass
+
+    def disconnect_delay_generator(self):
+        pass
+
+    '''
     def delay_setup_connection(self):
         self.current_settings['Delay']['Active'] = int(self.Delay_connection_active.checkState())
         if self.current_settings['Delay']['Active'] == 2:
@@ -1392,7 +1423,7 @@ class Pico5000Interface(QMainWindow):
 
     def delay_change_port(self):
         self.current_settings['Delay']['Port'] = str(self.Delay_connection_port.text())
-
+    '''
     def delay_change_signal(self):
         self.current_settings['Delay']['Type'] = str(self.Delay_signal_type.currentText())
         if self.current_settings['Delay']['Active'] == 2:
