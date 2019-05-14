@@ -1,3 +1,137 @@
+Anno:
+  HeartBeat:
+    Analyse:
+      Active: 2
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 170
+          - 255
+          FirstWindow: 1
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 3
+          Show: 2
+        2:
+          Colour:
+          - 20
+          - 97
+          - 74
+          FirstWindow: 2
+          Name: Calculator 2
+          Operation: '-'
+          SecondWindow: 3
+          Show: 2
+      Pause: 0.1 s
+      ScanLabel: Delay A
+      ScanValue: 0.0
+      ScanValueDifference: 0.001
+      Scans: 100
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 68313
+          Show: 2
+          Start: 177812
+        2:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 29125
+          Show: 2
+          Start: 309500
+        3:
+          Channel: A
+          Colour:
+          - 73
+          - 65
+          - 62
+          Length: 599999
+          Show: 2
+          Start: 0
+    Average:
+      Blocks: 1
+      Pause: 0.1 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 5 V
+      B:
+        Active: 0
+        CouplingType: DC
+        Name: B
+        Range: 5 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+    Delay:
+      Active: 2
+      Connectors:
+        A:
+          Delay: 0.099 s
+          From: T0
+        B:
+          Delay: 2 ms
+          From: A
+        C:
+          Delay: 0 ms
+          From: T0
+        D:
+          Delay: 0 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM1
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: HighZ
+      TriggerMode: External
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\P275171\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Every scope
+      Channels: All Activated
+      Filename: HeartBeat
+      Folder: C:\Users\P275171\Documents\PicoscopeData
+    Time:
+      Blocklength: 159999840 nanosecond
+      Resolution: 16BIT
+      Samples: 1000000
+      Timebase: 13
+      Timestep: 160 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: External
+      Delay: 0
+      Level: 3 V
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: '11'
 AutoSaveDefaultUser:
   DefaultProject:
     Analyse:
@@ -248,5 +382,5 @@ DefaultUser:
     User:
       Fontsize: '11'
 PreviousUser:
-  Name: AutoSaveDefaultUser
-  Project: DefaultProject
+  Name: Anno
+  Project: HeartBeat

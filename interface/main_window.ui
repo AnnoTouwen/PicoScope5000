@@ -339,7 +339,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="User">
            <attribute name="title">
