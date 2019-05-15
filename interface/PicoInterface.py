@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QColorDialog, QWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QColorDialog, QWidget, QLabel, QDialog, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QLabel
+from PyQt5 import QtWidgets
 from PyQt5 import uic
-from PyQt5.QtCore import QTimer, pyqtSlot, Qt
+from PyQt5.QtCore import QTimer, pyqtSlot, Qt, QSize
 from PyQt5.QtGui import QIcon
 # from controller.picocontrol import Pico5000Controller
 import threading
@@ -23,6 +24,7 @@ class Pico5000Interface(QMainWindow):
         self.base_folder = os.path.dirname(__file__)
         main_window_file = os.path.join(self.base_folder, 'main_window.ui')
         uic.loadUi(main_window_file, self)
+        #self.tabWidget.setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
 
         self.itp = interpreter # Start interpreter
 
@@ -88,8 +90,8 @@ class Pico5000Interface(QMainWindow):
             self.TriggerExt.hide()
         else:
             self.TriggerInt.hide()
-        if self.current_settings['Delay']['Active'] == 2:
-            self.delay_setup_connection()
+        self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
+
 
         # Show start-up message
         self.Messages.setText('Welcome to the PicoScope5000 interface\nPlease consider logging on with your name and project\n')
@@ -97,6 +99,10 @@ class Pico5000Interface(QMainWindow):
             self.Messages.append('Connected to USB2, check for USB3 connection')
         elif self.itp.dev.status["openunit"] == 282:
             self.Messages.append('No external powersupply connected, when working with a PicoScope5444D check the plug and restart for four channel options')
+
+        # Display Delay Generator connector
+        if self.current_settings['Delay']['Active'] > 0:
+            self.open_delay_connection_window()
 
         # Interaction with interface
             # User tab
@@ -184,8 +190,7 @@ class Pico5000Interface(QMainWindow):
             self.window_finish_draw[window].sigDragged.connect(partial(self.change_window_finish_drag, window))
 
         # Delay generator
-        self.SRS_Connect.triggered.connect(self.connect_delay_generator)
-        self.SRS_Connect_and_Control.triggered.connect(self.connect_and_control_delay_generator)
+        self.SRS_Connect.triggered.connect(self.open_delay_connection_window)
         self.SRS_Disconnect.triggered.connect(self.disconnect_delay_generator)
         #self.Delay_connection_active.stateChanged.connect(self.delay_setup_connection)
         #self.Delay_connection_port.editingFinished.connect(self.delay_change_port)
@@ -272,7 +277,7 @@ class Pico5000Interface(QMainWindow):
         if not os.path.isdir(self.current_settings['Save']['Folder']):  # If there is no such folder create one
             os.makedirs(self.current_settings['Save']['Folder'])
         #self.Messages.append('Measurement started')
-        if self.current_settings['Analyse']['Active']:
+        if self.current_settings['Analyse']['Active'] and self.current_settings['Delay']['Active'] > 0:
             if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
                 self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue'])) + ' s')
                 self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
@@ -736,7 +741,7 @@ class Pico5000Interface(QMainWindow):
             self.AnalysisActive.setCheckState(int(self.current_settings['Analyse']['Active']))
             self.ShowScanPlot.setCheckState(int(self.current_settings['Analyse']['ShowPlot']))
             #self.AnalysisCalculate.setCurrentText(str(self.current_settings['Analyse']['Calculate']))
-            if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
+            if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                 self.ScanValue.setText(str(self.current_settings['Analyse']['ScanValue']) + ' s')
                 self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']) + ' s')
             else:
@@ -889,6 +894,7 @@ class Pico5000Interface(QMainWindow):
         Lfont = self.centralwidget.font()
         Lfont.setPointSize(int(self.Fontsize.text())+8)
         self.centralwidget.setFont(font)
+        #self.tabWidget.setFont(font)
         self.start_button.setFont(Lfont)
         self.pause_button.setFont(Lfont)
         self.stop_button.setFont(Lfont)
@@ -922,7 +928,7 @@ class Pico5000Interface(QMainWindow):
             self.scan_plot_window.getAxis("bottom").setStyle(tickTextOffset=int(self.Fontsize.text()))
             fontStyle = {'color': '#999', 'font-size': '{}pt'.format(self.current_settings['User']['Fontsize'])}
             self.scan_plot_window.setLabel('left', 'Calculator', units='V', **fontStyle)
-            if 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+            if 'Delay ' in self.current_settings['Analyse']['ScanLabel'] and self.current_settings['Delay']['Active'] > 0:
                 self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units = 's', **fontStyle)
             else:
                 self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], **fontStyle)
@@ -1164,7 +1170,7 @@ class Pico5000Interface(QMainWindow):
     #    self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
 
     def change_analyse_scanvalue(self):
-        if self.current_settings['Delay']['Active'] == 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+        if self.current_settings['Delay']['Active'] > 0 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
             self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.ScanValue.text())).m_as('s'))
         else:
             self.current_settings['Analyse']['ScanValue'] = float(self.ScanValue.text())
@@ -1172,7 +1178,7 @@ class Pico5000Interface(QMainWindow):
             self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue'])+float(self.current_settings['Analyse']['ScanValueDifference'])*(int(self.current_settings['Analyse']['Scans'])-1))
 
     def change_analyse_scanvaluedifference(self):
-        if self.current_settings['Delay']['Active'] == 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+        if self.current_settings['Delay']['Active'] > 0 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
             self.current_settings['Analyse']['ScanValueDifference'] = float(ur(str(self.ScanValueDifference.text())).m_as('s'))
         else:
             self.current_settings['Analyse']['ScanValueDifference'] = float(self.ScanValueDifference.text())
@@ -1181,7 +1187,7 @@ class Pico5000Interface(QMainWindow):
 
     def change_analyse_scanlabel(self):
         self.current_settings['Analyse']['ScanLabel'] = str(self.ScanLabel.text())
-        if self.current_settings['Delay']['Active'] == 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+        if self.current_settings['Delay']['Active'] > 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
             self.ScanValue.setText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])
             self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])).m_as('s'))
             self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']) + ' s')
@@ -1362,78 +1368,123 @@ class Pico5000Interface(QMainWindow):
             self.current_calculator = 1
 
     # Delay generator
-    def connect_delay_generator(self):
+    def open_delay_connection_window(self):
+        self.tabWidget.addTab(self.DelayTab, "Delay")
+        self.tabWidget.setCurrentIndex(self.tabWidget.indexOf(self.DelayTab))
         #uic.loadUi(os.path.join(self.base_folder, 'delay_connect.ui'), self)
-        self.confirm = QWidget()
+        self.confirm = QDialog()
+        #self.confirm.setFixedSize(500, 75)
+        self.confirm.setWindowTitle('Delay Generator Connector')
+        self.confirm.setWindowIcon(QIcon(os.path.join(self.base_folder, 'icon.png')))
+        self.confirm.setWindowFlags(Qt.WindowTitleHint)
+
+        font = self.confirm.font()
+        font.setPointSize(int(self.current_settings['User']['Fontsize']))
+        self.confirm.setFont(font)
+
+        self.delay_confirm_portL = QLabel('Port:', self)
+        self.delay_confirm_port = QLineEdit(self)
+        self.delay_confirm_port.setText(str(self.current_settings['Delay']['Port']))
+        self.hbox = QHBoxLayout()
+        self.hbox.addWidget(self.delay_confirm_portL)
+        self.hbox.addWidget(self.delay_confirm_port)
+
+        self.vbox = QVBoxLayout()
+        #self.delay_confirm_question = QLabel('How do you want to connect the Delay Generator?', self)
+        #self.vbox.addWidget(self.delay_confirm_question)
+        self.vbox.addLayout(self.hbox)
+
+
+        self.hbox2 = QHBoxLayout()
+        self.delay_confirm_connect = QPushButton('Connect (Keep device settings)', self)
+        self.delay_confirm_connect_and_control = QPushButton('Connect and control (Apply interface settings)', self)
+        self.delay_confirm_cancel = QPushButton('Cancel', self)
+        self.hbox2.addWidget(self.delay_confirm_connect)
+        self.hbox2.addWidget(self.delay_confirm_connect_and_control)
+        self.hbox2.addWidget(self.delay_confirm_cancel)
+
+        self.vbox2 = QVBoxLayout()
+        self.vbox2.addLayout(self.hbox2)
+
+        self.vbox.addLayout(self.vbox2)
+
+        self.confirm.setLayout(self.vbox)
+
         self.confirm.show()
 
+        self.delay_confirm_connect.clicked.connect(self.connect_delay_generator)
+        self.delay_confirm_connect_and_control.clicked.connect(self.connect_and_control_delay_generator)
+        self.delay_confirm_cancel.clicked.connect(self.cancel_delay_generator)
+        self.delay_confirm_port.editingFinished.connect(self.delay_change_port)
+
+    def cancel_delay_generator(self):
+        if self.current_settings['Delay']['Active'] < 2:
+            self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
+        self.confirm.close()
+
+    def connect_delay_generator(self):
+        self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
         self.ditp = SRSDG535Interpreter()
         self.ditp.start_control()
-        portnumber = 1
-        while portnumber < 32:
-            try:
-                self.ditp.setup_connection('COM' + str(portnumber))
-                self.ditp.set_display('Remote Access Mode')
-                self.Messages.append('Connected to Delay Generator via COM' + str(portnumber))
-                self.current_settings['Delay']['Active'] = 1
-                break
-            except:
-                portnumber += 1
-                if portnumber == 32:
-                    self.Messages.append('Delay Generator not responding, check the connection')
-                    self.current_settings['Delay']['Active'] = 0
-
+        try:
+            self.ditp.setup_connection(self.current_settings['Delay']['Port'])
+            self.ditp.set_display('Remote Access Mode')
+            self.Messages.append('Connected to Delay Generator via ' + self.current_settings['Delay']['Port'])
+            self.current_settings['Delay']['Active'] = 1
+        except:
+            self.Messages.append('Delay Generator not responding, check the connection and port')
+            self.current_settings['Delay']['Active'] = 0
+        self.confirm.close()
 
     def connect_and_control_delay_generator(self):
-        pass
+        self.ditp = SRSDG535Interpreter()
+        self.ditp.start_control()
+        try:
+            self.ditp.setup_connection(self.current_settings['Delay']['Port'])
+            self.ditp.set_display('Remote Control Mode')
+            for connector in self.connectors:
+                if connector not in 'Ext':
+                    self.ditp.set_output_mode(connector, str(self.current_settings['Delay']['Type']))
+                    self.ditp.set_termination_impedance(connector, str(self.current_settings['Delay']['Load']))
+            self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
+            if self.current_settings['Delay']['TriggerMode'] in 'Internal':
+                self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
+            else:
+                self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
+                self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
+                self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
+            for connector in self.primary_connectors:
+                self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+            self.Messages.append('Connected to Delay Generator via ' + self.current_settings['Delay']['Port'] + ' and applied interface settings')
+            self.current_settings['Delay']['Active'] = 2
+        except:
+            self.Messages.append('Delay Generator not responding, check the connection and port')
+            self.current_settings['Delay']['Active'] = 1
+            self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
+        self.confirm.close()
 
     def disconnect_delay_generator(self):
-        pass
-
-    '''
-    def delay_setup_connection(self):
-        self.current_settings['Delay']['Active'] = int(self.Delay_connection_active.checkState())
-        if self.current_settings['Delay']['Active'] == 2:
-            self.ditp = SRSDG535Interpreter()
-            self.ditp.start_control()
-            self.ditp.setup_connection(self.current_settings['Delay']['Port'])
-            status = self.ditp.clear()
-            if status:
-                self.Delay_connection_active.setCheckState(0)
-                self.current_settings['Delay']['Active'] = 0
-                self.Messages.append('Device not responding, check port and connection')
-            else:
-                self.ditp.set_display('Remote Control Mode')
-                for connector in self.connectors:
-                    if connector not in 'Ext':
-                        self.ditp.set_output_mode(connector, str(self.current_settings['Delay']['Type']))
-                        self.ditp.set_termination_impedance(connector, str(self.current_settings['Delay']['Load']))
-                self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
-                if self.current_settings['Delay']['TriggerMode'] in 'Internal':
-                    self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
-                else:
-                    self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
-                    self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
-                    self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
-                for connector in self.primary_connectors:
-                    self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
-        else:
+        try:
             self.ditp.set_display('Connection Closed')
             self.ditp.close_connection()
+            self.Messages.append('Disconnected Delay Generator')
+        except:
+            pass
+        self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
 
     def delay_change_port(self):
-        self.current_settings['Delay']['Port'] = str(self.Delay_connection_port.text())
-    '''
+        self.current_settings['Delay']['Port'] = str(self.delay_confirm_port.text())
+
     def delay_change_signal(self):
         self.current_settings['Delay']['Type'] = str(self.Delay_signal_type.currentText())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             for connector in self.connectors:
                 if connector not in 'Ext':
                     self.ditp.set_output_mode(connector, str(self.current_settings['Delay']['Type']))
 
     def delay_change_load(self):
         self.current_settings['Delay']['Load'] = str(self.Delay_signal_load.currentText())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             for connector in self.connectors:
                 if connector not in 'Ext':
                     self.ditp.set_termination_impedance(connector, str(self.current_settings['Delay']['Load']))
@@ -1444,7 +1495,7 @@ class Pico5000Interface(QMainWindow):
             self.Delay_Ext_trigger_mode.setCurrentText('External')
             self.TriggerExt.show()
             self.TriggerInt.hide()
-            if self.current_settings['Delay']['Active'] == 2:
+            if self.current_settings['Delay']['Active'] > 0:
                 self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
                 self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
                 self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
@@ -1454,42 +1505,37 @@ class Pico5000Interface(QMainWindow):
             self.Delay_Int_trigger_mode.setCurrentText('Internal')
             self.TriggerInt.show()
             self.TriggerExt.hide()
-            if self.current_settings['Delay']['Active'] == 2:
+            if self.current_settings['Delay']['Active'] > 0:
                 self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
                 self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
 
     def delay_change_trigger_load(self):
         self.current_settings['Delay']['TriggerLoad'] = str(self.Delay_trigger_load.currentText())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
 
     def delay_change_trigger_edge(self):
         self.current_settings['Delay']['TriggerEdge'] = str(self.Delay_trigger_edge.currentText())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
 
     def delay_change_trigger_level(self):
         self.current_settings['Delay']['TriggerLevel'] = str(self.Delay_trigger_level.text())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
 
     def delay_change_trigger_rate(self):
         self.current_settings['Delay']['TriggerRate'] = str(self.Delay_trigger_rate.text())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
 
     def delay_change_delay(self, connector):
         self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
-
-    '''
-    def delay_change_difference(self, connector):
-        pass
-    '''
 
     def delay_change_from(self, connector):
         self.current_settings['Delay']['Connectors'][connector]['From'] = str(self.From[connector].currentText())
-        if self.current_settings['Delay']['Active'] == 2:
+        if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
 

@@ -339,7 +339,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="User">
            <attribute name="title">
@@ -2888,7 +2888,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="Delay">
+          <widget class="QWidget" name="DelayTab">
            <attribute name="title">
             <string>Delay</string>
            </attribute>

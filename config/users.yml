@@ -147,10 +147,10 @@ AutoSaveDefaultUser:
           Operation: '-'
           SecondWindow: 1
           Show: 2
-      Pause: 1 s
+      Pause: 0.001 s
       ScanLabel: Delay A
-      ScanValue: 2.0
-      ScanValueDifference: 1.0
+      ScanValue: 0.001
+      ScanValueDifference: 0.001
       Scans: 10
       ShowPlot: 2
       Windows:
@@ -160,30 +160,30 @@ AutoSaveDefaultUser:
           - 255
           - 170
           - 0
-          Length: 1097
+          Length: 17244
           Show: 2
-          Start: 2107
+          Start: 10792
         2:
           Channel: A
           Colour:
           - 0
           - 170
           - 0
-          Length: 918
+          Length: 13375
           Show: 2
-          Start: 7409
+          Start: 39414
     Average:
       Blocks: 10
-      Pause: 0.1 s
+      Pause: 0.001 s
       Store: 0
     Channels:
       A:
         Active: 2
         CouplingType: DC
         Name: A
-        Range: 50 mV
+        Range: 5 V
       B:
-        Active: 2
+        Active: 0
         CouplingType: DC
         Name: B
         Range: 50 mV
@@ -198,27 +198,27 @@ AutoSaveDefaultUser:
         Name: D
         Range: 1 V
     Delay:
-      Active: 1
+      Active: 2
       Connectors:
         A:
-          Delay: 1 ms
+          Delay: 0.036000000000000004 s
           From: T0
         B:
-          Delay: 0.011000000000000001 s
+          Delay: 0 s
           From: T0
         C:
-          Delay: 3 ms
+          Delay: 0 s
           From: T0
         D:
-          Delay: 4 ms
+          Delay: 0 s
           From: T0
-      Load: 50 Ohm
-      Port: COM1
+      Load: HighZ
+      Port: COM4
       TriggerEdge: Rising
       TriggerLevel: 1 V
       TriggerLoad: 50 Ohm
       TriggerMode: Internal
-      TriggerRate: 100 Hz
+      TriggerRate: 10 Hz
       Type: TTL
     Metadata:
       Importfile: C:\Users\P275171\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
@@ -230,11 +230,11 @@ AutoSaveDefaultUser:
       Filename: DefaultData
       Folder: C:\Users\P275171\Documents\PicoscopeData
     Time:
-      Blocklength: 959904 nanosecond
+      Blocklength: 100798992 nanosecond
       Resolution: 12BIT
-      Samples: 10000
-      Timebase: 9
-      Timestep: 96 ns
+      Samples: 100000
+      Timebase: 66
+      Timestep: 1008 ns
       maxADC: 32767
     Trigger:
       Active: 2
@@ -242,7 +242,7 @@ AutoSaveDefaultUser:
       Channel: A
       Delay: 0
       Level: 200 mV
-      Position: 5000
+      Position: 50000
       Show: 0
       Type: Rising
     User:
