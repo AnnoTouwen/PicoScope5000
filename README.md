@@ -8,7 +8,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 2. Install pip if it is not included in the Python installation already.
 3. Download [git](https://git-scm.com/download/win).
 4. Make a directory in which you want to get the software.
-5. Open a terminal (windows + R) and navigate to the directory.
+5. Open a terminal (windows + R -> cmd) and navigate to the directory.
 6. Download the software by cloning the directory
 ```
 	git clone https://github.com/AnnoTouwen/PicoScope5000.git
