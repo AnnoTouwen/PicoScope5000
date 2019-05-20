@@ -11,7 +11,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 5. Open a terminal (windows + R) and navigate to the directory.
 6. Download the software by cloning the directory
 ```
-	>>> git clone https://github.com/AnnoTouwen/PicoScope5000.git
+	git clone https://github.com/AnnoTouwen/PicoScope5000.git
 ```
 7. Copy the picosdk directory to the python packages folder, which could be something like
 ```
@@ -19,13 +19,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 ```
 8. Install the following Python packages using pip in the terminal
 ```
-	>>> pip install Pint
-	>>> pip install PyYAML
-	>>> pip install PyQt5
-	>>> pip install numpy
-	>>> pip install Pyqtgraph
-	>>> pip install Matplotlib
-	>>> pip install PySerial
+	pip install Pint PyYAML PyQt5 numpy Pyqtgraph Matplotlib PySerial
 ```
 
 ## How to get the latest update on Windows
@@ -33,7 +27,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 1. Open a terminal (windows + R) and navigate to the directory.
 2. Update the software by pulling it to the directory
 ```
-	>>> git pull
+	git pull
 ```
 
 ## How to implement the Stanford Research Systems Delay Generator DG535
@@ -47,7 +41,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 Run start.py by double clicking if Python 3 is set to be the standard for executing .py files.
 Alternatively you could naviate to the directory in the terminal and run
 ```
-	>>> python start.py
+	python start.py
 ```
 
 If a PicoScope5000 device is connected a window with the user interface should appear. The powersupply is checked and the device is set accordingly. The Default settings are loaded from config/users.yml. Dependent on these settings a first readout of the scope is also show in a seraprate window. In the user interface messages to the user are dislayed, settings can be changed and measurements can be started. Realtime analysis and plots are shown in separate windows.
@@ -117,7 +111,7 @@ By pressing start a measurement is started with the settings described above. Af
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
 ```
-	>>> import PicoReadBinary as prb
+	import PicoReadBinary as prb
 ```
 The script reads datafiles based on their metadatfile given as input. 
 
