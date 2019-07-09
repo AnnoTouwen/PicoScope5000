@@ -156,15 +156,6 @@
                </color>
               </brush>
              </colorrole>
-             <colorrole role="PlaceholderText">
-              <brush brushstyle="NoBrush">
-               <color alpha="128">
-                <red>0</red>
-                <green>0</green>
-                <blue>0</blue>
-               </color>
-              </brush>
-             </colorrole>
             </active>
             <inactive>
              <colorrole role="WindowText">
@@ -227,15 +218,6 @@
                 <red>0</red>
                 <green>85</green>
                 <blue>127</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="PlaceholderText">
-              <brush brushstyle="NoBrush">
-               <color alpha="128">
-                <red>0</red>
-                <green>0</green>
-                <blue>0</blue>
                </color>
               </brush>
              </colorrole>
@@ -304,15 +286,6 @@
                </color>
               </brush>
              </colorrole>
-             <colorrole role="PlaceholderText">
-              <brush brushstyle="NoBrush">
-               <color alpha="128">
-                <red>0</red>
-                <green>0</green>
-                <blue>0</blue>
-               </color>
-              </brush>
-             </colorrole>
             </disabled>
            </palette>
           </property>
@@ -339,7 +312,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="User">
            <attribute name="title">
@@ -2888,73 +2861,11 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="Delay">
+          <widget class="QWidget" name="DelayTab">
            <attribute name="title">
             <string>Delay</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_24">
-            <item row="0" column="0">
-             <widget class="QGroupBox" name="DelayConnection">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="title">
-               <string>Connection</string>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <item>
-                <widget class="QLabel" name="Delay_connection_activeL">
-                 <property name="text">
-                  <string>Active:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="Delay_connection_active">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_49">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="Delay_connection_portL">
-                 <property name="text">
-                  <string>Port:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="Delay_connection_port">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
             <item row="1" column="3">
              <widget class="QGroupBox" name="DelayBorderB">
               <property name="sizePolicy">
@@ -3043,111 +2954,6 @@
                 <widget class="QLabel" name="From_BL">
                  <property name="text">
                   <string>From:</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QGroupBox" name="DelaySignal">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="title">
-               <string>Signal</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_25">
-               <item row="0" column="3">
-                <spacer name="horizontalSpacer_50">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="0" column="4">
-                <widget class="QLabel" name="Delay_signal_loadL">
-                 <property name="text">
-                  <string>Load:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="5">
-                <widget class="QComboBox" name="Delay_signal_load">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="currentText">
-                  <string>50 Ohm</string>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>50 Ohm</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>HighZ</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QComboBox" name="Delay_signal_type">
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="currentText">
-                  <string>TTL</string>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>TTL</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>NIM</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>ECL</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="Delay_signal_typeL">
-                 <property name="text">
-                  <string>Type:</string>
                  </property>
                 </widget>
                </item>
@@ -3706,6 +3512,111 @@
               </layout>
              </widget>
             </item>
+            <item row="0" column="0" rowspan="2">
+             <widget class="QGroupBox" name="DelaySignal">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="title">
+               <string>Signal</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_25">
+               <item row="0" column="3">
+                <spacer name="horizontalSpacer_50">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="4">
+                <widget class="QLabel" name="Delay_signal_loadL">
+                 <property name="text">
+                  <string>Load:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <widget class="QComboBox" name="Delay_signal_load">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="currentText">
+                  <string>50 Ohm</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>50 Ohm</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>HighZ</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="Delay_signal_type">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="currentText">
+                  <string>TTL</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>TTL</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>NIM</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>ECL</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="Delay_signal_typeL">
+                 <property name="text">
+                  <string>Type:</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
            </layout>
           </widget>
          </widget>
@@ -3725,6 +3636,20 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuAdd_Device">
+    <property name="title">
+     <string>Other devices</string>
+    </property>
+    <widget class="QMenu" name="menuSRS_Delay_Generator_535">
+     <property name="title">
+      <string>SRS Delay Generator 535</string>
+     </property>
+     <addaction name="SRS_Connect"/>
+     <addaction name="SRS_Disconnect"/>
+    </widget>
+    <addaction name="menuSRS_Delay_Generator_535"/>
+   </widget>
+   <addaction name="menuAdd_Device"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Save">
@@ -3764,6 +3689,21 @@
   <action name="actionPicoScope5244D">
    <property name="text">
     <string>Max 2 channels</string>
+   </property>
+  </action>
+  <action name="SRS_Connect">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="SRS_Connect_and_Control">
+   <property name="text">
+    <string>Connect and Control</string>
+   </property>
+  </action>
+  <action name="SRS_Disconnect">
+   <property name="text">
+    <string>Disconnect</string>
    </property>
   </action>
  </widget>
