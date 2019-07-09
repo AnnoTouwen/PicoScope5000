@@ -22,7 +22,7 @@ def time_ns(metadatafile):
     Settings = load_settings(metadatafile)[0]
     return np.linspace(0, (Settings['Time']['Samples']-1) * ur(str(Settings['Time']['Timestep']).replace(' ', '')).m_as('ns'), Settings['Time']['Samples'])
 
-def block_mV(metadatafile, channel, measurementnumber = False, blocknumber = False):
+def block_mV(metadatafile, channel, measurementnumber = False, blocknumber = True):
     channels = ['A', 'B', 'C', 'D']
     Settings = load_settings(metadatafile)[0]
     Active_channels = [i for i in channels if Settings['Channels'][i]['Active'] == 2]
@@ -56,16 +56,25 @@ def scan_V(metadatafile):
 if __name__ == '__main__':
     import os
     import matplotlib.pyplot as plt
+    import csv
 
-    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-04-17', 'DefaultData_2019-04-17_scan_3_metadata.yml')
+    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-05-28', 'DefaultData_2019-05-28_measurement_6_metadata.yml')
     time = time_ns(file)
     channels = ['A', 'B', 'C', 'D']
     color = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y'}
+    dataList = [time]
     for channel in channels:
         try:
-            plt.plot(time, block_mV(file, channel, measurementnumber = 32, blocknumber = False), color[channel], label = channel)
+            plt.plot(time, block_mV(file, channel, measurementnumber = False, blocknumber = 1), color[channel], label = channel)
+            dataList += [block_mV(file, channel, measurementnumber = False, blocknumber = 1)]
         except KeyError:
             pass
+    with open("testFile.csv", 'w') as writeFile:
+        writer = csv.writer(writeFile)
+        writer.writerows(dataList)
+    writeFile.close()
+
+    
     plt.legend()
     plt.xlabel('Time (ns)')
     plt.ylabel('Voltage (mV)')

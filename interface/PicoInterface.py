@@ -77,8 +77,8 @@ class Pico5000Interface(QMainWindow):
 
         self.itp.start_device()
         self.itp.setup_device(self.current_settings['Time']['Resolution'])
-        if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
-            self.four_channels()
+        #if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
+        #    self.four_channels()
 
         # Do a first measurement
         #self.start_thread()
