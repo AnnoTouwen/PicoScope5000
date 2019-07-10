@@ -1,10 +1,128 @@
+AutoSaveDefaultUser:
+  DefaultProject:
+    Analyse:
+      Active: 0
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+      Pause: 0.001 s
+      ScanLabel: Scannumber
+      ScanValue: 1
+      ScanValueDifference: 1
+      Scans: 10
+      ShowPlot: 0
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 0
+          Show: 2
+          Start: 9999
+        2:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 0
+          Show: 2
+          Start: 9999
+    Average:
+      Blocks: 10
+      Pause: 0.001 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 1 V
+      B:
+        Active: 0
+        CouplingType: DC
+        Name: B
+        Range: 50 mV
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: Internal
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+    Time:
+      Blocklength: 159984 nanosecond
+      Resolution: 16BIT
+      Samples: 10000
+      Timebase: 4
+      Timestep: 16 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: A
+      Delay: 0
+      Level: 200 mV
+      Position: 500
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: '9'
 DefaultUser:
   DefaultProject:
     Analyse:
       Active: 0
       Calculators:
         1:
-          Colour: [0, 0, 0]
+          Colour:
+          - 0
+          - 0
+          - 0
           FirstWindow: 2
           Name: Calculator 1
           Operation: '-'
@@ -19,29 +137,62 @@ DefaultUser:
       Windows:
         1:
           Channel: A
-          Colour: [255, 170, 0]
+          Colour:
+          - 255
+          - 170
+          - 0
           Length: 500
           Show: 0
           Start: 20
         2:
           Channel: A
-          Colour: [0, 170, 0]
+          Colour:
+          - 0
+          - 170
+          - 0
           Length: 500
           Show: 0
           Start: 20
-    Average: {Blocks: 10, Pause: 0.1 s, Store: 0}
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: A, Range: 1 V}
-      B: {Active: 2, CouplingType: DC, Name: B, Range: 1 V}
-      C: {Active: 0, CouplingType: DC, Name: C, Range: 1 V}
-      D: {Active: 0, CouplingType: DC, Name: D, Range: 1 V}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 1 V
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: 1 ms, From: T0}
-        B: {Delay: 2 ms, From: T0}
-        C: {Delay: 3 ms, From: T0}
-        D: {Delay: 4 ms, From: T0}
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -50,12 +201,33 @@ DefaultUser:
       TriggerMode: Internal
       TriggerRate: 10 Hz
       Type: TTL
-    Metadata: {Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml}
-    Plot: {Show: 2}
-    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: BaseDirectory\PicoscopeData}
-    Time: {Blocklength: 959904 nanosecond, Resolution: 12BIT, Samples: 10000, Timebase: 9,
-      Timestep: 96 ns, maxADC: 32767}
-    Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Level: 200 mV, Position: 5000,
-      Show: 0, Type: Rising}
-    User: {Fontsize: '11'}
-PreviousUser: {Name: DefaultUser, Project: DefaultProject}
+    Metadata:
+      Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: BaseDirectory\PicoscopeData
+    Time:
+      Blocklength: 959904 nanosecond
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: A
+      Delay: 0
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: '11'
+PreviousUser:
+  Name: AutoSaveDefaultUser
+  Project: DefaultProject

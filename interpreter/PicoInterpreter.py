@@ -259,7 +259,7 @@ class Pico5000Interpreter:
         #if Samples <= maxSamples:
         Samples = len(self.buffer[channel]['Average'])
         if Samples != setSamples:
-            self.Messages.append('Number of samples changed during measurement')
+            print('Number of samples changed during measurement')
         if not 'Time' in self.block:
             self.block['Time'] = np.linspace(0, Samples * timestep, Samples)
         # convert ADC counts data to mV

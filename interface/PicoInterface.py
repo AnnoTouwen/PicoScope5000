@@ -265,7 +265,6 @@ class Pico5000Interface(QMainWindow):
             self.Messages.append('Measurement already running')
 
     def start_measurement(self, continuously):
-        starttime = time()
         self.measurement_running = True
         self.continuously = continuously
         self.date = str(date.today())
@@ -279,7 +278,6 @@ class Pico5000Interface(QMainWindow):
         if not os.path.isdir(self.current_settings['Save']['Folder']):  # If there is no such folder create one
             os.makedirs(self.current_settings['Save']['Folder'])
         #self.Messages.append('Measurement started')
-        print('Time before starting: ', time()- starttime)
         if self.current_settings['Analyse']['Active']: # and self.current_settings['Delay']['Active'] > 0:
             if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                 self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue'])) + ' s')
@@ -299,7 +297,6 @@ class Pico5000Interface(QMainWindow):
                 scans = 1000000
             else:
                 scans = self.current_settings['Analyse']['Scans']
-            print('Time before really starting: ', time() - starttime)
             self.scan_start_time = time()
             #
             # Loop for every scan
