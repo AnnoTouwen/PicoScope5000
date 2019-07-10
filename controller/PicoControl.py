@@ -80,15 +80,12 @@ class Pico5000Controller:
         print('Time to send a runblock command is: ', time() - starttime, ' s')
         self.status["isReady"] = ps.ps5000aGetStreamingLatestValues(self.chandle, ps.ps5000aStreamingReady(self.chandle, Samples, 0, ), ctypes.byref(ctypes.c_void_p())
         '''
-        starttime = time()
         self.status["runBlock"] = ps.ps5000aRunBlock(self.chandle, SamplesBeforeTrigger, Samples-SamplesBeforeTrigger, Timebase, None, 0, None, None) # trigger['PreSamp'], trigger['PostSamp']
-        print('Time to send a runblock command is: ', time() - starttime, ' s')
         # Check for data collection to finish using ps5000aIsReady
         ready = ctypes.c_int16(0)
         check = ctypes.c_int16(0)
         while ready.value == check.value:
             self.status["isReady"] = ps.ps5000aIsReady(self.chandle, ctypes.byref(ready))  # As soon as the sampling is done ready is set to 1
-        print('Time to get a block of data is: ', time() - starttime, ' s')
 
 
     def set_buffer(self, channel, channelID, buffer, Samples):
