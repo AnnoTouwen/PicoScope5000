@@ -2781,7 +2781,7 @@
                <item row="1" column="3">
                 <widget class="QLabel" name="ScanValueL">
                  <property name="text">
-                  <string>Scanpoint value:</string>
+                  <string>Scanpoint startvalue:</string>
                  </property>
                 </widget>
                </item>
