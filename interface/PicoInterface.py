@@ -68,20 +68,28 @@ class Pico5000Interface(QMainWindow):
 
         # Plotparameters and objects
         self.newData = False
-        self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerlevel')
-        self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position']+1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
+        if self.current_settings['Trigger']['Fixed'] == 0:
+            self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerlevel')
+            self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position']+1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
+        else:
+            self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=False, name='current_triggerlevel')
+            self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position'] + 1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=False, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
         self.window_start_draw = {}
         self.window_finish_draw = {}
         for window in self.windows:
-            self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
-            self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            if self.current_settings['Analyse']['WindowsFixed'] == 0:
+                self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
+                self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            else:
+                self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=False, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
+                self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=False, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
         self.plot_font = pg.Qt.QtGui.QFont()
         self.change_fontsize()
 
         self.itp.start_device()
         self.itp.setup_device(self.current_settings['Time']['Resolution'])
-        #if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
-        #    self.four_channels()
+        if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
+            self.four_channels()
 
         # Do a first measurement
         #self.start_thread()
@@ -101,9 +109,9 @@ class Pico5000Interface(QMainWindow):
         elif self.itp.dev.status["openunit"] == 282:
             self.Messages.append('No external powersupply connected, when working with a PicoScope5444D check the plug and restart for four channel options')
 
-        # Display Delay Generator connector
+        # Close Delay Generator
         if self.current_settings['Delay']['Active'] > 0:
-            self.open_delay_connection_window()
+            self.cancel_delay_generator()
 
         # Interaction with interface
             # User tab
@@ -124,6 +132,7 @@ class Pico5000Interface(QMainWindow):
         self.Blocklength.editingFinished.connect(self.change_blocklength)
         self.TActive.stateChanged.connect(self.change_trigger_active)
         self.TShow.stateChanged.connect(self.change_trigger_show)
+        self.TFix.stateChanged.connect(self.change_trigger_fixed)
         self.TChannel.currentTextChanged.connect(self.change_trigger_channel)
         self.TType.currentTextChanged.connect(self.change_trigger_type)
         self.TLevel.editingFinished.connect(self.change_trigger_level)
@@ -153,6 +162,7 @@ class Pico5000Interface(QMainWindow):
         self.WindowSelect.currentTextChanged.connect(self.change_window)
         self.WindowColour.clicked.connect(self.change_window_colour)
         self.WindowShow.stateChanged.connect(self.change_window_show)
+        self.WindowFix.stateChanged.connect(self.change_window_fixed)
         self.WindowChannel.currentTextChanged.connect(self.change_window_channel)
         self.WindowStart.editingFinished.connect(self.change_window_start)
         self.WindowLength.editingFinished.connect(self.change_window_length)
@@ -207,7 +217,6 @@ class Pico5000Interface(QMainWindow):
             self.Delay[connector].editingFinished.connect(partial(self.delay_change_delay, connector))
             # self.Difference[connector].editingFinished.connect(partial(self.delay_change_difference, connector))
             self.From[connector].currentTextChanged.connect(partial(self.delay_change_from, connector))
-
 
 # -------------------------------------------------------------------------------
 
@@ -265,6 +274,7 @@ class Pico5000Interface(QMainWindow):
             self.Messages.append('Measurement already running')
 
     def start_measurement(self, continuously):
+        self.current_settings['Previous starttime'] = str(datetime.now())
         self.measurement_running = True
         self.continuously = continuously
         self.date = str(date.today())
@@ -278,6 +288,7 @@ class Pico5000Interface(QMainWindow):
         if not os.path.isdir(self.current_settings['Save']['Folder']):  # If there is no such folder create one
             os.makedirs(self.current_settings['Save']['Folder'])
         #self.Messages.append('Measurement started')
+        #print('Time before starting: ', time()- starttime)
         if self.current_settings['Analyse']['Active']: # and self.current_settings['Delay']['Active'] > 0:
             if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                 self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue'])) + ' s')
@@ -297,6 +308,7 @@ class Pico5000Interface(QMainWindow):
                 scans = 1000000
             else:
                 scans = self.current_settings['Analyse']['Scans']
+            #print('Time before really starting: ', time() - starttime)
             self.scan_start_time = time()
             #
             # Loop for every scan
@@ -596,10 +608,10 @@ class Pico5000Interface(QMainWindow):
             self.change_showplot()
             self.plot_window.clear()
         if self.current_settings['Trigger']['Show'] == 2:
-            self.show_trigger(self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Position'], measurement = True)
+            #self.show_trigger(self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Position'], measurement = True)
             self.show_trigger()
-        for window in self.windows:
-            if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
+        if self.current_settings['Analyse']['WindowsShow'] == 2:
+            for window in self.windows:
                 self.plot_window.addItem(self.window_start_draw[window])
                 self.plot_window.addItem(self.window_finish_draw[window])
         for i in self.channels:
@@ -609,7 +621,7 @@ class Pico5000Interface(QMainWindow):
                 except KeyError:
                     pass
 
-    def show_trigger(self, level = False, position = False, measurement = False):
+    def show_trigger(self):#, level = False, position = False, measurement = False):
         '''
         if measurement:
             self.measurement_triggerlevel = pg.InfiniteLine(pos = ur(str(level).replace(' ', '')).m_as('V'), angle = 0, pen = pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DotLine))
@@ -736,6 +748,7 @@ class Pico5000Interface(QMainWindow):
                 '''
             self.TActive.setCheckState(int(self.current_settings['Trigger']['Active']))
             self.TShow.setCheckState(int(self.current_settings['Trigger']['Show']))
+            self.TFix.setCheckState(int(self.current_settings['Trigger']['Fixed']))
             self.TChannel.setCurrentText(str(self.current_settings['Trigger']['Channel']))
             self.TType.setCurrentText(str(self.current_settings['Trigger']['Type']))
             self.TLevel.setText(str(self.current_settings['Trigger']['Level']))
@@ -766,8 +779,9 @@ class Pico5000Interface(QMainWindow):
             self.current_window = 1
             self.WindowSelect.setCurrentText('Window 1')
             self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
-            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['Windows'][1]['Show']))
             self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][1]['Channel']))
+            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['WindowsShow']))
+            self.WindowFix.setCheckState(int(self.current_settings['Analyse']['WindowsFixed']))
             self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][1]['Start']))
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][1]['Length']))
             for calculator in self.calculators:
@@ -861,7 +875,7 @@ class Pico5000Interface(QMainWindow):
             users = {}
             users[name] = {}
             users[name][project] = self.current_settings
-            users[name][project]['Measurement time'] = str(datetime.now())
+            users[name][project]['Previous endtime'] = str(datetime.now())
             f = open(file, 'w')
             yaml.safe_dump(users, f)
             f.close()
@@ -925,8 +939,7 @@ class Pico5000Interface(QMainWindow):
             self.plot_window.setLabel('left', 'Voltage', units='V', **fontStyle)
             self.plot_window.setLabel('bottom', 'Time', units='s', **fontStyle)
             for window in self.windows:
-                if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
-                    pass
+                pass
         except AttributeError:
             pass
 
@@ -1021,17 +1034,24 @@ class Pico5000Interface(QMainWindow):
         self.current_settings['Trigger']['Show'] = int(self.TShow.checkState())
         if self.current_settings['Trigger']['Show'] == 2:
             self.show_trigger()
+            '''
             try:
                 self.show_trigger(self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Position'], measurement = True)
             except NameError:
                 pass
+            '''
         else:
             self.remove_trigger()
-        try:
-            self.close_plot_window()
-            self.open_plot_window()
-        except:
-            pass
+        self.autosave_settings()
+
+    def change_trigger_fixed(self):
+        self.current_settings['Trigger']['Fixed'] = int(self.TFix.checkState())
+        if self.current_settings['Trigger']['Fixed'] == 2:
+            self.current_triggerlevel.setMovable(False)
+            self.current_triggerposition.setMovable(False)
+        else:
+            self.current_triggerlevel.setMovable(True)
+            self.current_triggerposition.setMovable(True)
         self.autosave_settings()
 
     def change_trigger_active(self):
@@ -1243,8 +1263,8 @@ class Pico5000Interface(QMainWindow):
             if self.current_settings['Trigger']['Active'] == 2:
                 self.plot_window.addItem(self.current_triggerlevel)
                 self.plot_window.addItem(self.current_triggerposition)
-            for window in self.windows:
-                if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
+            if self.current_settings['Analyse']['WindowsShow'] == 2:
+                for window in self.windows:
                     self.plot_window.addItem(self.window_start_draw[window])
                     self.plot_window.addItem(self.window_start_draw[window])
         else:
@@ -1372,8 +1392,12 @@ class Pico5000Interface(QMainWindow):
             self.current_settings['Analyse']['Windows'][self.current_window]['Colour'] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
             self.current_settings['Analyse']['Windows'][self.current_window]['Start'] = str(self.WindowStart.text())
             self.current_settings['Analyse']['Windows'][self.current_window]['Length'] = str(self.WindowLength.text())
-            self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
-            self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            if self.current_settings['Analyse']['WindowsFixed'] == 0:
+                self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
+                self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            else:
+                self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=False, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
+                self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=False, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
             self.change_window_show()
             self.change_window_channel()
             self.WindowSelect.addItem('Window {}'.format(self.current_window))
@@ -1385,7 +1409,6 @@ class Pico5000Interface(QMainWindow):
         else:
             self.current_window = int(str(self.WindowSelect.currentText()).replace('Window ', ''))
             self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
-            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['Windows'][self.current_window]['Show']))
             self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Channel']))
             self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Start']))
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
@@ -1427,13 +1450,27 @@ class Pico5000Interface(QMainWindow):
         self.autosave_settings()
 
     def change_window_show(self):
-        self.current_settings['Analyse']['Windows'][self.current_window]['Show'] = int(self.WindowShow.checkState())
-        if self.current_settings['Analyse']['Windows'][self.current_window]['Show'] == 2:
-            self.plot_window.addItem(self.window_start_draw[self.current_window])
-            self.plot_window.addItem(self.window_finish_draw[self.current_window])
+        self.current_settings['Analyse']['WindowsShow'] = int(self.WindowShow.checkState())
+        if self.current_settings['Analyse']['WindowsShow'] == 2:
+            for window in self.windows:
+                self.plot_window.addItem(self.window_start_draw[window])
+                self.plot_window.addItem(self.window_finish_draw[window])
         else:
-            self.plot_window.removeItem(self.window_start_draw[self.current_window])
-            self.plot_window.removeItem(self.window_finish_draw[self.current_window])
+            for window in self.windows:
+                self.plot_window.removeItem(self.window_start_draw[window])
+                self.plot_window.removeItem(self.window_finish_draw[window])
+        self.autosave_settings()
+
+    def change_window_fixed(self):
+        self.current_settings['Analyse']['WindowsFixed'] = int(self.WindowFix.checkState())
+        if self.current_settings['Analyse']['WindowsFixed'] == 2:
+            for window in self.windows:
+                self.window_start_draw[window].setMovable(False)
+                self.window_finish_draw[window].setMovable(False)
+        else:
+            for window in self.windows:
+                self.window_start_draw[window].setMovable(True)
+                self.window_finish_draw[window].setMovable(True)
         self.autosave_settings()
 
     def change_window_channel(self):
@@ -1599,7 +1636,7 @@ class Pico5000Interface(QMainWindow):
         self.hbox2 = QHBoxLayout()
         self.delay_confirm_connect = QPushButton('Connect (Keep device settings)', self)
         self.delay_confirm_connect_and_control = QPushButton('Connect and control (Apply interface settings)', self)
-        self.delay_confirm_cancel = QPushButton('Cancel', self)
+        self.delay_confirm_cancel = QPushButton('Cancel connection', self)
         self.hbox2.addWidget(self.delay_confirm_connect)
         self.hbox2.addWidget(self.delay_confirm_connect_and_control)
         self.hbox2.addWidget(self.delay_confirm_cancel)
@@ -1621,9 +1658,12 @@ class Pico5000Interface(QMainWindow):
         self.autosave_settings()
 
     def cancel_delay_generator(self):
-        if self.current_settings['Delay']['Active'] < 2:
-            self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
-        self.confirm.close()
+        self.current_settings['Delay']['Active'] = 0
+        self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
+        try:
+            self.confirm.close()
+        except:
+            pass
         self.autosave_settings()
 
     def connect_delay_generator(self):
@@ -1747,9 +1787,9 @@ class Pico5000Interface(QMainWindow):
     def delay_change_trigger_rate(self):
         try:
             unitcheck = ur(str(self.Delay_trigger_rate.text())).m_as('Hz')
-            if unitcheck < 0:
+            if unitcheck < 0.001:
                 self.Delay_trigger_rate.setText(str(self.current_settings['Delay']['TriggerRate']))
-                self.Messages.append('Trigger rate must be positive')
+                self.Messages.append('Trigger rate must be at least 1 mHz')
                 return
             self.current_settings['Delay']['TriggerRate'] = str(self.Delay_trigger_rate.text())
         except:
@@ -1760,13 +1800,24 @@ class Pico5000Interface(QMainWindow):
             self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
         self.autosave_settings()
 
+    def delay_change_sign(self, connector):
+        if self.current_settings['Delay']['Active'] > 0:
+            self.ditp.change_delay_sign(connector)
+
     def delay_change_delay(self, connector):
         try:
+            change_sign = False
             unitcheck = ur(str(self.Delay[connector].text())).m_as('s')
-            if unitcheck < 0:
+            if unitcheck >= 1000:
                 self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
-                self.Messages.append('Trigger rate must be positive')
+                self.Messages.append('Delay time must be less than 1000 s')
                 return
+            if abs(unitcheck) < 5*10**(-12):
+                self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+                self.Messages.append('Delay time must be at least 5 ps')
+                return
+            if unitcheck < 0:
+                change_sign = True
             self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
         except:
             self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
@@ -1774,7 +1825,10 @@ class Pico5000Interface(QMainWindow):
             return
         self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
         if self.current_settings['Delay']['Active'] > 0:
-            self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+            self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(abs(ur(str(self.current_settings['Delay']['Connectors'][connector]['Delay'])).m_as('s'))) + ' s')
+            if change_sign:
+                self.delay_change_sign(connector)
+                change_sign = False
         self.autosave_settings()
 
     def delay_change_from(self, connector):

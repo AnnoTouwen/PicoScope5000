@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dc5c88b9-dc38-42ca-b3cd-d0f20b7aba65" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../PicoReadBinary.py" beforeDir="false" afterPath="$PROJECT_DIR$/../PicoReadBinary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../controller/PicoControl.py" beforeDir="false" afterPath="$PROJECT_DIR$/../controller/PicoControl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../interface/PicoInterface.py" beforeDir="false" afterPath="$PROJECT_DIR$/../interface/PicoInterface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../interface/main_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/../interface/main_window.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PicoInterpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/PicoInterpreter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +16,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../controller/PicoControl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="29" column="8" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="42" />
+            <state relative-caret-position="648">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -31,8 +28,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PicoInterpreter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="242" column="42" lean-forward="true" selection-start-line="242" selection-start-column="42" selection-end-line="242" selection-end-column="42" />
+            <state relative-caret-position="6318">
+              <caret line="242" column="42" selection-start-line="242" selection-start-column="42" selection-end-line="242" selection-end-column="42" />
               <folding>
                 <element signature="e#11#22#0" expanded="true" />
               </folding>
@@ -40,26 +37,31 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../interface/PicoInterface.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="753" column="78" lean-forward="true" selection-start-line="753" selection-start-column="51" selection-end-line="753" selection-end-column="78" />
+            <state relative-caret-position="384">
+              <caret line="317" column="24" selection-start-line="317" selection-start-column="24" selection-end-line="317" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DelayInterpreter.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
               <folding>
-                <element signature="e#0#53#0" expanded="true" />
+                <element signature="e#0#54#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../PicoReadBinary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="107">
-              <caret line="30" column="92" lean-forward="true" selection-start-line="30" selection-start-column="92" selection-end-line="30" selection-end-column="92" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="621">
+              <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -124,8 +126,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
       <pane id="Scope" />
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -174,17 +176,18 @@
       <workItem from="1553075026092" duration="598000" />
       <workItem from="1553162301888" duration="11320000" />
       <workItem from="1553505733590" duration="22711000" />
+      <workItem from="1562768297008" duration="553000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="136441000" />
+    <option name="totallyTimeSpent" value="136994000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15100402" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.15351352" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -220,8 +223,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../controller/PicoControl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="29" column="8" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="42" />
+        <state relative-caret-position="648">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
@@ -230,31 +233,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PicoInterpreter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="242" column="42" lean-forward="true" selection-start-line="242" selection-start-column="42" selection-end-line="242" selection-end-column="42" />
+        <state relative-caret-position="6318">
+          <caret line="242" column="42" selection-start-line="242" selection-start-column="42" selection-end-line="242" selection-end-column="42" />
           <folding>
             <element signature="e#11#22#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../interface/PicoInterface.py">
+    <entry file="file://$PROJECT_DIR$/../PicoReadBinary.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="753" column="78" lean-forward="true" selection-start-line="753" selection-start-column="51" selection-end-line="753" selection-end-column="78" />
+        <state relative-caret-position="621">
+          <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DelayInterpreter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
           <folding>
-            <element signature="e#0#53#0" expanded="true" />
+            <element signature="e#0#54#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../PicoReadBinary.py">
+    <entry file="file://$PROJECT_DIR$/../interface/PicoInterface.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="30" column="92" lean-forward="true" selection-start-line="30" selection-start-column="92" selection-end-line="30" selection-end-column="92" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="384">
+          <caret line="317" column="24" selection-start-line="317" selection-start-column="24" selection-end-line="317" selection-end-column="24" />
         </state>
       </provider>
     </entry>
