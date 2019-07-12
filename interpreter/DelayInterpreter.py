@@ -1,6 +1,7 @@
 from controller.DelayControl import SRSDG535Controller
 from pint import UnitRegistry
 ur = UnitRegistry()
+from time import sleep
 
 class SRSDG535Interpreter:
     def __init__(self):
@@ -59,7 +60,19 @@ class SRSDG535Interpreter:
 
     def set_delay_time(self, channel, reference_channel, time):
         # Set delay of channel relative to reference channel to time in seconds, channel T0, A, B, C, D = 1, 2, 3, 5, 6
+        channels = {'A': '0', 'B': '1', 'C': '2', 'D': '3'}
+        self.ctr.set_display('')
+        self.ctr.display_menu(1, 0, channels[channel])
         self.ctr.set_delay_time(self.connectors[channel], self.connectors[reference_channel], ' '.join(str(ur(str(time).replace(' ', '')).m_as('s'))))
+        return self.check_error_status()
+
+    def change_delay_sign(self, channel):
+        channels = {'A': '0', 'B': '1', 'C': '2', 'D': '3'}
+        self.ctr.set_display('')
+        self.ctr.display_menu(1, 0, channels[channel])
+        self.ctr.set_cursor_mode(0)
+        self.ctr.set_cursor(3) # Set cursor to sign position
+        self.ctr.change_value(1) # Change the sign
         return self.check_error_status()
 
 # Outputs
