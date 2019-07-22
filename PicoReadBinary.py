@@ -56,7 +56,7 @@ def scan_V(metadatafile):
 if __name__ == '__main__':
     import os
     import matplotlib.pyplot as plt
-    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-04-17', 'DefaultData_2019-04-17_scan_3_metadata.yml')
+    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-07-10', 'DefaultData_2019-07-10_scan_3_metadata.yml')
     time = time_ns(file)
     channels = ['A', 'B', 'C', 'D']
     color = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y'}

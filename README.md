@@ -8,10 +8,10 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 2. Install pip if it is not included in the Python installation already.
 3. Download [git](https://git-scm.com/download/win).
 4. Make a directory in which you want to get the software.
-5. Open a terminal (windows + R) and navigate to the directory.
+5. Open a terminal (windows + R -> cmd) and navigate to the directory.
 6. Download the software by cloning the directory
 ```
-	>>> git clone https://github.com/AnnoTouwen/PicoScope5000.git
+	git clone https://github.com/AnnoTouwen/PicoScope5000.git
 ```
 7. Copy the picosdk directory to the python packages folder, which could be something like
 ```
@@ -19,13 +19,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 ```
 8. Install the following Python packages using pip in the terminal
 ```
-	>>> pip install Pint
-	>>> pip install PyYAML
-	>>> pip install PyQt5
-	>>> pip install numpy
-	>>> pip install Pyqtgraph
-	>>> pip install Matplotlib
-	>>> pip install PySerial
+	pip install Pint PyYAML PyQt5 numpy Pyqtgraph Matplotlib PySerial
 ```
 
 ## How to get the latest update on Windows
@@ -33,7 +27,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 1. Open a terminal (windows + R) and navigate to the directory.
 2. Update the software by pulling it to the directory
 ```
-	>>> git pull
+	git pull
 ```
 
 ## How to implement the Stanford Research Systems Delay Generator DG535
@@ -47,7 +41,7 @@ Welcome to the PicoScope5000 software developed for the NL-eEDM collaboration. T
 Run start.py by double clicking if Python 3 is set to be the standard for executing .py files.
 Alternatively you could naviate to the directory in the terminal and run
 ```
-	>>> python start.py
+	python start.py
 ```
 
 If a PicoScope5000 device is connected a window with the user interface should appear. The powersupply is checked and the device is set accordingly. The Default settings are loaded from config/users.yml. Dependent on these settings a first readout of the scope is also show in a seraprate window. In the user interface messages to the user are dislayed, settings can be changed and measurements can be started. Realtime analysis and plots are shown in separate windows.
@@ -71,7 +65,7 @@ The scandata are saved automatically, but you might want to save the raw binary 
 In this menu the resolution and timeresolution can be set. The PicoScope5000 can measure at 8 to 16 bit resolution and up to a time resolution of 1 ns, but not all combinations. Also not all combinations can be used with every number of channels. To find out the combinations read picoscope-5000-series-a-api-programmers-guide.pdf about Timebase or try combinations and note the feedback messages in the interface.
 The timeresolution is calculated from the measurementtime and the number of measurementpoints in this interval. Note that the timestep goes by powers of 2, not all timesteps are possible. The measurementlength is reset after the timestep has been determined.
 
-The trigger is also set in this menu. If you want to measure without a trigger deactivate it by unticking the box. The triggerposition and level can be shown in the plot of the scope readout. Any of the active channels can be used as trigger, but note that the PicoScope5000 also has an external trigger. The triggertype determines whether the trigger is activated on a rising or falling pass through the trigger level. The trigger level and sample position in the timewindow can be set by filling in a value, bu also by dragging the trigger lines if shown in the scope plot. A delay can be set to the trigger, to make the trigger happen a number of samples after the level crossing. An autotrigger sets the time after which a trigger occurs even without a crossing of the trigger level. The autotrigger is switched off by setting it to 0.
+The trigger is also set in this menu. If you want to measure without a trigger deactivate it by unticking the box. The triggerposition and level can be shown in the plot of the scope readout. If not fixed the trigger values can be changed by dragging the lines in the plot. Any of the active channels can be used as trigger, but note that the PicoScope5000 also has an external trigger. The triggertype determines whether the trigger is activated on a rising or falling pass through the trigger level. The trigger level and sample position in the timewindow can be set by filling in a value, bu also by dragging the trigger lines if shown in the scope plot. A delay can be set to the trigger, to make the trigger happen a number of samples after the level crossing. An autotrigger sets the time after which a trigger occurs even without a crossing of the trigger level. The autotrigger is switched off by setting it to 0.
 
 ### Channels
 
@@ -89,7 +83,7 @@ On the scopereadout, or averages over multiple of those, windows can be selected
 
 This analysis can be activated or deactivted. Multiple scans can be performed with a delay between them. If the time between these scan is less than the set interval a warning is displayed once, but scans continue at the fastest pace possible.
 
-A window can be selected or added from the dropdownmenu to change its settings. The colour of the window in the scopereadout plotwindow can be set. It can be shown in the scope plotwindow, where the boundaries can be slided to select the desired window. The boundaries can also be set by filling in their start and length. For every window also an active channel has to be selected. Extra windows can be deleted, but not Window 1 and 2.
+A window can be selected or added from the dropdownmenu to change its settings. The colour of the window in the scopereadout plotwindow can be set. It can be shown in the scope plotwindow, where the boundaries can be slided to select the desired window, if not fixed. The boundaries can also be set by filling in their start and length. For every window also an active channel has to be selected. Extra windows can be deleted, but not Window 1 and 2.
 
 A calculator can be selected or added from the dropdownmenu to change its settings. The colour of the calculator in the scan plotwindow can be set. It can be selected wether it is shown in the scan plotwindow. Two windows and the operation between these averages can be selected from the dropdownmenus. The name of the calculator can be changed for better labelling in plots. Extra calculators can be deleted, but not Calculator 1.
 
@@ -97,17 +91,17 @@ The scans can be plotted in a scanplot, which will be shown in a separate window
 
 ## Delay
 
-If a Stanford Research Systems Delay Generator DG535 is connected correctly it can also be controlled from the PicoScope software. To establish the connection set the communication port for the device and selecting Active. Note that only one communication channel can be active at the same time, close any other connections via this port before trying to connect.
+If a Stanford Research Systems Delay Generator DG535 is connected correctly it can also be controlled from the PicoScope software. To establish the connection set the communication port for the device and selecting Active. Note that only one communication channel can be active at the same time, close any other connections via this port before trying to connect. The correct communication port can be found in the device manager. The software communicates to GPIB adress 5, which should therefore be set manualy in the Delay Generator by pressing the GPIB button before connecting.
 
 The output signals from the BNC connectors of the delay generator can be set to TTL, NIM or ECL logic. The output impedance can be set to 50 Ohm or HighZ.
 
 The Delay Generator can be triggered internally or externally. For the internal trigger insert a trigger frequency. For the external trigger set the input impedance for the external trigger BNC connector to 50 Ohm or HighZ. Also select the edge and level of the signal at which the trigger has to occur.
 
-The delay generator can generate four delays, labelled A to D. For every delay the delay time and reference point have to be selected, either another delay or the trigger time T0. Note that the delay generator sets the outputsignals to high after the delay time and only sets the outputsignals back to low after the full cycle has completed, skipping any intermediate triggers. Signals of specific lengths can be set using the A^B, A_B, C^D and C_D connectors.
+The delay generator can generate four delays, labelled A to D. For every delay the delay time and reference point have to be selected, either another delay or the trigger time T0. Note that the delay generator sets the outputsignals to high after the delay time and only sets the outputsignals back to low after the full cycle has completed, skipping any intermediate triggers. Signals of specific lengths can be made using the A^B, A_B, C^D and C_D connectors.
 
 ## Using delay for scans
 
-A scan over different delays can be performed by setting the Scanpoint label in the Scan tab to Delay A up to Delay D. The initial Scanpoint value is set to the set delaytime, the Scanpoint value difference is converted to seconds, but can be changed manually. If now a scan is performed the delaytime for the selected delay is changed by the Scanpoind value difference time, as can be seen by the changing delaytime value in the Delay tab.
+A scan over different delays can be performed by setting the Scanpoint label in the Scan tab to Delay A up to Delay D. The initial Scan value is set to the set delaytime, the Scanpoint value difference is converted to seconds, but can be changed manually. If now a scan is performed the delaytime for the selected delay is changed by the Scan value difference time, as can be seen by the changing delaytime value in the Delay tab.
 
 ## Running measurements
 
@@ -117,9 +111,9 @@ By pressing start a measurement is started with the settings described above. Af
 
 To interpret saved data PicoReadBinary.py can be used, either in another script or directly. To do so import the script by
 ```
-	>>> import PicoReadBinary as prb
+	import PicoReadBinary as prb
 ```
-The script reads datafiles based on their metadatfile given as input. 
+The script reads datafiles based on their metadatfile given as input (Absolute path). 
 
 ### prb.load_settings()
 

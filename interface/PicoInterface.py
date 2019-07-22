@@ -12,7 +12,7 @@ import os
 import yaml
 import random
 from time import sleep, time
-from datetime import date
+from datetime import date, datetime
 from functools import partial
 from pint import UnitRegistry
 ur = UnitRegistry()
@@ -25,6 +25,9 @@ class Pico5000Interface(QMainWindow):
         main_window_file = os.path.join(self.base_folder, 'main_window.ui')
         uic.loadUi(main_window_file, self)
         #self.tabWidget.setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
+        self.From_Scanvalue.hide()
+        self.From_ScanvalueL.hide()
+        #self.From_ScanvalueSpacer.hide()
 
         self.itp = interpreter # Start interpreter
 
@@ -67,13 +70,22 @@ class Pico5000Interface(QMainWindow):
         self.two_channels()
 
         # Plotparameters and objects
-        self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerlevel')
-        self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position']+1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
+        self.newData = False
+        if self.current_settings['Trigger']['Fixed'] == 0:
+            self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerlevel')
+            self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position']+1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=True, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
+        else:
+            self.current_triggerlevel = pg.InfiniteLine(pos=ur(str(self.current_settings['Trigger']['Level']).replace(' ', '')).m_as('V'), angle=0, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=False, name='current_triggerlevel')
+            self.current_triggerposition = pg.InfiniteLine(pos=(self.current_settings['Trigger']['Position'] + 1) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DashLine, width=2), hoverPen=pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], width=2), movable=False, name='current_triggerposition', bounds=[0, ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('ns')])
         self.window_start_draw = {}
         self.window_finish_draw = {}
         for window in self.windows:
-            self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
-            self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            if self.current_settings['Analyse']['WindowsFixed'] == 0:
+                self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
+                self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            else:
+                self.window_start_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=False, bounds=[0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(window))
+                self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=False, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
         self.plot_font = pg.Qt.QtGui.QFont()
         self.change_fontsize()
 
@@ -100,9 +112,9 @@ class Pico5000Interface(QMainWindow):
         elif self.itp.dev.status["openunit"] == 282:
             self.Messages.append('No external powersupply connected, when working with a PicoScope5444D check the plug and restart for four channel options')
 
-        # Display Delay Generator connector
+        # Close Delay Generator
         if self.current_settings['Delay']['Active'] > 0:
-            self.open_delay_connection_window()
+            self.cancel_delay_generator()
 
         # Interaction with interface
             # User tab
@@ -123,6 +135,7 @@ class Pico5000Interface(QMainWindow):
         self.Blocklength.editingFinished.connect(self.change_blocklength)
         self.TActive.stateChanged.connect(self.change_trigger_active)
         self.TShow.stateChanged.connect(self.change_trigger_show)
+        self.TFix.stateChanged.connect(self.change_trigger_fixed)
         self.TChannel.currentTextChanged.connect(self.change_trigger_channel)
         self.TType.currentTextChanged.connect(self.change_trigger_type)
         self.TLevel.editingFinished.connect(self.change_trigger_level)
@@ -152,6 +165,7 @@ class Pico5000Interface(QMainWindow):
         self.WindowSelect.currentTextChanged.connect(self.change_window)
         self.WindowColour.clicked.connect(self.change_window_colour)
         self.WindowShow.stateChanged.connect(self.change_window_show)
+        self.WindowFix.stateChanged.connect(self.change_window_fixed)
         self.WindowChannel.currentTextChanged.connect(self.change_window_channel)
         self.WindowStart.editingFinished.connect(self.change_window_start)
         self.WindowLength.editingFinished.connect(self.change_window_length)
@@ -171,6 +185,8 @@ class Pico5000Interface(QMainWindow):
         self.ScanValueDifference.editingFinished.connect(self.change_analyse_scanvaluedifference)
         self.ScanLabel.editingFinished.connect(self.change_analyse_scanlabel)
         self.Save_scan_plot_button.clicked.connect(self.save_scan_plot_window)
+        # Delay
+        self.From_Scanvalue.currentTextChanged.connect(self.delay_change_from_scan)
 
         # Device
         self.actionPicoScope5444D.triggered.connect(self.four_channels)
@@ -206,7 +222,6 @@ class Pico5000Interface(QMainWindow):
             self.Delay[connector].editingFinished.connect(partial(self.delay_change_delay, connector))
             # self.Difference[connector].editingFinished.connect(partial(self.delay_change_difference, connector))
             self.From[connector].currentTextChanged.connect(partial(self.delay_change_from, connector))
-
 
 # -------------------------------------------------------------------------------
 
@@ -255,7 +270,7 @@ class Pico5000Interface(QMainWindow):
                 self.timer.timeout.connect(self.plot_scan)
             if self.current_settings['Plot']['Show'] == 2:
                 self.timer.timeout.connect(self.plot_measurement)
-            self.timer.start(500)  # Time in millieseconds
+            self.timer.start(1000)  # Time in millieseconds
             #self.start_measurement()
             measurement_thread = threading.Thread(target = partial(self.start_measurement, continuously))
             measurement_thread.daemon = True
@@ -264,6 +279,7 @@ class Pico5000Interface(QMainWindow):
             self.Messages.append('Measurement already running')
 
     def start_measurement(self, continuously):
+        self.current_settings['Previous starttime'] = str(datetime.now())
         self.measurement_running = True
         self.continuously = continuously
         self.date = str(date.today())
@@ -277,8 +293,9 @@ class Pico5000Interface(QMainWindow):
         if not os.path.isdir(self.current_settings['Save']['Folder']):  # If there is no such folder create one
             os.makedirs(self.current_settings['Save']['Folder'])
         #self.Messages.append('Measurement started')
-        if self.current_settings['Analyse']['Active'] and self.current_settings['Delay']['Active'] > 0:
-            if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
+        #print('Time before starting: ', time()- starttime)
+        if self.current_settings['Analyse']['Active']: # and self.current_settings['Delay']['Active'] > 0:
+            if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                 self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue'])) + ' s')
                 self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
             self.scannumber = 1
@@ -291,12 +308,16 @@ class Pico5000Interface(QMainWindow):
                 if not os.path.isdir(self.binarydirectory):
                     os.makedirs(self.binarydirectory)
             self.itp.reset_scandata(self.calculators)
-            self.scan_start_time = time()
             self.save_personal_settings(self.measurement_name, self.measurement_project, self.scanfile.replace('.yml', '_metadata.yml'), metadata = True)#os.path.join(self.current_settings['Save']['Folder'], self.current_settings['Save']['Filename'] + '_' + str(self.scan_start_time).replace('.', '_') + '_metadata.yml'), metadata=True)
             if continuously:
                 scans = 1000000
             else:
                 scans = self.current_settings['Analyse']['Scans']
+            #print('Time before really starting: ', time() - starttime)
+            self.scan_start_time = time()
+            #
+            # Loop for every scan
+            #
             for self.averagenumber in range(scans):
                 self.meaurement_start_time = time()
                 self.run_measurement()
@@ -307,7 +328,7 @@ class Pico5000Interface(QMainWindow):
                         self.itp.read_windows(window, int(self.current_settings['Analyse']['Windows'][window]['Start']), int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length']), self.current_settings['Analyse']['Windows'][window]['Channel'])
                         # print('Windows read after: ', time() - self.meaurement_start_time)
                     self.itp.compute_scanpoint_scanvalue(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference']))
-                    if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']):
+                    if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                         self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference'])) + ' s')
                         self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
                     for calculator in self.calculators:
@@ -328,11 +349,11 @@ class Pico5000Interface(QMainWindow):
                         self.measurement_running = False
         else:
             self.averagenumber = 0
-            self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber+1))
-            while os.path.isdir(self.binarydirectory):
-                self.averagenumber += 1
-                self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber + 1))
             if not self.current_settings['Save']['Autosave'] in 'Never':
+                self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber+1))
+                while os.path.isdir(self.binarydirectory):
+                    self.averagenumber += 1
+                    self.binarydirectory = os.path.join(self.current_settings['Save']['Folder'], self.date, self.current_settings['Save']['Filename'] + '_' + str(self.date) + '_measurement_{}_scope'.format(self.averagenumber + 1))
                 if not os.path.isdir(self.binarydirectory):
                     os.makedirs(self.binarydirectory)
             while self.measurement_running:
@@ -360,66 +381,69 @@ class Pico5000Interface(QMainWindow):
                 self.pause_button.setText('Continue')
 
     def run_measurement(self):
-            self.itp.reset_buffer_sum()
-            #print('Measurement time: ', self.meaurement_start_time)
-            for self.measurementnumber in range(self.current_settings['Average']['Blocks']):
-                while self.measurement_pause:
-                    if self.continue_after_setting:
-                        self.set_measurement_settings()
-                        self.continue_after_setting = False
-                        self.measurement_pause = False
-                    else:
-                        pass
-                if not self.measurement_running:
-                    break
+        self.itp.reset_buffer_sum()
+        #print('Measurement time: ', self.meaurement_start_time)
+        for self.measurementnumber in range(self.current_settings['Average']['Blocks']):
+            while self.measurement_pause:
+                if self.continue_after_setting:
+                    self.set_measurement_settings()
+                    self.continue_after_setting = False
+                    self.measurement_pause = False
                 else:
-                    #print('Next block: ', time() - self.meaurement_start_time)
-                    self.get_block()
-                    #print('Block obtained after: ', time() - self.meaurement_start_time)
-                    if self.current_settings['Save']['Autosave'] in 'Every scope':
-                        if self.current_settings['Analyse']['Active'] == 2:
-                            filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_scan_{}_{}_{}.bin'.format(self.scannumber, self.averagenumber+1, self.measurementnumber+1)
-                        else:
-                            filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_measurement_{}_{}.bin'.format(self.averagenumber+1, self.measurementnumber+1)
-                        self.itp.save_binary(os.path.join(self.binarydirectory, filename), self.active_channels)
-                        message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
-                        #self.Messages.append(message)
-                    #if self.measurementnumber < self.current_settings['Average']['Blocks']-1:
-                    delay = (self.measurementnumber + 1)*ur(self.current_settings['Average']['Pause'].replace(' ', '')).m_as('s')
-                    if time() - self.meaurement_start_time > delay:
-                        if not self.block_too_slow:
-                            self.Messages.append('Can not keep up with measurementrate, increase Time between measurements ({})'.format(str(round(time() - self.meaurement_start_time, 4)) + ' s'))
-                            self.block_too_slow = True
+                    pass
+            if not self.measurement_running:
+                break
+            else:
+                #print('Next block: ', time() - self.meaurement_start_time)
+                self.get_block()
+                #print('Block obtained after: ', time() - self.meaurement_start_time)
+                if self.current_settings['Save']['Autosave'] in 'Every scope':
+                    if self.current_settings['Analyse']['Active'] == 2:
+                        filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_scan_{}_{}_{}.bin'.format(self.scannumber, self.averagenumber+1, self.measurementnumber+1)
                     else:
-                        while time() - self.meaurement_start_time < delay:
-                            pass
-                    if self.measurementnumber == self.current_settings['Average']['Blocks'] - 1:
-                        self.itp.block_average(self.current_settings['Time']['Samples'], self.current_settings['Average']['Blocks'])
-                        #print('Averaged over blocks after: ', time() - self.meaurement_start_time)
-                        if self.current_settings['Save']['Autosave'] in 'Every scope average':
-                            if self.current_settings['Analyse']['Active'] == 2:
-                                filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_scan_{}_{}.bin'.format(self.scannumber, self.averagenumber + 1)
-                            else:
-                                filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_measurement_{}.bin'.format(self.averagenumber + 1)
-                            if self.current_settings['Analyse']['Active'] == 0:
-                                self.save_personal_settings(self.measurement_name, self.measurement_project, os.path.join(self.current_settings['Save'][ 'Folder'], self.date, filename.replace('.bin', '_metadata.yml')), metadata=True)
-                            if self.current_settings['Save']['Autosave'] not in 'Every scope':
-                                self.itp.save_binary(os.path.join(self.binarydirectory, filename), self.active_channels, Average = True)
-                                message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
-                                #self.Messages.append(message)
+                        filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_measurement_{}_{}.bin'.format(self.averagenumber+1, self.measurementnumber+1)
+                    self.itp.save_binary(os.path.join(self.binarydirectory, filename), self.active_channels)
+                    message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
+                    #self.Messages.append(message)
+                #if self.measurementnumber < self.current_settings['Average']['Blocks']-1:
+                delay = (self.measurementnumber + 1)*ur(self.current_settings['Average']['Pause'].replace(' ', '')).m_as('s')
+                if time() - self.meaurement_start_time > delay:
+                    if not self.block_too_slow:
+                        self.Messages.append('Can not keep up with measurementrate, increase Time between measurements ({})'.format(str(round(time() - self.meaurement_start_time, 4)) + ' s'))
+                        self.block_too_slow = True
+                else:
+                    while time() - self.meaurement_start_time < delay:
+                        pass
+                if self.measurementnumber == self.current_settings['Average']['Blocks'] - 1:
+                    self.itp.block_average(self.current_settings['Average']['Blocks'])
+                    #print('Averaged over blocks after: ', time() - self.meaurement_start_time)
+                    if self.current_settings['Save']['Autosave'] in 'Every scope average':
+                        if self.current_settings['Analyse']['Active'] == 2:
+                            filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_scan_{}_{}.bin'.format(self.scannumber, self.averagenumber + 1)
+                        else:
+                            filename = str(self.current_settings['Save']['Filename']) + '_' + str(self.date) + '_measurement_{}.bin'.format(self.averagenumber + 1)
+                        if self.current_settings['Analyse']['Active'] == 0:
+                            self.save_personal_settings(self.measurement_name, self.measurement_project, os.path.join(self.current_settings['Save'][ 'Folder'], self.date, filename.replace('.bin', '_metadata.yml')), metadata=True)
+                        if self.current_settings['Save']['Autosave'] not in 'Every scope':
+                            self.itp.save_binary(os.path.join(self.binarydirectory, filename), self.active_channels, Average = True)
+                            message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
+                            #self.Messages.append(message)
+        self.newData = True
 
     def plot_measurement(self):
-        try:
-            self.scope_legend.scene().removeItem(self.scope_legend)
-        except:
-            pass
-        self.scope_legend = self.plot_window.addLegend()
-        try:
-            for channel in self.active_channels:
-                self.itp.interpret_data(self.current_settings['Time']['Samples'], ur(str(self.current_settings['Time']['Timestep'])).m_as('ns'), channel, str(self.current_settings['Channels'][channel]['Range']))
-            self.plot_data()
-        except KeyError:
-            pass
+        if self.newData:
+            try:
+                self.scope_legend.scene().removeItem(self.scope_legend)
+            except:
+                pass
+            self.scope_legend = self.plot_window.addLegend()
+            try:
+                    for channel in self.active_channels:
+                        self.itp.interpret_data(self.current_settings['Time']['Samples'], ur(str(self.current_settings['Time']['Timestep'])).m_as('ns'), channel, str(self.current_settings['Channels'][channel]['Range']), 1000)
+                    self.plot_data()
+            except KeyError:
+                pass
+            self.newData = False
 
     def plot_scan(self, datadots = True):
         try:
@@ -529,18 +553,19 @@ class Pico5000Interface(QMainWindow):
             self.timewindow_changed = False
             for i in self.channels:
                 self.buffer_changed[i] = True
-        for i in self.channels:
-            if self.buffer_changed[i]:
-                if self.current_settings['Channels'][i]['Active'] == 2:
-                    self.itp.set_buffer(i, self.current_settings['Time']['Samples'])
-                else:
-                    try:
-                        del self.itp.buffer[i]
-                    except KeyError:
-                        pass
-                #message = 'Buffer for channel ' + i + 'set'
-                #self.Messages.append(message)
-                self.buffer_changed[i] = False
+            for i in self.channels:
+                if self.buffer_changed[i]:
+                    if self.current_settings['Channels'][i]['Active'] == 2:
+                        self.itp.set_buffer(i, self.current_settings['Time']['Samples'])
+                    else:
+                        try:
+                            del self.itp.buffer[i]
+                        except KeyError:
+                            pass
+                    #message = 'Buffer for channel ' + i + 'set'
+                    #self.Messages.append(message)
+                    self.buffer_changed[i] = False
+
         if self.trigger_changed:
             if self.current_settings['Trigger']['Channel'] in 'External':
                 self.itp.set_trigger(int(self.current_settings['Trigger']['Active']), self.current_settings['Trigger']['Channel'], self.current_settings['Trigger']['Type'], self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Delay'], self.current_settings['Trigger']['Auto'])
@@ -594,10 +619,10 @@ class Pico5000Interface(QMainWindow):
             self.change_showplot()
             self.plot_window.clear()
         if self.current_settings['Trigger']['Show'] == 2:
-            self.show_trigger(self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Position'], measurement = True)
+            #self.show_trigger(self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Position'], measurement = True)
             self.show_trigger()
-        for window in self.windows:
-            if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
+        if self.current_settings['Analyse']['WindowsShow'] == 2:
+            for window in self.windows:
                 self.plot_window.addItem(self.window_start_draw[window])
                 self.plot_window.addItem(self.window_finish_draw[window])
         for i in self.channels:
@@ -607,7 +632,7 @@ class Pico5000Interface(QMainWindow):
                 except KeyError:
                     pass
 
-    def show_trigger(self, level = False, position = False, measurement = False):
+    def show_trigger(self):#, level = False, position = False, measurement = False):
         '''
         if measurement:
             self.measurement_triggerlevel = pg.InfiniteLine(pos = ur(str(level).replace(' ', '')).m_as('V'), angle = 0, pen = pg.mkPen(self.channel_colour[self.current_settings['Trigger']['Channel']], style=Qt.DotLine))
@@ -622,20 +647,19 @@ class Pico5000Interface(QMainWindow):
     def remove_trigger(self):
         self.plot_window.removeItem(self.current_triggerlevel)
         self.plot_window.removeItem(self.current_triggerposition)
-        #self.plot_window.removeItem(self.measurement_triggerlevel)
-        #self.plot_window.removeItem(self.measurement_triggerposition)
 
     def calculate_timebase(self):
         NumberOfActiveChannels = 0
         for i in self.channels:
             if self.current_settings['Channels'][i]['Active'] == 2:
                 NumberOfActiveChannels += 1
+        blocklength_unit = str(self.current_settings['Time']['Blocklength'])[-2:].replace(' ','')
         Timebase_data = self.itp.calculate_timebase(NumberOfActiveChannels, self.current_settings['Time']['Resolution'], self.current_settings['Time']['Samples'], self.current_settings['Time']['Blocklength'])
         self.current_settings['Time']['Timebase'] = Timebase_data[0]
         self.current_settings['Time']['Timestep'] = str(Timebase_data[1])
-        self.current_settings['Time']['Blocklength'] = str(Timebase_data[2])
+        self.current_settings['Time']['Blocklength'] = str(ur(str(int(ur(Timebase_data[2]).m_as('ns'))) + 'ns').m_as(blocklength_unit))+ ' ' + blocklength_unit
         self.Timestep.setText(str(Timebase_data[1]))
-        self.Blocklength.setText(Timebase_data[2])
+        self.Blocklength.setText(self.current_settings['Time']['Blocklength'])
         if Timebase_data[3]:
             self.Messages.append(str(Timebase_data[3]))
         if self.first_timebase:
@@ -735,6 +759,7 @@ class Pico5000Interface(QMainWindow):
                 '''
             self.TActive.setCheckState(int(self.current_settings['Trigger']['Active']))
             self.TShow.setCheckState(int(self.current_settings['Trigger']['Show']))
+            self.TFix.setCheckState(int(self.current_settings['Trigger']['Fixed']))
             self.TChannel.setCurrentText(str(self.current_settings['Trigger']['Channel']))
             self.TType.setCurrentText(str(self.current_settings['Trigger']['Type']))
             self.TLevel.setText(str(self.current_settings['Trigger']['Level']))
@@ -765,8 +790,9 @@ class Pico5000Interface(QMainWindow):
             self.current_window = 1
             self.WindowSelect.setCurrentText('Window 1')
             self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
-            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['Windows'][1]['Show']))
             self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][1]['Channel']))
+            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['WindowsShow']))
+            self.WindowFix.setCheckState(int(self.current_settings['Analyse']['WindowsFixed']))
             self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][1]['Start']))
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][1]['Length']))
             for calculator in self.calculators:
@@ -849,11 +875,18 @@ class Pico5000Interface(QMainWindow):
         sleep(time_in_seconds)
         self.confirm_overwrite_personal = False
 
+    def autosave_settings(self):
+        if str(self.Name.text()) in 'DefaultUser':
+            self.save_personal_settings('AutoSaveDefaultUser', str(self.Project.text()), os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'))
+        else:
+            self.save_personal_settings(str(self.Name.text()), str(self.Project.text()), os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'))
+
     def save_personal_settings(self, name, project, file, metadata=False):  # Save settings to users.yml file
         if metadata:
             users = {}
             users[name] = {}
             users[name][project] = self.current_settings
+            users[name][project]['Previous endtime'] = str(datetime.now())
             f = open(file, 'w')
             yaml.safe_dump(users, f)
             f.close()
@@ -879,10 +912,7 @@ class Pico5000Interface(QMainWindow):
         f.close()
 
     def closeEvent(self, QCloseEvent): # Stop doing measurements and communication with device
-        if str(self.Name.text()) in 'DefaultUser':
-            self.save_personal_settings('AutoSaveDefaultUser', str(self.Project.text()), os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'))
-        else:
-            self.save_personal_settings(str(self.Name.text()), str(self.Project.text()), os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'users.yml'))
+        self.autosave_settings()
         self.itp.stop_device()
         self.itp.close_device()
         super(Pico5000Interface, self).closeEvent(QCloseEvent)
@@ -894,7 +924,7 @@ class Pico5000Interface(QMainWindow):
             pass
 
     def change_fontsize(self): # Apply Fontsize
-        self.current_settings['User']['Fontsize'] = self.Fontsize.text()
+        self.current_settings['User']['Fontsize'] = int(self.Fontsize.text())
         font = self.centralwidget.font()
         font.setPointSize(int(self.Fontsize.text()))
         Lfont = self.centralwidget.font()
@@ -907,6 +937,7 @@ class Pico5000Interface(QMainWindow):
         self.continuously_button.setFont(Lfont)
         self.change_plot_fontsize()
         self.change_scan_plot_fontsize()
+        self.autosave_settings()
 
     def change_plot_fontsize(self):
         try:
@@ -919,9 +950,7 @@ class Pico5000Interface(QMainWindow):
             self.plot_window.setLabel('left', 'Voltage', units='V', **fontStyle)
             self.plot_window.setLabel('bottom', 'Time', units='s', **fontStyle)
             for window in self.windows:
-                if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
-                    pass
-
+                pass
         except AttributeError:
             pass
 
@@ -965,10 +994,20 @@ class Pico5000Interface(QMainWindow):
             if self.measurement_running:
                 self.measurement_pause = True
                 self.continue_after_setting = True
+            self.autosave_settings()
 
     def change_samples(self):
         old_number_of_samples = self.current_settings['Time']['Samples']
-        self.current_settings['Time']['Samples'] = int(self.Samples.text())
+        try:
+            if int(self.Samples.text()) <= 1:
+                self.Samples.setText(str(self.current_settings['Time']['Samples']))
+                self.Messages.append('Samples must be larger than 1')
+                return
+            self.current_settings['Time']['Samples'] = int(self.Samples.text())
+        except ValueError:
+            self.Samples.setText(str(self.current_settings['Time']['Samples']))
+            self.Messages.append('Samples must be an integer')
+            return
         self.calculate_timebase()
         if self.current_settings['Trigger']['Position'] > self.current_settings['Time']['Samples']:
             self.TPosition.setText(str(int(self.current_settings['Trigger']['Position']*self.current_settings['Time']['Samples']/old_number_of_samples)))
@@ -981,25 +1020,50 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_blocklength(self):
-        self.current_settings['Time']['Blocklength'] = str(self.Blocklength.text())
+        try:
+            unitcheck = ur(str(self.Blocklength.text())).m_as('s')
+            if unitcheck < 0:
+                self.Blocklength.setText(str(self.current_settings['Time']['Blocklength']))
+                self.Messages.append('Blocklength must be positive')
+                return
+            self.current_settings['Time']['Blocklength'] = str(self.Blocklength.text())
+        except:
+            self.Blocklength.setText(str(self.current_settings['Time']['Blocklength']))
+            self.Messages.append('Blocklength must have time units')
+            return
         self.calculate_timebase()
         self.timewindow_changed = True
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_show(self):
         self.current_settings['Trigger']['Show'] = int(self.TShow.checkState())
         if self.current_settings['Trigger']['Show'] == 2:
             self.show_trigger()
+            '''
             try:
                 self.show_trigger(self.current_settings['Trigger']['Level'], self.current_settings['Trigger']['Position'], measurement = True)
             except NameError:
                 pass
+            '''
         else:
             self.remove_trigger()
+        self.autosave_settings()
+
+    def change_trigger_fixed(self):
+        self.current_settings['Trigger']['Fixed'] = int(self.TFix.checkState())
+        if self.current_settings['Trigger']['Fixed'] == 2:
+            self.current_triggerlevel.setMovable(False)
+            self.current_triggerposition.setMovable(False)
+        else:
+            self.current_triggerlevel.setMovable(True)
+            self.current_triggerposition.setMovable(True)
+        self.autosave_settings()
 
     def change_trigger_active(self):
         self.current_settings['Trigger']['Active'] = int(self.TActive.checkState())
@@ -1007,6 +1071,7 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_channel(self):
         self.current_settings['Trigger']['Channel'] = str(self.TChannel.currentText())
@@ -1025,6 +1090,7 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_type(self):
         self.current_settings['Trigger']['Type'] = str(self.TType.currentText())
@@ -1032,6 +1098,7 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_level_drag(self):
         level = self.current_triggerlevel.value()
@@ -1051,8 +1118,16 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_level(self):
+        try:
+            unitcheck = ur(str(self.TLevel.text())).m_as('V')
+            self.current_settings['Trigger']['Level'] = str(self.TLevel.text())
+        except:
+            self.TLevel.setText(str(self.current_settings['Trigger']['Level']))
+            self.Messages.append('Trigger level must have voltage units')
+            return
         if self.current_settings['Trigger']['Channel'] in 'External':
             if ur(str(self.TLevel.text())).m_as('V') > 5:
                 self.TLevel.setText(str(5) + ' V')
@@ -1064,13 +1139,24 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_delay(self):
-        self.current_settings['Trigger']['Delay'] = int(self.TDelay.text())
+        try:
+            if int(self.TDelay.text()) < 0:
+                self.TDelay.setText(str(self.current_settings['Trigger']['Delay']))
+                self.Messages.append('Samples Delayed must be positive')
+                return
+            self.current_settings['Trigger']['Delay'] = int(self.TDelay.text())
+        except ValueError:
+            self.TDelay.setText(str(self.current_settings['Trigger']['Delay']))
+            self.Messages.append('Samples Delayed must be an integer')
+            return
         self.trigger_changed = True
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_position_drag(self):
         self.current_settings['Trigger']['Position'] = int(round(self.current_triggerposition.value()/ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')))
@@ -1079,18 +1165,42 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_position(self):
-        self.current_settings['Trigger']['Position'] = int(self.TPosition.text())
+        try:
+            if abs(int(self.TPosition.text())) > int(self.current_settings['Time']['Samples']):
+                self.TPosition.setText(str(self.current_settings['Trigger']['Position']))
+                self.Messages.append('Sample Position must be less than Samples')
+            if int(self.TPosition.text()) < 0:
+                self.TPosition.setText(str(int(self.current_settings['Time']['Samples']) + int(self.TPosition.text())))
+            self.current_settings['Trigger']['Position'] = int(self.TPosition.text())
+        except ValueError:
+            self.TPosition.setText(str(self.current_settings['Trigger']['Position']))
+            self.Messages.append('Sample Position must be an integer')
+            return
         self.current_triggerposition.setValue((self.current_settings['Trigger']['Position'])*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
         self.trigger_changed = True
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_trigger_auto(self):
+        try:
+            if self.Autotrigger.text() not in '0':
+                unitcheck = ur(str(self.Autotrigger.text())).m_as('s')
+                if unitcheck < 0:
+                    self.Autotrigger.setText(str(self.current_settings['Trigger']['Auto']))
+                    self.Messages.append('Autotrigger after must be positive')
+                    return
+                self.current_settings['Trigger']['Auto'] = str(self.Autotrigger.text())
+        except:
+            self.Autotrigger.setText(str(self.current_settings['Trigger']['Auto']))
+            self.Messages.append('Autotrigger after must have time units')
+            return
         if ur(self.current_settings['Trigger']['Auto'].replace(' ', '')).m_as('ms') < 1 and ur(self.current_settings['Trigger']['Auto'].replace(' ', '')).m_as('ms') is not 0:
-            self.Messages.append('Autotriggertime can not be set less than 1 ms. To switch off the autotrigger set time to zero')
+            self.Messages.append('Autotrigger time can not be set less than 1 ms. To switch off the autotrigger set Autotrigger time to zero')
             self.current_settings['Trigger']['Auto'] = '1 ms'
             self.Autotrigger.setText('1 ms')
         else:
@@ -1099,6 +1209,7 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_channel_active(self, channel):
         self.current_settings['Channels'][channel]['Active'] = int(self.ChannelActive[channel].checkState())
@@ -1107,6 +1218,7 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_channel_range(self, channel):
         self.current_settings['Channels'][channel]['Range'] = str(self.ChannelRange[channel].currentText())
@@ -1114,6 +1226,7 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_channel_coupling(self, channel):
         self.current_settings['Channels'][channel]['Coupling'] = str(self.ChannelCoupling[channel].currentText())
@@ -1121,15 +1234,38 @@ class Pico5000Interface(QMainWindow):
         if self.measurement_running:
             self.measurement_pause = True
             self.continue_after_setting = True
+        self.autosave_settings()
 
     def change_channel_name(self, channel):
         self.current_settings['Channels'][channel]['Name'] = str(self.ChannelName[channel].text())
+        self.autosave_settings()
 
     def change_average_nom(self):
-        self.current_settings['Average']['Blocks'] = int(self.NumberOfMeasurements.text())
+        try:
+            if int(self.NumberOfMeasurements.text()) < 1:
+                self.NumberOfMeasurements.setText(str(self.current_settings['Average']['Blocks']))
+                self.Messages.append('Number of measurements must be positive')
+                return
+            self.current_settings['Average']['Blocks'] = int(self.NumberOfMeasurements.text())
+        except ValueError:
+            self.NumberOfMeasurements.setText(str(self.current_settings['Average']['Blocks']))
+            self.Messages.append('Number of measurements must be an integer')
+            return
+        self.autosave_settings()
 
     def change_average_pause(self):
-        self.current_settings['Average']['Pause'] = str(self.Pause.text())
+        try:
+            unitcheck = ur(str(self.Pause.text())).m_as('s')
+            if unitcheck < 0:
+                self.Pause.setText(str(self.current_settings['Average']['Pause']))
+                self.Messages.append('Time between measurements must be positive')
+                return
+            self.current_settings['Average']['Pause'] = str(self.Pause.text())
+        except:
+            self.Pause.setText(str(self.current_settings['Average']['Pause']))
+            self.Messages.append('Time between measurements must have time units')
+            return
+        self.autosave_settings()
 
     def change_showplot(self):
         self.current_settings['Plot']['Show'] = int(self.ShowPlot.checkState())
@@ -1138,31 +1274,37 @@ class Pico5000Interface(QMainWindow):
             if self.current_settings['Trigger']['Active'] == 2:
                 self.plot_window.addItem(self.current_triggerlevel)
                 self.plot_window.addItem(self.current_triggerposition)
-            for window in self.windows:
-                if self.current_settings['Analyse']['Windows'][window]['Show'] == 2:
+            if self.current_settings['Analyse']['WindowsShow'] == 2:
+                for window in self.windows:
                     self.plot_window.addItem(self.window_start_draw[window])
                     self.plot_window.addItem(self.window_start_draw[window])
         else:
             self.close_plot_window()
             #self.layout.removeWidget(self.plot_window)
+        self.autosave_settings()
 
     def change_importfile(self):
         self.current_settings['Metadata']['Importfile'] = str(self.Metadata_input.text())
+        self.autosave_settings()
 
     def change_save_directory(self):
         self.current_settings['Save']['Folder'] = str(self.Directory.text())
+        self.autosave_settings()
 
     def change_save_filename(self):
         self.current_settings['Save']['Filename'] = str(self.Filename.text())
+        self.autosave_settings()
 
     def change_save_autosave(self):
         self.current_settings['Save']['Autosave'] = str(self.Autosave.currentText())
+        self.autosave_settings()
 
     def change_analyse_active(self):
         self.current_settings['Analyse']['Active'] = int(self.AnalysisActive.checkState())
         if self.measurement_running:
             self.measurement_running =  False
             self.start_thread(self.continuously)
+        self.autosave_settings()
 
     def change_analyse_showplot(self):
         self.current_settings['Analyse']['ShowPlot'] = int(self.ShowScanPlot.checkState())
@@ -1171,47 +1313,93 @@ class Pico5000Interface(QMainWindow):
             #self.scandatapoint = {}
         else:
             self.close_scan_plot_window()
+        self.autosave_settings()
 
     #def change_analyse_calculate(self):
     #    self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
+    #    self.autosave_settings()
 
     def change_analyse_scanvalue(self):
-        if self.current_settings['Delay']['Active'] > 0 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
-            self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.ScanValue.text())).m_as('s'))
-        else:
-            self.current_settings['Analyse']['ScanValue'] = float(self.ScanValue.text())
+        try:
+            if self.current_settings['Delay']['Active'] > 0 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+                self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.ScanValue.text())).m_as('s'))
+            else:
+                self.current_settings['Analyse']['ScanValue'] = float(self.ScanValue.text())
+        except:
+            self.ScanValue.setText(str(self.current_settings['Analyse']['ScanValue']))
+            self.Messages.append('Invalid Scanpoint startvalue')
+            return
         if self.current_settings['Analyse']['ShowPlot'] == 2:
             self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue'])+float(self.current_settings['Analyse']['ScanValueDifference'])*(int(self.current_settings['Analyse']['Scans'])-1))
+        self.autosave_settings()
 
     def change_analyse_scanvaluedifference(self):
-        if self.current_settings['Delay']['Active'] > 0 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
-            self.current_settings['Analyse']['ScanValueDifference'] = float(ur(str(self.ScanValueDifference.text())).m_as('s'))
-        else:
-            self.current_settings['Analyse']['ScanValueDifference'] = float(self.ScanValueDifference.text())
+        try:
+            if self.current_settings['Delay']['Active'] > 0 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+                self.current_settings['Analyse']['ScanValueDifference'] = float(ur(str(self.ScanValueDifference.text())).m_as('s'))
+            else:
+                self.current_settings['Analyse']['ScanValueDifference'] = float(self.ScanValueDifference.text())
+        except:
+            self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']))
+            self.Messages.append('Invalid Scanpoint value difference')
+            return
         if self.current_settings['Analyse']['ShowPlot'] == 2:
             self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue'])+float(self.current_settings['Analyse']['ScanValueDifference'])*(int(self.current_settings['Analyse']['Scans'])-1))
+        self.autosave_settings()
 
     def change_analyse_scanlabel(self):
         self.current_settings['Analyse']['ScanLabel'] = str(self.ScanLabel.text())
-        if self.current_settings['Delay']['Active'] > 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+        if self.current_settings['Delay']['Active'] > 0 and str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '') in ['A', 'B', 'C', 'D']:
             self.ScanValue.setText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])
             self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])).m_as('s'))
             self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']) + ' s')
+            self.From_Scanvalue.show()
+            self.From_ScanvalueL.show()
+            self.From_Scanvalue.setCurrentText(str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['From']))
             if self.current_settings['Analyse']['ShowPlot'] == 2:
                 self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units = 's')
         else:
+            try:
+                self.From_Scanvalue.hide()
+                self.From_ScanvalueL.hide()
+            except:
+                pass
             if self.current_settings['Analyse']['ShowPlot'] == 2:
                 self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units='')
+        self.autosave_settings()
+
     def change_analyse_calculate(self):
         self.current_settings['Analyse']['Calculate'] = str(self.AnalysisCalculate.currentText())
+        self.autosave_settings()
 
     def change_analyse_scans(self):
-        self.current_settings['Analyse']['Scans'] = int(self.NumberOfScans.text())
+        try:
+            if int(self.NumberOfScans.text()) < 1:
+                self.NumberOfScans.setText(str(self.current_settings['Analyse']['Scans']))
+                self.Messages.append('Number of scanpoints must be positive')
+                return
+            self.current_settings['Analyse']['Scans'] = int(self.NumberOfScans.text())
+        except ValueError:
+            self.NumberOfScans.setText(str(self.current_settings['Analyse']['Scans']))
+            self.Messages.append('Number of scanpoints must be an integer')
+            return
         if self.current_settings['Analyse']['ShowPlot'] == 2:
             self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue'])+float(self.current_settings['Analyse']['ScanValueDifference'])*(int(self.current_settings['Analyse']['Scans'])-1))
+        self.autosave_settings()
 
     def change_analyse_pause(self):
-        self.current_settings['Analyse']['Pause'] = str(self.ScanPause.text())
+        try:
+            unitcheck = ur(str(self.ScanPause.text())).m_as('s')
+            if unitcheck < 0:
+                self.ScanPause.setText(str(self.current_settings['Analyse']['Pause']))
+                self.Messages.append('Time between scanpoints must be positive')
+                return
+            self.current_settings['Analyse']['Pause'] = str(self.ScanPause.text())
+        except:
+            self.ScanPause.setText(str(self.current_settings['Analyse']['Pause']))
+            self.Messages.append('Time between scanpoints must have time units')
+            return
+        self.autosave_settings()
 
     def change_window(self):
         if str(self.WindowSelect.currentText()) in 'Add Window':
@@ -1223,8 +1411,12 @@ class Pico5000Interface(QMainWindow):
             self.current_settings['Analyse']['Windows'][self.current_window]['Colour'] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
             self.current_settings['Analyse']['Windows'][self.current_window]['Start'] = str(self.WindowStart.text())
             self.current_settings['Analyse']['Windows'][self.current_window]['Length'] = str(self.WindowLength.text())
-            self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
-            self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            if self.current_settings['Analyse']['WindowsFixed'] == 0:
+                self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
+                self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=True, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+            else:
+                self.window_start_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=False, bounds=[0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')], name = 'Window ' + str(self.current_window))
+                self.window_finish_draw[self.current_window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2), movable=False, bounds=[int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
             self.change_window_show()
             self.change_window_channel()
             self.WindowSelect.addItem('Window {}'.format(self.current_window))
@@ -1236,10 +1428,10 @@ class Pico5000Interface(QMainWindow):
         else:
             self.current_window = int(str(self.WindowSelect.currentText()).replace('Window ', ''))
             self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
-            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['Windows'][self.current_window]['Show']))
             self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Channel']))
             self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Start']))
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
+        self.autosave_settings()
 
     def delete_window(self):
         if self.current_window in [1 ,2]:
@@ -1265,6 +1457,7 @@ class Pico5000Interface(QMainWindow):
             self.WindowSelect.removeItem(self.WindowSelect.findText('Window {}'.format(self.current_window)))
             self.WindowSelect.setCurrentText('Window 1')
             self.current_window = 1
+        self.autosave_settings()
 
     def change_window_colour(self):
         self.current_settings['Analyse']['Windows'][self.current_window]['Colour'] = (QColorDialog.getColor()).getRgb()[:3]
@@ -1273,25 +1466,45 @@ class Pico5000Interface(QMainWindow):
         self.window_finish_draw[self.current_window].setPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), style=Qt.DashLine, width=2))
         self.window_start_draw[self.current_window].setHoverPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2))
         self.window_finish_draw[self.current_window].setHoverPen(pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][self.current_window]['Colour']), width=2))
+        self.autosave_settings()
 
     def change_window_show(self):
-        self.current_settings['Analyse']['Windows'][self.current_window]['Show'] = int(self.WindowShow.checkState())
-        if self.current_settings['Analyse']['Windows'][self.current_window]['Show'] == 2:
-            self.plot_window.addItem(self.window_start_draw[self.current_window])
-            self.plot_window.addItem(self.window_finish_draw[self.current_window])
+        self.current_settings['Analyse']['WindowsShow'] = int(self.WindowShow.checkState())
+        if self.current_settings['Analyse']['WindowsShow'] == 2:
+            for window in self.windows:
+                self.plot_window.addItem(self.window_start_draw[window])
+                self.plot_window.addItem(self.window_finish_draw[window])
         else:
-            self.plot_window.removeItem(self.window_start_draw[self.current_window])
-            self.plot_window.removeItem(self.window_finish_draw[self.current_window])
+            for window in self.windows:
+                self.plot_window.removeItem(self.window_start_draw[window])
+                self.plot_window.removeItem(self.window_finish_draw[window])
+        self.autosave_settings()
+
+    def change_window_fixed(self):
+        self.current_settings['Analyse']['WindowsFixed'] = int(self.WindowFix.checkState())
+        if self.current_settings['Analyse']['WindowsFixed'] == 2:
+            for window in self.windows:
+                self.window_start_draw[window].setMovable(False)
+                self.window_finish_draw[window].setMovable(False)
+        else:
+            for window in self.windows:
+                self.window_start_draw[window].setMovable(True)
+                self.window_finish_draw[window].setMovable(True)
+        self.autosave_settings()
 
     def change_window_channel(self):
         self.current_settings['Analyse']['Windows'][self.current_window]['Channel'] = str(self.WindowChannel.currentText())
+        self.autosave_settings()
 
     #def change_window_window(self, window):
     #    self.current_settings['Analyse']['Windows'][window]['Window'] = str(self.WindowWindow[window].currentText())
+    #    self.autosave_settings()
 
     def change_window_start_drag(self, window):
         self.WindowSelect.setCurrentText('Window {}'.format(window))
         self.change_window()
+        # print(self.current_settings['Time']['Timestep'])
+        # print(ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
         self.current_settings['Analyse']['Windows'][window]['Start'] = int(round(self.window_start_draw[window].value()/ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')))
         self.current_settings['Analyse']['Windows'][window]['Length'] = int(round(self.window_finish_draw[window].value()/ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))-int(self.current_settings['Analyse']['Windows'][window]['Start']))
         if window == self.current_window:
@@ -1299,13 +1512,28 @@ class Pico5000Interface(QMainWindow):
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][window]['Length']))
         self.window_start_draw[window].setBounds([0, int(self.current_settings['Analyse']['Windows'][window]['Start'] + self.current_settings['Analyse']['Windows'][window]['Length']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
         self.window_finish_draw[window].setBounds([int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
+        self.autosave_settings()
 
     def change_window_start(self):
-        self.current_settings['Analyse']['Windows'][self.current_window]['Start'] = str(self.WindowStart.text())
+        try:
+            if int(str(self.WindowStart.text())) < 0:
+                self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Start']))
+                self.Messages.append('Window start must be positive')
+                return
+            if int(str(self.WindowStart.text())) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length']) > int(self.current_settings['Time']['Samples'])-1:
+                self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Start']))
+                self.Messages.append('Window start too high')
+                return
+            self.current_settings['Analyse']['Windows'][self.current_window]['Start'] = str(self.WindowStart.text())
+        except ValueError:
+            self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Start']))
+            self.Messages.append('Window start must be an integer')
+            return
         self.window_start_draw[self.current_window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
         self.window_finish_draw[self.current_window].setBounds([int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
         self.window_finish_draw[self.current_window].setValue((int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
         self.window_start_draw[self.current_window].setValue(int(self.current_settings['Analyse']['Windows'][self.current_window]['Start'])*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
+        self.autosave_settings()
 
     def change_window_finish_drag(self, window):
         self.WindowSelect.setCurrentText('Window {}'.format(window))
@@ -1314,11 +1542,26 @@ class Pico5000Interface(QMainWindow):
         if window == self.current_window:
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][window]['Length']))
         self.window_start_draw[window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
+        self.autosave_settings()
 
     def change_window_length(self):
-        self.current_settings['Analyse']['Windows'][self.current_window]['Length'] = str(self.WindowLength.text())
+        try:
+            if int(str(self.WindowLength.text())) < 0:
+                self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
+                self.Messages.append('Window length must be positive')
+                return
+            if int(str(self.WindowLength.text())) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) > int(self.current_settings['Time']['Samples'])-1:
+                self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
+                self.Messages.append('Window length too high')
+                return
+            self.current_settings['Analyse']['Windows'][self.current_window]['Length'] = str(self.WindowLength.text())
+        except ValueError:
+            self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
+            self.Messages.append('Window length must be an integer')
+            return
         self.window_finish_draw[self.current_window].setValue((int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))*ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'))
         self.window_start_draw[self.current_window].setBounds([0, (int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s')])
+        self.autosave_settings()
 
     def change_calculator(self):
         if str(self.CalculatorSelect.currentText()) in 'Add Calculator':
@@ -1343,25 +1586,32 @@ class Pico5000Interface(QMainWindow):
             self.Operation.setCurrentText(str(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Operation']))
             self.SecondWindow.setCurrentText('Window ' + str(self.current_settings['Analyse']['Calculators'][self.current_calculator]['SecondWindow']))
             self.CalculatorName.setText(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Name'])
+        self.autosave_settings()
 
     def change_calculator_colour(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'] = (QColorDialog.getColor()).getRgb()[:3]
         self.CalculatorColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][0], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][1], self.current_settings['Analyse']['Calculators'][self.current_calculator]['Colour'][2]))
+        self.autosave_settings()
 
     def change_calculator_show(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['Show'] = int(self.CalculatorShow.checkState())
+        self.autosave_settings()
 
     def change_first_window(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['FirstWindow'] = int(str(self.FirstWindow.currentText()).replace('Window ', ''))
+        self.autosave_settings()
 
     def change_operation(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['Operation'] = str(self.Operation.currentText())
+        self.autosave_settings()
 
     def change_second_window(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['SecondWindow'] = int(str(self.SecondWindow.currentText()).replace('Window ', ''))
+        self.autosave_settings()
 
     def change_calculator_name(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['Name'] = str(self.CalculatorName.text())
+        self.autosave_settings()
 
     def delete_calculator(self):
         if self.current_calculator == 1:
@@ -1372,6 +1622,7 @@ class Pico5000Interface(QMainWindow):
             self.CalculatorSelect.removeItem(self.CalculatorSelect.findText('Calculator {}'.format(self.current_calculator)))
             self.CalculatorSelect.setCurrentText('Calculator 1')
             self.current_calculator = 1
+        self.autosave_settings()
 
     # Delay generator
     def open_delay_connection_window(self):
@@ -1404,7 +1655,7 @@ class Pico5000Interface(QMainWindow):
         self.hbox2 = QHBoxLayout()
         self.delay_confirm_connect = QPushButton('Connect (Keep device settings)', self)
         self.delay_confirm_connect_and_control = QPushButton('Connect and control (Apply interface settings)', self)
-        self.delay_confirm_cancel = QPushButton('Cancel', self)
+        self.delay_confirm_cancel = QPushButton('Cancel connection', self)
         self.hbox2.addWidget(self.delay_confirm_connect)
         self.hbox2.addWidget(self.delay_confirm_connect_and_control)
         self.hbox2.addWidget(self.delay_confirm_cancel)
@@ -1423,10 +1674,16 @@ class Pico5000Interface(QMainWindow):
         self.delay_confirm_cancel.clicked.connect(self.cancel_delay_generator)
         self.delay_confirm_port.editingFinished.connect(self.delay_change_port)
 
+        self.autosave_settings()
+
     def cancel_delay_generator(self):
-        if self.current_settings['Delay']['Active'] < 2:
-            self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
-        self.confirm.close()
+        self.current_settings['Delay']['Active'] = 0
+        self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
+        try:
+            self.confirm.close()
+        except:
+            pass
+        self.autosave_settings()
 
     def connect_delay_generator(self):
         self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
@@ -1441,6 +1698,7 @@ class Pico5000Interface(QMainWindow):
             self.Messages.append('Delay Generator not responding, check the connection and port')
             self.current_settings['Delay']['Active'] = 0
         self.confirm.close()
+        self.autosave_settings()
 
     def connect_and_control_delay_generator(self):
         self.ditp = SRSDG535Interpreter()
@@ -1468,6 +1726,7 @@ class Pico5000Interface(QMainWindow):
             self.current_settings['Delay']['Active'] = 1
             self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
         self.confirm.close()
+        self.autosave_settings()
 
     def disconnect_delay_generator(self):
         try:
@@ -1477,9 +1736,11 @@ class Pico5000Interface(QMainWindow):
         except:
             pass
         self.tabWidget.removeTab(self.tabWidget.indexOf(self.DelayTab))
+        self.autosave_settings()
 
     def delay_change_port(self):
         self.current_settings['Delay']['Port'] = str(self.delay_confirm_port.text())
+        self.autosave_settings()
 
     def delay_change_signal(self):
         self.current_settings['Delay']['Type'] = str(self.Delay_signal_type.currentText())
@@ -1487,6 +1748,7 @@ class Pico5000Interface(QMainWindow):
             for connector in self.connectors:
                 if connector not in 'Ext':
                     self.ditp.set_output_mode(connector, str(self.current_settings['Delay']['Type']))
+        self.autosave_settings()
 
     def delay_change_load(self):
         self.current_settings['Delay']['Load'] = str(self.Delay_signal_load.currentText())
@@ -1494,6 +1756,7 @@ class Pico5000Interface(QMainWindow):
             for connector in self.connectors:
                 if connector not in 'Ext':
                     self.ditp.set_termination_impedance(connector, str(self.current_settings['Delay']['Load']))
+        self.autosave_settings()
 
     def delay_change_trigger_mode(self, current):
         if current in 'Internal':
@@ -1514,34 +1777,97 @@ class Pico5000Interface(QMainWindow):
             if self.current_settings['Delay']['Active'] > 0:
                 self.ditp.set_trigger_mode(self.current_settings['Delay']['TriggerMode'])
                 self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
+        self.autosave_settings()
 
     def delay_change_trigger_load(self):
         self.current_settings['Delay']['TriggerLoad'] = str(self.Delay_trigger_load.currentText())
         if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_ext_trigger_impedance(str(self.current_settings['Delay']['TriggerLoad']))
+        self.autosave_settings()
 
     def delay_change_trigger_edge(self):
         self.current_settings['Delay']['TriggerEdge'] = str(self.Delay_trigger_edge.currentText())
         if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_ext_trigger_slope(str(self.current_settings['Delay']['TriggerEdge']))
+        self.autosave_settings()
 
     def delay_change_trigger_level(self):
-        self.current_settings['Delay']['TriggerLevel'] = str(self.Delay_trigger_level.text())
+        try:
+            unitcheck = ur(str(self.Delay_trigger_rate.text())).m_as('V')
+            self.current_settings['Delay']['TriggerLevel'] = str(self.Delay_trigger_level.text())
+        except:
+            self.Delay_trigger_level.setText(str(self.current_settings['Delay']['TriggerLevel']))
+            self.Messages.append('Trigger level must have voltage units')
+            return
         if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_ext_trigger_level(str(self.current_settings['Delay']['TriggerLevel']))
+        self.autosave_settings()
 
     def delay_change_trigger_rate(self):
-        self.current_settings['Delay']['TriggerRate'] = str(self.Delay_trigger_rate.text())
+        try:
+            unitcheck = ur(str(self.Delay_trigger_rate.text())).m_as('Hz')
+            if unitcheck < 0.001:
+                self.Delay_trigger_rate.setText(str(self.current_settings['Delay']['TriggerRate']))
+                self.Messages.append('Trigger rate must be at least 1 mHz')
+                return
+            self.current_settings['Delay']['TriggerRate'] = str(self.Delay_trigger_rate.text())
+        except:
+            self.Delay_trigger_rate.setText(str(self.current_settings['Delay']['TriggerRate']))
+            self.Messages.append('Trigger rate must have frequency units')
+            return
         if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_int_trigger_rate(str(self.current_settings['Delay']['TriggerRate']))
+        self.autosave_settings()
+
+    def delay_change_sign(self, connector):
+        if self.current_settings['Delay']['Active'] > 0:
+            self.ditp.change_delay_sign(connector)
 
     def delay_change_delay(self, connector):
+        try:
+            change_sign = False
+            unitcheck = ur(str(self.Delay[connector].text())).m_as('s')
+            if unitcheck >= 1000:
+                self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+                self.Messages.append('Delay time must be less than 1000 s')
+                return
+            if unitcheck < 0:
+                change_sign = True
+            if abs(unitcheck) < 5*10**(-12) and unitcheck != 0:
+                if change_sign:
+                    self.Delay[connector].setText('-5 ps')
+                else:
+                    self.Delay[connector].setText('5 ps')
+                self.Messages.append('Delay time must be at least 5 ps (or 0)')
+            self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
+        except:
+            self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+            self.Messages.append('Delay must have time units')
+            return
         self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
         if self.current_settings['Delay']['Active'] > 0:
-            self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+            self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(abs(ur(str(self.current_settings['Delay']['Connectors'][connector]['Delay'])).m_as('s'))) + ' s')
+            if change_sign:
+                self.delay_change_sign(connector)
+                change_sign = False
+        self.autosave_settings()
 
     def delay_change_from(self, connector):
         self.current_settings['Delay']['Connectors'][connector]['From'] = str(self.From[connector].currentText())
         if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+            if str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '') in connector:
+                self.From_Scanvalue.setCurrentText(self.current_settings['Delay']['Connectors'][connector]['From'])
+        self.autosave_settings()
 
+    def delay_change_from_scan(self):
+        if str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '') in str(self.From_Scanvalue.currentText()):
+            self.Messages.append('Delay can not be relative to itself')
+            self.From_Scanvalue.setCurrentText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From'])
+            return
+        self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From'] = str(self.From_Scanvalue.currentText())
+        if self.current_settings['Delay']['Active'] > 0:
+            self.ditp.set_delay_time(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''), str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From']), str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['Delay']))
+            if self.current_settings['Delay']['Active'] == 2:
+                self.From[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setCurrentText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From'])
+        self.autosave_settings()

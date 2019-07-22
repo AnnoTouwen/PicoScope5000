@@ -3,6 +3,8 @@ import ctypes
 from picosdk.ps5000a import ps5000a as ps
 from picosdk.functions import adc2mV, assert_pico_ok, mV2adc
 
+from time import sleep, time
+
 class Pico5000Controller:
     def __init__(self):
         # Create chandle and status ready for use
@@ -72,13 +74,19 @@ class Pico5000Controller:
         # segment index = 0
         # lpReady = None (using ps5000aIsReady rather than ps5000aBlockReady)
         # pParameter = None
+        '''
+        starttime = time()
+        self.status["runBlock"] = ps.ps5000aRunStreaming(self.chandle, ctypes.byref(ctypes.c_int32(100)), 2, SamplesBeforeTrigger, Samples-SamplesBeforeTrigger, 1, 0, 1, 0) #self.status["runBlock"] = ps.ps5000aRunBlock(self.chandle, SamplesBeforeTrigger, Samples-SamplesBeforeTrigger, Timebase, None, 0, None, None) # trigger['PreSamp'], trigger['PostSamp']
+        print('Time to send a runblock command is: ', time() - starttime, ' s')
+        self.status["isReady"] = ps.ps5000aGetStreamingLatestValues(self.chandle, ps.ps5000aStreamingReady(self.chandle, Samples, 0, ), ctypes.byref(ctypes.c_void_p())
+        '''
         self.status["runBlock"] = ps.ps5000aRunBlock(self.chandle, SamplesBeforeTrigger, Samples-SamplesBeforeTrigger, Timebase, None, 0, None, None) # trigger['PreSamp'], trigger['PostSamp']
-
         # Check for data collection to finish using ps5000aIsReady
         ready = ctypes.c_int16(0)
         check = ctypes.c_int16(0)
         while ready.value == check.value:
             self.status["isReady"] = ps.ps5000aIsReady(self.chandle, ctypes.byref(ready))  # As soon as the sampling is done ready is set to 1
+
 
     def set_buffer(self, channel, channelID, buffer, Samples):
         self.status["setDataBuffers{}".format(channel)] = ps.ps5000aSetDataBuffers(self.chandle, channelID, ctypes.byref(buffer['Max']), ctypes.byref(buffer['Min']), Samples, 0, 0)
@@ -113,18 +121,23 @@ class Pico5000Controller:
         print(message)
 
 
-'''
+
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     channels = {'A': {'Range': '20V', 'CouplingType': 'DC'}, 'B': {'Range': '2V', 'CouplingType': 'DC'}} # REMEMBER: milliV as MV
-    trigger = {'Channel': 'A', 'PreSamp': 25, 'PostSamp': 25, 'Level': 200, 'Auto': 10, 'Delay': 0} # 'PreSamp': number of samples before, 'PostSamp': number of samples after, 'Level': ADC of level, 'Auto': time in microseconds, 'Delay': time after triggerevent before trigger in number of samples
+    trigger = {'Channel': 'A', 'PreSamp': 25, 'PostSamp': 975, 'Level': 200, 'Auto': 10, 'Delay': 0} # 'PreSamp': number of samples before, 'PostSamp': number of samples after, 'Level': ADC of level, 'Auto': time in microseconds, 'Delay': time after triggerevent before trigger in number of samples
     timebase = 8  # Timestepsize = 80 ns (see Programmer's guide for more information on timebases)
-    pico = Pico5000Controller("PS5000A_DR_12BIT", channels, trigger, timebase)
-    pico.setup_device()
-    pico.set_buffer()
-    pico.get_block()
-    pico.read_data()
+    Samples = trigger['PreSamp'] + trigger['PostSamp']
+    buffer = ctypes.c_int16 * Samples
+    overflow = ctypes.c_int16()
+    cmaxSamples = ctypes.c_int32(Samples)
+
+    pico = Pico5000Controller()
+    pico.setup_device("PS5000A_DR_12BIT")
+    pico.set_buffer('A', "PS5000A_CHANNEL_A", buffer, Samples)
+    pico.get_block(Samples, trigger['PreSamp'], timebase)
+    pico.read_data(cmaxSamples, overflow)
     # plot data from channel A and B
     plt.plot(pico.time, pico.adc2mVChAMax[:])
     plt.plot(pico.time, pico.adc2mVChBMax[:])
@@ -135,4 +148,4 @@ if __name__ == '__main__':
     pico.stop()
     pico.close()
     pico.print_status()
-'''
+

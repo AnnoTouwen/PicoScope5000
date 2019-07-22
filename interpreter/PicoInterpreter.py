@@ -150,6 +150,7 @@ class Pico5000Interpreter:
 
         # create overflow location
         self.overflow = ctypes.c_int16()
+
         # create converted type self.maxSamples
         self.cmaxSamples = ctypes.c_int32(Samples)
 
@@ -225,8 +226,9 @@ class Pico5000Interpreter:
             except KeyError:
                 self.buffer[channel]['Sum'] = [self.buffer[channel]['Max'][i] for i in range(len(self.buffer[channel]['Max']))]
 
-    def block_average(self, Samples, numberofblocks):
+    def block_average(self, numberofblocks):
         for channel in self.buffer:
+            Samples = len(self.buffer[channel]['Sum'])
             self.buffer[channel]['Average'] = (ctypes.c_int16 * Samples)()
             for i in range(Samples):
                 self.buffer[channel]['Average'][i] = round(self.buffer[channel]['Sum'][i]/numberofblocks)
@@ -252,16 +254,33 @@ class Pico5000Interpreter:
             self.scandata[calculator] = [np.nan] * (len(self.scandata['Scanvalue'])-1)
         self.scandata[calculator].append(self.operators[operation](self.windowAverage[first_window]/maxADC*ur(range[0]).m_as('V'), self.windowAverage[second_window]/maxADC*ur(range[1]).m_as('V')))
 
-    def interpret_data(self, Samples, timestep, channel, Range, Average = True):
+    def interpret_data(self, setSamples, timestep, channel, Range, maxSamples):
         # Create time data
+        #if Samples <= maxSamples:
+        Samples = len(self.buffer[channel]['Average'])
+        if Samples != setSamples:
+            print('Number of samples changed during measurement')
         if not 'Time' in self.block:
             self.block['Time'] = np.linspace(0, Samples * timestep, Samples)
         # convert ADC counts data to mV
-        if Average:
-            self.block[channel] = adc2mV(self.buffer[channel]['Average'], ps.PS5000A_RANGE["PS5000A_{}".format(Range.replace(' ', '').replace('m', 'M'))], self.dev.maxADC)
+        self.block[channel] = adc2mV(self.buffer[channel]['Average'], ps.PS5000A_RANGE["PS5000A_{}".format(Range.replace(' ', '').replace('m', 'M'))], self.dev.maxADC)
+        #print(self.block)
+        '''
         else:
-            self.block[channel] = adc2mV(self.buffer[channel]['Max'], ps.PS5000A_RANGE["PS5000A_{}".format(Range.replace(' ', '').replace('m', 'M'))], self.dev.maxADC)
-
+            timestep = timestep * int(Samples / maxSamples)
+            if not 'Time' in self.block:
+                self.block['Time'] = np.linspace(0, Samples * timestep, Samples)
+            if Average:
+                self.block[channel] = []
+                for i in range(maxSamples):
+                    print('The current index is', i)
+                    print('The current maxSamples is', self.buffer['A']['Sum'])
+                    self.block[channel][i] = self.buffer[channel]['Sum'][i]*ps.PS5000A_RANGE["PS5000A_{}".format(Range.replace(' ', '').replace('m', 'M'))]/self.dev.maxADC.value
+            else:
+                self.block[channel] = []
+                for i in range(maxSamples):
+                    self.block[channel][i] = self.buffer[channel]['Max'][i] * ps.PS5000A_RANGE["PS5000A_{}".format(Range.replace(' ', '').replace('m', 'M'))] / self.dev.maxADC.value
+        '''
     '''
     def save_data(self, file, channels):
         print(file)

@@ -8,7 +8,8 @@ class SRSDG535Controller:
 
     def setup_port(self, port):
         # Open communicationport to Delay Generator
-        self.DG = serial.Serial(port = str(port), timeout = 0.1)
+        self.DG = serial.Serial(port = str(port), timeout = 0.001)#, write_timeout = 1)
+        self.DG.write('++addr 5\n'.encode('ASCII'))
 
     def close_port(self):
         # Close communicationport to Delay Generator
@@ -34,6 +35,20 @@ class SRSDG535Controller:
 
     def set_display(self, message):
         self.DG.write(('D S ' + str(message) + ' \r').encode('ASCII'))
+
+    def display_menu(self, menu, submenu, line_number):
+        self.DG.write(('D L '  + str(menu) + ' , ' + str(submenu) + ' , ' + str(line_number) + ' \r').encode('ASCII'))
+
+    def set_cursor(self, position):
+        self.DG.write(('S C '  + str(position) + ' \r').encode('ASCII'))
+
+    def set_cursor_mode(self, mode):
+        # mode: Cursor, Number = 0, 1
+        self.DG.write(('C S '  + str(mode) + ' \r').encode('ASCII'))
+
+    def change_value(self, direction):
+        # direction: decrement, increment = 0, 1
+        self.DG.write(('I C '  + str(direction) + ' \r').encode('ASCII'))
 
 # Delay
 
