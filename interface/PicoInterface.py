@@ -421,7 +421,7 @@ class Pico5000Interface(QMainWindow):
         except KeyError:
             pass
 
-    def plot_scan(self):
+    def plot_scan(self, datadots = True):
         try:
             self.scan_plot_window.clear()
             try:
@@ -431,7 +431,10 @@ class Pico5000Interface(QMainWindow):
             self.scan_legend = self.scan_plot_window.addLegend()
             for calculator in self.calculators:
                 try:
-                    self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                    if datadots:
+                        self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                    else:
+                        self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
                 except:
                     pass
         except:
@@ -487,7 +490,9 @@ class Pico5000Interface(QMainWindow):
         self.scan_plot_window.win.close()
 
     def save_scan_plot_window(self):
+        self.plot_scan(datadots = False)
         try:
+            #for calculator in self.calculators:
             exp = pg.exporters.ImageExporter(self.scan_plot_window.plotItem)
             exp.params.param('width').setValue(int(self.scan_plot_window.width()*3), blockSignal=exp.widthChanged)
             exp.params.param('height').setValue(int(self.scan_plot_window.height()*3), blockSignal=exp.heightChanged)
@@ -498,6 +503,7 @@ class Pico5000Interface(QMainWindow):
             #self.Messages.append('Scan plot saved to {}'. format(str(file)))
         except AttributeError:
             self.Messages.append('No scanplot available')
+        self.plot_scan()
 
     def set_measurement_settings(self):
         #self.measurement_settings = self.current_settings

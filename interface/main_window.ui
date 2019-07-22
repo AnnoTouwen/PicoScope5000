@@ -339,7 +339,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>6</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="User">
            <attribute name="title">
@@ -2889,6 +2889,9 @@
            </layout>
           </widget>
           <widget class="QWidget" name="DelayTab">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <attribute name="title">
             <string>Delay</string>
            </attribute>
@@ -3541,6 +3544,9 @@
             </item>
             <item row="0" column="0" rowspan="2">
              <widget class="QGroupBox" name="DelaySignal">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                 <horstretch>0</horstretch>

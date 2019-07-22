@@ -75,7 +75,7 @@ class SRSDG535Controller:
 
 if __name__ == '__main__':
     Delay = SRSDG535Controller()
-    Delay.setup_port('COM1')
+    Delay.setup_port('COM4')
     Delay.clear()
     Delay.read_error_status()
     Delay.read_instrument_status()
