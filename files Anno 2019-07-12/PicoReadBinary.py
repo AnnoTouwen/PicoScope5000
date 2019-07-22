@@ -27,11 +27,7 @@ def block_mV(metadatafile, channel, measurementnumber = False, blocknumber = Fal
     Settings = load_settings(metadatafile)[0]
     Active_channels = [i for i in channels if Settings['Channels'][i]['Active'] == 2]
     block = (ctypes.c_int16 * Settings['Time']['Samples'])()
-    print("join",os.path.join(metadatafile.replace('metadata.yml', 'scope')))
-    print("split", os.path.split(metadatafile)[1].replace('_metadata.yml', '.bin'))
-    print("join and split",os.path.join(metadatafile.replace('metadata.yml', 'scope'), os.path.split(metadatafile)[1].replace('_metadata.yml', '.bin')))
-    print("goed", os.path.join(metadatafile).replace('_metadata.yml', '.bin'))#) #(metadatafile.replace('metadata.yml', 'scope'), os.path.split
-    datafile = os.path.join(metadatafile.replace('metadata.yml', 'scope'), os.path.split(metadatafile)[1].replace('_metadata.yml', '.bin'))#os.path.join(metadatafile.replace('metadata.yml', 'scope'), os.path.split(metadatafile)[1].replace('_metadata.yml', '.bin'))
+    datafile = os.path.join(metadatafile.replace('metadata.yml', 'scope'), os.path.split(metadatafile)[1].replace('_metadata.yml', '.bin'))
     if measurementnumber:
         datafile = datafile.replace('.bin', '_{}.bin'.format(measurementnumber))
     if blocknumber:
@@ -60,13 +56,13 @@ def scan_V(metadatafile):
 if __name__ == '__main__':
     import os
     import matplotlib.pyplot as plt
-    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-07-12', 'Data_2019-07-12_scan_2_metadata.yml')
+    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-07-10', 'DefaultData_2019-07-10_scan_3_metadata.yml')
     time = time_ns(file)
     channels = ['A', 'B', 'C', 'D']
     color = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y'}
     for channel in channels:
         try:
-            plt.plot(time, block_mV(file, channel, measurementnumber = False, blocknumber = False), color[channel], label = channel)
+            plt.plot(time, block_mV(file, channel, measurementnumber = 32, blocknumber = False), color[channel], label = channel)
         except KeyError:
             pass
     plt.legend()

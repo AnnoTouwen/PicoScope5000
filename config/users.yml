@@ -1,10 +1,248 @@
+AutoSaveDefaultUser:
+  BaF:
+    Analyse:
+      Active: 0
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+      Pause: 10 us
+      ScanLabel: delay generator
+      ScanValue: 1.0
+      ScanValueDifference: 1.0
+      Scans: 100
+      ShowPlot: 0
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 500
+          Start: 20
+        2:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 500
+          Start: 20
+      WindowsFixed: 2
+      WindowsShow: 0
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 50 mV
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: -2.5 ms
+          From: D
+        C:
+          Delay: 20 us
+          From: D
+        D:
+          Delay: 99.98 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: External
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Previous endtime: '2019-07-15 14:31:32.867578'
+    Previous starttime: '2019-07-15 14:35:35.233440'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: Data
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+    Time:
+      Blocklength: 39.996 us
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 2
+      Timestep: 4 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 1000 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 1V
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
+  DefaultProject:
+    Analyse:
+      Active: 2
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+      Pause: 1 ms
+      ScanLabel: Scannumber
+      ScanValue: 1.0
+      ScanValueDifference: 1.0
+      Scans: 10
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 500
+          Start: 20
+        2:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 500
+          Start: 20
+      WindowsFixed: 2
+      WindowsShow: 0
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 1 V
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: 10ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: Internal
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Previous endtime: '2019-07-15 14:02:08.063637'
+    Previous starttime: '2019-07-15 14:02:08.061637'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+    Time:
+      Blocklength: 959904 ns
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: A
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
 DefaultUser:
   DefaultProject:
     Analyse:
       Active: 0
       Calculators:
         1:
-          Colour: [0, 0, 0]
+          Colour:
+          - 0
+          - 0
+          - 0
           FirstWindow: 2
           Name: Calculator 1
           Operation: '-'
@@ -19,29 +257,62 @@ DefaultUser:
       Windows:
         1:
           Channel: A
-          Colour: [255, 170, 0]
+          Colour:
+          - 255
+          - 170
+          - 0
           Length: 500
           Start: 20
         2:
           Channel: A
-          Colour: [0, 170, 0]
+          Colour:
+          - 0
+          - 170
+          - 0
           Length: 500
           Start: 20
       WindowsFixed: 2
       WindowsShow: 0
-    Average: {Blocks: 10, Pause: 0.1 s, Store: 0}
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: A, Range: 1 V}
-      B: {Active: 2, CouplingType: DC, Name: B, Range: 1 V}
-      C: {Active: 0, CouplingType: DC, Name: C, Range: 1 V}
-      D: {Active: 0, CouplingType: DC, Name: D, Range: 1 V}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 1 V
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: 1 ms, From: T0}
-        B: {Delay: 2 ms, From: T0}
-        C: {Delay: 3 ms, From: T0}
-        D: {Delay: 4 ms, From: T0}
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -50,12 +321,234 @@ DefaultUser:
       TriggerMode: Internal
       TriggerRate: 10 Hz
       Type: TTL
-    Metadata: {Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml}
-    Plot: {Show: 2}
-    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: BaseDirectory\PicoscopeData}
-    Time: {Blocklength: 959904 ns, Resolution: 12BIT, Samples: 10000, Timebase: 9,
-      Timestep: 96 ns, maxADC: 32767}
-    Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Fixed: 2, Level: 200
-        mV, Position: 5000, Show: 0, Type: Rising}
-    User: {Fontsize: '9'}
-PreviousUser: {Name: DefaultUser, Project: DefaultProject}
+    Metadata:
+      Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: BaseDirectory\PicoscopeData
+    Time:
+      Blocklength: 959904 ns
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: A
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: '9'
+MaartenMooij:
+  BaF:
+    Analyse:
+      Active: 0
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 1
+          Name: Laser
+          Operation: '-'
+          SecondWindow: 2
+          Show: 2
+        2:
+          Colour:
+          - 227
+          - 104
+          - 210
+          FirstWindow: 3
+          Name: H2O
+          Operation: '-'
+          SecondWindow: 4
+          Show: 2
+        3:
+          Colour:
+          - 210
+          - 126
+          - 110
+          FirstWindow: 5
+          Name: Ne
+          Operation: '-'
+          SecondWindow: 4
+          Show: 2
+        4:
+          Colour:
+          - 153
+          - 243
+          - 133
+          FirstWindow: 6
+          Name: SF5
+          Operation: '-'
+          SecondWindow: 4
+          Show: 2
+        5:
+          Colour:
+          - 186
+          - 183
+          - 217
+          FirstWindow: 1
+          Name: Ba
+          Operation: '-'
+          SecondWindow: 2
+          Show: 0
+        6:
+          Colour:
+          - 95
+          - 66
+          - 29
+          FirstWindow: 2
+          Name: BaF
+          Operation: '-'
+          SecondWindow: 1
+          Show: 0
+      Pause: 10 us
+      ScanLabel: SF6 cooling tube
+      ScanValue: 1.0
+      ScanValueDifference: 1.0
+      Scans: 2000
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: B
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 20
+          Start: '1211'
+        2:
+          Channel: B
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: '300'
+          Start: '0'
+        3:
+          Channel: A
+          Colour:
+          - 64
+          - 252
+          - 24
+          Length: 45
+          Start: '2322'
+        4:
+          Channel: A
+          Colour:
+          - 208
+          - 231
+          - 247
+          Length: '300'
+          Start: '0'
+        5:
+          Channel: A
+          Colour:
+          - 142
+          - 57
+          - 47
+          Length: 49
+          Start: '2381'
+        6:
+          Channel: A
+          Colour:
+          - 72
+          - 198
+          - 116
+          Length: 64
+          Start: '4148'
+      WindowsFixed: 0
+      WindowsShow: 2
+    Average:
+      Blocks: 20
+      Pause: 0.1 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 50 mV
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: -2.5 ms
+          From: D
+        C:
+          Delay: 20 us
+          From: D
+        D:
+          Delay: 99.98 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: External
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Previous endtime: '2019-07-15 15:16:50.847037'
+    Previous starttime: '2019-07-17 12:05:30.913824'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: Data
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+    Time:
+      Blocklength: 39.996 us
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 2
+      Timestep: 4 ns
+      maxADC: 32767
+    Trigger:
+      Active: 0
+      Auto: 1000 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 1V
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
+PreviousUser:
+  Name: MaartenMooij
+  Project: BaF

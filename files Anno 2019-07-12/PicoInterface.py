@@ -63,7 +63,7 @@ class Pico5000Interface(QMainWindow):
         PreviousUser = yaml.safe_load(f)['PreviousUser']
         f.close()
         self.load_personal_settings(PreviousUser['Name'], PreviousUser['Project']) # Set settings to Default
-        self.device_channels = 2
+        self.device_channels = 4
         self.two_channels()
 
         # Plotparameters and objects
@@ -221,7 +221,7 @@ class Pico5000Interface(QMainWindow):
 # -------------------------------------------------------------------------------
 
     def two_channels(self):
-        if self.device_channels == 2:
+        if self.device_channels == 4:
             self.current_settings['Channels']['C']['Active'] = 0
             self.current_settings['Channels']['D']['Active'] = 0
             if self.current_settings['Trigger']['Channel'] in ['C', 'D']:
@@ -243,7 +243,7 @@ class Pico5000Interface(QMainWindow):
                 self.channel_changed[i] = True
 
     def four_channels(self):
-        if self.device_channels == 4:
+        if self.device_channels == 2:
             if self.itp.dev.status["openunit"] == 282 or self.itp.dev.status["openunit"] == 286:
                 self.Messages.append('Can not power four channels in USB power mode')
             else:
