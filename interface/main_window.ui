@@ -45,58 +45,6 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="4" column="0" rowspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="start_button">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Start</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="continuously_button">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Continuously</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pause_button">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Pause</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="stop_button">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Stop</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
         <item row="0" column="0">
          <widget class="QTextBrowser" name="Messages">
           <property name="sizePolicy">
@@ -339,6 +287,58 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="0" rowspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="start_button">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Start</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="continuously_button">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Continuously</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pause_button">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Pause</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="stop_button">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Stop</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
         <item row="1" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="sizePolicy">
@@ -360,7 +360,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="User">
            <attribute name="title">
@@ -1180,8 +1180,8 @@
                <string>B</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_2">
-               <item row="1" column="2">
-                <spacer name="horizontalSpacer_11">
+               <item row="1" column="12">
+                <spacer name="horizontalSpacer_57">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -1193,34 +1193,7 @@
                  </property>
                 </spacer>
                </item>
-               <item row="1" column="5">
-                <spacer name="horizontalSpacer_12">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="3">
-                <widget class="QLabel" name="BRangeL">
-                 <property name="text">
-                  <string>Range:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="10">
-                <widget class="QLabel" name="BNameL">
-                 <property name="text">
-                  <string>Name:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="4">
+               <item row="1" column="8">
                 <widget class="QComboBox" name="BRange">
                  <property name="minimumSize">
                   <size>
@@ -1294,70 +1267,7 @@
                  </item>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="BActiveL">
-                 <property name="text">
-                  <string>Active:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="7">
-                <widget class="QComboBox" name="BCoupling">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="currentText">
-                  <string>DC</string>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>DC</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>AC</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="BActive">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="tristate">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="6">
-                <widget class="QLabel" name="BCouplingL">
-                 <property name="text">
-                  <string>Coupling:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="8">
-                <spacer name="horizontalSpacer_57">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="11">
+               <item row="1" column="15">
                 <widget class="QLineEdit" name="BName">
                  <property name="maximumSize">
                   <size>
@@ -1370,23 +1280,22 @@
                  </property>
                 </widget>
                </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QGroupBox" name="ChannelA">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="title">
-               <string>A</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout">
-               <item row="1" column="2">
-                <spacer name="horizontalSpacer_7">
+               <item row="1" column="3">
+                <widget class="QLabel" name="BShowL">
+                 <property name="text">
+                  <string>Show:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="10">
+                <widget class="QLabel" name="BCouplingL">
+                 <property name="text">
+                  <string>Coupling:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="6">
+                <spacer name="horizontalSpacer_11">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -1398,8 +1307,15 @@
                  </property>
                 </spacer>
                </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="AActive">
+               <item row="1" column="7">
+                <widget class="QLabel" name="BRangeL">
+                 <property name="text">
+                  <string>Range:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QCheckBox" name="BShow">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -1426,15 +1342,58 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="6">
-                <widget class="QLabel" name="ACouplingL">
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="BActive">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
-                  <string>Coupling:</string>
+                  <string/>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="5">
-                <spacer name="horizontalSpacer_8">
+               <item row="1" column="0">
+                <widget class="QLabel" name="BActiveL">
+                 <property name="text">
+                  <string>Active:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="14">
+                <widget class="QLabel" name="BNameL">
+                 <property name="text">
+                  <string>Name:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="11">
+                <widget class="QComboBox" name="BCoupling">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="currentText">
+                  <string>DC</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>DC</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>AC</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="9">
+                <spacer name="horizontalSpacer_12">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -1446,7 +1405,308 @@
                  </property>
                 </spacer>
                </item>
+               <item row="1" column="2">
+                <spacer name="horizontalSpacer_21">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QGroupBox" name="ChannelD">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="title">
+               <string>D</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="DActive">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="14">
+                <widget class="QLineEdit" name="DName">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="6">
+                <widget class="QLabel" name="DRangeL">
+                 <property name="text">
+                  <string>Range:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="DActiveL">
+                 <property name="text">
+                  <string>Active:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="7">
+                <widget class="QComboBox" name="DRange">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="currentText">
+                  <string>10 mV</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>10 mV</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20 mV</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>50 mV</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>100 mV</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>200 mV</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>500 mV</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>1 V</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>2 V</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>5 V</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>10 V</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20 V</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="12">
+                <spacer name="horizontalSpacer_56">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="10">
+                <widget class="QComboBox" name="DCoupling">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="currentText">
+                  <string>DC</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>DC</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>AC</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
                <item row="1" column="4">
+                <widget class="QCheckBox" name="DShow">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="5">
+                <spacer name="horizontalSpacer_19">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="3">
+                <widget class="QLabel" name="DShowL">
+                 <property name="text">
+                  <string>Show:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="13">
+                <widget class="QLabel" name="DNameL">
+                 <property name="text">
+                  <string>Name:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="8">
+                <spacer name="horizontalSpacer_20">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="9">
+                <widget class="QLabel" name="DCouplingL">
+                 <property name="text">
+                  <string>Coupling:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <spacer name="horizontalSpacer_26">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QGroupBox" name="ChannelA">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="title">
+               <string>A</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="1" column="0">
+                <widget class="QLabel" name="AActiveL">
+                 <property name="text">
+                  <string>Active:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <spacer name="horizontalSpacer_13">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="9">
                 <widget class="QComboBox" name="ARange">
                  <property name="minimumSize">
                   <size>
@@ -1520,7 +1780,34 @@
                  </item>
                 </widget>
                </item>
+               <item row="1" column="8">
+                <widget class="QLabel" name="ARangeL">
+                 <property name="text">
+                  <string>Range:</string>
+                 </property>
+                </widget>
+               </item>
                <item row="1" column="7">
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="14">
+                <widget class="QLabel" name="ANameL">
+                 <property name="text">
+                  <string>Name:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="12">
                 <widget class="QComboBox" name="ACoupling">
                  <property name="maximumSize">
                   <size>
@@ -1543,28 +1830,75 @@
                  </item>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="AActiveL">
+               <item row="1" column="13">
+                <spacer name="horizontalSpacer_55">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="11">
+                <widget class="QLabel" name="ACouplingL">
                  <property name="text">
-                  <string>Active:</string>
+                  <string>Coupling:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="9">
-                <widget class="QLabel" name="ANameL">
+               <item row="1" column="5">
+                <widget class="QLabel" name="AShowL">
                  <property name="text">
-                  <string>Name:</string>
+                  <string>Show:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="3">
-                <widget class="QLabel" name="ARangeL">
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="AActive">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="text">
-                  <string>Range:</string>
+                  <string/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
                <item row="1" column="10">
+                <spacer name="horizontalSpacer_8">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="15">
                 <widget class="QLineEdit" name="AName">
                  <property name="maximumSize">
                   <size>
@@ -1577,18 +1911,33 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="8">
-                <spacer name="horizontalSpacer_55">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+               <item row="1" column="6">
+                <widget class="QCheckBox" name="AShow">
+                 <property name="enabled">
+                  <bool>true</bool>
                  </property>
-                 <property name="sizeHint" stdset="0">
+                 <property name="minimumSize">
                   <size>
-                   <width>40</width>
-                   <height>20</height>
+                   <width>0</width>
+                   <height>0</height>
                   </size>
                  </property>
-                </spacer>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -1605,67 +1954,14 @@
                <string>C</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="1" column="9">
-                <widget class="QLabel" name="CNameL">
-                 <property name="text">
-                  <string>Name:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <spacer name="horizontalSpacer_15">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="5">
-                <spacer name="horizontalSpacer_16">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="CActiveL">
-                 <property name="text">
-                  <string>Active:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="CActive">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="tristate">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="6">
+               <item row="1" column="10">
                 <widget class="QLabel" name="CCouplingL">
                  <property name="text">
                   <string>Coupling:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="4">
+               <item row="1" column="8">
                 <widget class="QComboBox" name="CRange">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1745,14 +2041,128 @@
                  </item>
                 </widget>
                </item>
-               <item row="1" column="3">
+               <item row="1" column="12">
+                <spacer name="horizontalSpacer_58">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="CActive">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="13">
+                <widget class="QLabel" name="CNameL">
+                 <property name="text">
+                  <string>Name:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="9">
+                <spacer name="horizontalSpacer_16">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="4">
+                <widget class="QLabel" name="CShowL">
+                 <property name="text">
+                  <string>Show:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="CActiveL">
+                 <property name="text">
+                  <string>Active:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="14">
+                <widget class="QLineEdit" name="CName">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="5">
+                <widget class="QCheckBox" name="CShow">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="tristate">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="6">
+                <spacer name="horizontalSpacer_15">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="7">
                 <widget class="QLabel" name="CRangeL">
                  <property name="text">
                   <string>Range:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="7">
+               <item row="1" column="11">
                 <widget class="QComboBox" name="CCoupling">
                  <property name="maximumSize">
                   <size>
@@ -1775,170 +2185,8 @@
                  </item>
                 </widget>
                </item>
-               <item row="1" column="10">
-                <widget class="QLineEdit" name="CName">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="8">
-                <spacer name="horizontalSpacer_58">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QGroupBox" name="ChannelD">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="title">
-               <string>D</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="1" column="4">
-                <widget class="QComboBox" name="DRange">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="currentText">
-                  <string>10 mV</string>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>10 mV</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>20 mV</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>50 mV</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>100 mV</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>200 mV</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>500 mV</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>1 V</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>2 V</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>5 V</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>10 V</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>20 V</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="5">
-                <spacer name="horizontalSpacer_20">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="DActive">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="tristate">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="6">
-                <widget class="QLabel" name="DCouplingL">
-                 <property name="text">
-                  <string>Coupling:</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="3">
-                <widget class="QLabel" name="DRangeL">
-                 <property name="text">
-                  <string>Range:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="10">
-                <widget class="QLabel" name="DNameL">
-                 <property name="text">
-                  <string>Name:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <spacer name="horizontalSpacer_19">
+                <spacer name="horizontalSpacer_22">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -1949,62 +2197,6 @@
                   </size>
                  </property>
                 </spacer>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="DActiveL">
-                 <property name="text">
-                  <string>Active:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="9">
-                <spacer name="horizontalSpacer_56">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="7">
-                <widget class="QComboBox" name="DCoupling">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="currentText">
-                  <string>DC</string>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>DC</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>AC</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="11">
-                <widget class="QLineEdit" name="DName">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
                </item>
               </layout>
              </widget>

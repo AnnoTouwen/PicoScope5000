@@ -1,3 +1,267 @@
+Anno:
+  Scantimetest:
+    Analyse:
+      Active: 2
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+      Pause: 0.001 s
+      ScanLabel: Time (s)
+      ScanValue: 0.0
+      ScanValueDifference: 1.0
+      Scans: 4000
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 2748
+          Start: 5496
+        2:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: '100'
+          Start: '100'
+      WindowsFixed: 0
+      WindowsShow: 2
+    Average:
+      Blocks: 1
+      Pause: 0.001 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 10 mV
+        Show: 2
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 10 mV
+        Show: 2
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+        Show: 0
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+        Show: 0
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: 0.010000000000000002 s
+          From: T0
+        B:
+          Delay: 0.0 s
+          From: D
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM4
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: Internal
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\P275171\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Previous endtime: '2019-10-21 17:04:22.145538'
+    Previous starttime: '2019-10-21 16:58:47.246967'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: C:\Users\P275171\Documents\PicoscopeData
+    Time:
+      Blocklength: 39.996 us
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 2
+      Timestep: 4 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 1 ms
+      Channel: A
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
+AutoSaveDefaultUser:
+  DefaultProject:
+    Analyse:
+      Active: 2
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 2
+          Name: Calculator 1
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+        2:
+          Colour:
+          - 108
+          - 180
+          - 198
+          FirstWindow: 2
+          Name: Calculator 2
+          Operation: +
+          SecondWindow: 1
+          Show: 2
+        3:
+          Colour:
+          - 14
+          - 152
+          - 56
+          FirstWindow: 1
+          Name: Calculator 3
+          Operation: '-'
+          SecondWindow: 2
+          Show: 2
+      Pause: 1 s
+      ScanLabel: Time (s)
+      ScanValue: 1
+      ScanValueDifference: 1
+      Scans: 10
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 191
+          - 171
+          - 255
+          Length: 5668
+          Start: 35
+        2:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 7616
+          Start: 314
+      WindowsFixed: 0
+      WindowsShow: 2
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 1 V
+        Show: 2
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+        Show: 2
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+        Show: 0
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+        Show: 0
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: Internal
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\P275171\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
+    Previous endtime: '2019-10-21 16:51:50.562566'
+    Previous starttime: '2019-10-21 16:47:14.850604'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: C:\Users\P275171\Documents\PicoscopeData
+    Time:
+      Blocklength: 10.078992000000001 ms
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 66
+      Timestep: 1008 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: B
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
 DefaultUser:
   DefaultProject:
     Analyse:
@@ -115,5 +379,5 @@ DefaultUser:
     User:
       Fontsize: '9'
 PreviousUser:
-  Name: DefaultUser
-  Project: DefaultProject
+  Name: Anno
+  Project: Scantimetest

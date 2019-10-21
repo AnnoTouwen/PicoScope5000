@@ -243,11 +243,17 @@ class Pico5000Interpreter:
     def reset_scandata(self, calculators):
         self.scandata = {}
         self.scandata['Scanvalue'] = []
+        self.scandata['Scantime'] = []
         for calculator in calculators:
             self.scandata[calculator] = []
 
     def compute_scanpoint_scanvalue(self, scanvalue):
         self.scandata['Scanvalue'].append(scanvalue)
+
+    def compute_scanpoint_scantime(self, scantime):
+        if len(self.scandata['Scantime']) == 0:
+            self.firstscantime = scantime
+        self.scandata['Scantime'].append(scantime-self.firstscantime)
 
     def compute_scanpoint(self, calculator, first_window, operation, second_window, range, maxADC):
         if calculator not in self.scandata:
