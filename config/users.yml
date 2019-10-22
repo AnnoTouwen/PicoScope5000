@@ -130,12 +130,12 @@ AutoSaveDefaultUser:
           Operation: '-'
           SecondWindow: 1
           Show: 2
-      Pause: 1 ms
+      Pause: 1 s
       ScanLabel: Scannumber
-      ScanValue: 1.0
-      ScanValueDifference: 1.0
+      ScanValue: 1
+      ScanValueDifference: 1
       Scans: 10
-      ShowPlot: 2
+      ShowPlot: 0
       Windows:
         1:
           Channel: A
@@ -143,20 +143,20 @@ AutoSaveDefaultUser:
           - 255
           - 170
           - 0
-          Length: 500
-          Start: 20
+          Length: 8
+          Start: 22
         2:
           Channel: A
           Colour:
           - 0
           - 170
           - 0
-          Length: 500
-          Start: 20
+          Length: 45
+          Start: 25
       WindowsFixed: 2
       WindowsShow: 0
     Average:
-      Blocks: 10
+      Blocks: 1
       Pause: 0.1 s
       Store: 0
     Channels:
@@ -171,12 +171,12 @@ AutoSaveDefaultUser:
         Name: B
         Range: 1 V
       C:
-        Active: 0
+        Active: 2
         CouplingType: DC
         Name: C
         Range: 1 V
       D:
-        Active: 0
+        Active: 2
         CouplingType: DC
         Name: D
         Range: 1 V
@@ -184,7 +184,7 @@ AutoSaveDefaultUser:
       Active: 0
       Connectors:
         A:
-          Delay: 10ms
+          Delay: 1 ms
           From: T0
         B:
           Delay: 2 ms
@@ -207,19 +207,19 @@ AutoSaveDefaultUser:
       Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
     Plot:
       Show: 2
-    Previous endtime: '2019-07-15 14:02:08.063637'
-    Previous starttime: '2019-07-15 14:02:08.061637'
+    Previous endtime: '2019-07-29 13:44:25.142091'
+    Previous starttime: '2019-07-29 14:40:47.386545'
     Save:
       Autosave: Never
       Channels: All Activated
       Filename: DefaultData
       Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
     Time:
-      Blocklength: 959904 ns
+      Blocklength: 319.984 us
       Resolution: 12BIT
-      Samples: 10000
-      Timebase: 9
-      Timestep: 96 ns
+      Samples: 20000
+      Timebase: 4
+      Timestep: 16 ns
       maxADC: 32767
     Trigger:
       Active: 2
@@ -236,7 +236,7 @@ AutoSaveDefaultUser:
 DefaultUser:
   DefaultProject:
     Analyse:
-      Active: 0
+      Active: 2
       Calculators:
         1:
           Colour:
@@ -262,7 +262,7 @@ DefaultUser:
           - 170
           - 0
           Length: 500
-          Start: 20
+          Start: 1
         2:
           Channel: A
           Colour:
@@ -270,7 +270,7 @@ DefaultUser:
           - 170
           - 0
           Length: 500
-          Start: 20
+          Start: 500
       WindowsFixed: 2
       WindowsShow: 0
     Average:
@@ -487,12 +487,12 @@ MaartenMooij:
         Name: B
         Range: 1 V
       C:
-        Active: 0
+        Active: 2
         CouplingType: DC
         Name: C
         Range: 1 V
       D:
-        Active: 0
+        Active: 2
         CouplingType: DC
         Name: D
         Range: 1 V
@@ -549,6 +549,329 @@ MaartenMooij:
       Type: Rising
     User:
       Fontsize: 9
+  TOFBaF:
+    Analyse:
+      Active: 0
+      Calculators:
+        1:
+          Colour:
+          - 0
+          - 0
+          - 0
+          FirstWindow: 1
+          Name: laser
+          Operation: '-'
+          SecondWindow: 2
+          Show: 2
+        2:
+          Colour:
+          - 156
+          - 231
+          - 128
+          FirstWindow: 3
+          Name: H2O
+          Operation: '-'
+          SecondWindow: 4
+          Show: 2
+        3:
+          Colour:
+          - 211
+          - 145
+          - 28
+          FirstWindow: 3
+          Name: Ne
+          Operation: '-'
+          SecondWindow: 5
+          Show: 2
+        4:
+          Colour:
+          - 255
+          - 85
+          - 0
+          FirstWindow: 3
+          Name: Ba
+          Operation: '-'
+          SecondWindow: 6
+          Show: 0
+        5:
+          Colour:
+          - 183
+          - 32
+          - 36
+          FirstWindow: 3
+          Name: SF5
+          Operation: '-'
+          SecondWindow: 7
+          Show: 0
+        6:
+          Colour:
+          - 58
+          - 13
+          - 40
+          FirstWindow: 3
+          Name: BaF
+          Operation: '-'
+          SecondWindow: 8
+          Show: 0
+        7:
+          Colour:
+          - 141
+          - 188
+          - 175
+          FirstWindow: 3
+          Name: Ba2+
+          Operation: '-'
+          SecondWindow: 9
+          Show: 0
+        8:
+          Colour:
+          - 36
+          - 218
+          - 19
+          FirstWindow: 3
+          Name: SF3+
+          Operation: '-'
+          SecondWindow: 10
+          Show: 0
+        9:
+          Colour:
+          - 117
+          - 10
+          - 53
+          FirstWindow: 3
+          Name: S? (m=32)
+          Operation: '-'
+          SecondWindow: 11
+          Show: 0
+        10:
+          Colour:
+          - 23
+          - 72
+          - 213
+          FirstWindow: 3
+          Name: N2? (m=28)
+          Operation: '-'
+          SecondWindow: 12
+          Show: 0
+        11:
+          Colour:
+          - 7
+          - 90
+          - 183
+          FirstWindow: 3
+          Name: S2+
+          Operation: '-'
+          SecondWindow: 13
+          Show: 0
+        12:
+          Colour:
+          - 248
+          - 209
+          - 238
+          FirstWindow: 3
+          Name: Ne22?
+          Operation: '-'
+          SecondWindow: 14
+          Show: 2
+      Pause: 0 s
+      ScanLabel: calibration single ion
+      ScanValue: 1.0
+      ScanValueDifference: 1.0
+      Scans: 1000
+      ShowPlot: 0
+      Windows:
+        1:
+          Channel: B
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: '63'
+          Start: '1460'
+        2:
+          Channel: B
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: '300'
+          Start: '0'
+        3:
+          Channel: A
+          Colour:
+          - 49
+          - 71
+          - 232
+          Length: '300'
+          Start: '0'
+        4:
+          Channel: A
+          Colour:
+          - 118
+          - 44
+          - 30
+          Length: '53'
+          Start: '2590'
+        5:
+          Channel: A
+          Colour:
+          - 49
+          - 64
+          - 100
+          Length: '53'
+          Start: '2653'
+        6:
+          Channel: A
+          Colour:
+          - 125
+          - 53
+          - 16
+          Length: '110'
+          Start: '4530'
+        7:
+          Channel: A
+          Colour:
+          - 11
+          - 80
+          - 53
+          Length: '58'
+          Start: '4455'
+        8:
+          Channel: A
+          Colour:
+          - 81
+          - 252
+          - 13
+          Length: '100'
+          Start: '4738'
+        9:
+          Channel: A
+          Colour:
+          - 76
+          - 44
+          - 119
+          Length: '120'
+          Start: '3628'
+        10:
+          Channel: A
+          Colour:
+          - 49
+          - 57
+          - 179
+          Length: '55'
+          Start: '3970'
+        11:
+          Channel: A
+          Colour:
+          - 183
+          - 130
+          - 157
+          Length: '74'
+          Start: '2961'
+        12:
+          Channel: A
+          Colour:
+          - 244
+          - 16
+          - 145
+          Length: '66'
+          Start: '2867'
+        13:
+          Channel: A
+          Colour:
+          - 168
+          - 245
+          - 0
+          Length: '42'
+          Start: '2540'
+        14:
+          Channel: A
+          Colour:
+          - 71
+          - 104
+          - 118
+          Length: '38'
+          Start: '2718'
+      WindowsFixed: 2
+      WindowsShow: 2
+    Average:
+      Blocks: 1
+      Pause: 0 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: PMT
+        Range: 20 mV
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: fs-laser
+        Range: 50 mV
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: Ablation laser
+        Range: 20 mV
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: -2.75 ms
+          From: D
+        C:
+          Delay: +19 us
+          From: D
+        D:
+          Delay: +99.98 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: External
+      TriggerRate: 10 Hz
+      Type: TTL
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\2019-10-21\Data_2019-10-21_scan_4.yml
+    Plot:
+      Show: 2
+    Previous endtime: '2019-10-22 08:15:42.071809'
+    Previous starttime: '2019-10-22 10:19:55.679131'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: Data
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+    Time:
+      Blocklength: 23.996000000000002 us
+      Resolution: 12BIT
+      Samples: 6000
+      Timebase: 2
+      Timestep: 4 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 1000 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 0.2 V
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
 PreviousUser:
   Name: MaartenMooij
-  Project: BaF
+  Project: TOFBaF

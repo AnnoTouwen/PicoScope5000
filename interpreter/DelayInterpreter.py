@@ -38,7 +38,7 @@ class SRSDG535Interpreter:
             if status == 0:
                 return
             else:
-                return str(self.error_status[status])
+                return str(status)# self.error_status[status])
         except ValueError:
             return 'Delay Generator not responding'
 

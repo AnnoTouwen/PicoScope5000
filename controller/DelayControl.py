@@ -8,7 +8,7 @@ class SRSDG535Controller:
 
     def setup_port(self, port):
         # Open communicationport to Delay Generator
-        self.DG = serial.Serial(port = str(port), timeout = 0.1)
+        self.DG = serial.Serial(port = str(port), timeout = 0.001)#, write_timeout = 1)
         self.DG.write('++addr 5\n'.encode('ASCII'))
 
     def close_port(self):
@@ -90,7 +90,7 @@ class SRSDG535Controller:
 
 if __name__ == '__main__':
     Delay = SRSDG535Controller()
-    Delay.setup_port('COM5')
+    Delay.setup_port('COM4')
     Delay.clear()
     Delay.read_error_status()
     Delay.read_instrument_status()

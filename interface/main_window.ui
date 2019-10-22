@@ -177,6 +177,15 @@
                </color>
               </brush>
              </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="NoBrush">
+               <color alpha="128">
+                <red>0</red>
+                <green>0</green>
+                <blue>0</blue>
+               </color>
+              </brush>
+             </colorrole>
             </active>
             <inactive>
              <colorrole role="WindowText">
@@ -239,6 +248,15 @@
                 <red>0</red>
                 <green>85</green>
                 <blue>127</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="NoBrush">
+               <color alpha="128">
+                <red>0</red>
+                <green>0</green>
+                <blue>0</blue>
                </color>
               </brush>
              </colorrole>
@@ -307,6 +325,15 @@
                </color>
               </brush>
              </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="NoBrush">
+               <color alpha="128">
+                <red>0</red>
+                <green>0</green>
+                <blue>0</blue>
+               </color>
+              </brush>
+             </colorrole>
             </disabled>
            </palette>
           </property>
@@ -333,7 +360,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>6</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="User">
            <attribute name="title">
@@ -2780,12 +2807,110 @@
                <string>Scanplot</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
-               <item row="1" column="9">
-                <widget class="QLabel" name="ScnalLabelL">
+               <item row="1" column="3">
+                <widget class="QLabel" name="ScanValueL">
                  <property name="text">
-                  <string>Scan axislabel:</string>
+                  <string>Scan startvalue:</string>
                  </property>
                 </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="ShowScanPlotL">
+                 <property name="text">
+                  <string>Show:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <spacer name="horizontalSpacer_46">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="16">
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="14">
+                <widget class="QLabel" name="From_ScanvalueL">
+                 <property name="text">
+                  <string>From:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="17">
+                <widget class="QPushButton" name="Save_scan_plot_button">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Save plot</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="7">
+                <widget class="QLineEdit" name="ScanValueDifference">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QLineEdit" name="ScanValue">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="8">
+                <spacer name="horizontalSpacer_44">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
                <item row="1" column="10">
                 <widget class="QLineEdit" name="ScanLabel">
@@ -2806,60 +2931,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="6">
-                <widget class="QLabel" name="ScanVauleDifferenceL">
-                 <property name="text">
-                  <string>Scan value difference:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="7">
-                <widget class="QLineEdit" name="ScanValueDifference">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="ShowScanPlot">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="ShowScanPlotL">
-                 <property name="text">
-                  <string>Show:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="4">
-                <widget class="QLineEdit" name="ScanValue">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QLabel" name="ScanValueL">
-                 <property name="text">
-                  <string>Scan startvalue:</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="5">
                 <spacer name="horizontalSpacer_42">
                  <property name="orientation">
@@ -2873,34 +2944,8 @@
                  </property>
                 </spacer>
                </item>
-               <item row="1" column="2">
-                <spacer name="horizontalSpacer_46">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="8">
-                <spacer name="horizontalSpacer_44">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
                <item row="1" column="11">
-                <spacer name="horizontalSpacer_10">
+                <spacer name="From_ScanvalueSpacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -2912,8 +2957,29 @@
                  </property>
                 </spacer>
                </item>
-               <item row="1" column="12">
-                <widget class="QPushButton" name="Save_scan_plot_button">
+               <item row="1" column="6">
+                <widget class="QLabel" name="ScanVauleDifferenceL">
+                 <property name="text">
+                  <string>Scan value difference:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="ShowScanPlot">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="9">
+                <widget class="QLabel" name="ScnalLabelL">
+                 <property name="text">
+                  <string>Scan axislabel:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="15">
+                <widget class="QComboBox" name="From_Scanvalue">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -2922,13 +2988,38 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>16777215</width>
+                   <width>100</width>
                    <height>30</height>
                   </size>
                  </property>
-                 <property name="text">
-                  <string>Save plot</string>
+                 <property name="currentText">
+                  <string>T0</string>
                  </property>
+                 <item>
+                  <property name="text">
+                   <string>T0</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>A</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>B</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>C</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>D</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
               </layout>
@@ -2937,6 +3028,9 @@
            </layout>
           </widget>
           <widget class="QWidget" name="DelayTab">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <attribute name="title">
             <string>Delay</string>
            </attribute>
@@ -3589,6 +3683,9 @@
             </item>
             <item row="0" column="0" rowspan="2">
              <widget class="QGroupBox" name="DelaySignal">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -3708,7 +3805,7 @@
      <x>0</x>
      <y>0</y>
      <width>1734</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAdd_Device">

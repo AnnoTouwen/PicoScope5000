@@ -1,0 +1,6 @@
+PicoScope 5000 aansturing van Delay Generator: 
+
+Verbind de Delay generator via connect (keep device settings)
+Zet de scanlabel naar Delay <Kanaal waar je over wil scannen>
+Een dropdown met het kanaal tov welke je wil scannen ("Delay #")
+Zet de delay in tijdseenheden als startpunt en stapgrote

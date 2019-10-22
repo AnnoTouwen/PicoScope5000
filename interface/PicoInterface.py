@@ -25,6 +25,9 @@ class Pico5000Interface(QMainWindow):
         main_window_file = os.path.join(self.base_folder, 'main_window.ui')
         uic.loadUi(main_window_file, self)
         #self.tabWidget.setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
+        self.From_Scanvalue.hide()
+        self.From_ScanvalueL.hide()
+        #self.From_ScanvalueSpacer.hide()
 
         self.itp = interpreter # Start interpreter
 
@@ -63,8 +66,17 @@ class Pico5000Interface(QMainWindow):
         PreviousUser = yaml.safe_load(f)['PreviousUser']
         f.close()
         self.load_personal_settings(PreviousUser['Name'], PreviousUser['Project']) # Set settings to Default
-        self.device_channels = 2
-        self.two_channels()
+        self.device_channels = 4
+        #self.two_channels()
+
+        self.itp.start_device()
+        self.itp.setup_device(self.current_settings['Time']['Resolution'])
+        if int(self.itp.dev.status["openunit"]) == 282 or int(self.itp.dev.status["openunit"]) == 286:
+            self.two_channels()
+            print("Can not switch to four channels, because " + str(self.itp.dev.status["openunit"])) 
+        else:
+            self.four_channels()
+            print("Can switch to four channels, because " + str(self.itp.dev.status["openunit"])) 
 
         # Plotparameters and objects
         self.newData = False
@@ -85,11 +97,6 @@ class Pico5000Interface(QMainWindow):
                 self.window_finish_draw[window] = pg.InfiniteLine(pos=(int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length'])) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), angle=90, pen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), style=Qt.DashLine, width=2), hoverPen=pg.mkPen(color = tuple(self.current_settings['Analyse']['Windows'][window]['Colour']), width=2), movable=False, bounds=[int(self.current_settings['Analyse']['Windows'][window]['Start']) * ur(str(self.current_settings['Time']['Timestep']).replace(' ', '')).m_as('s'), ur(str(self.current_settings['Time']['Blocklength']).replace(' ', '')).m_as('s')])
         self.plot_font = pg.Qt.QtGui.QFont()
         self.change_fontsize()
-
-        self.itp.start_device()
-        self.itp.setup_device(self.current_settings['Time']['Resolution'])
-        if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
-            self.four_channels()
 
         # Do a first measurement
         #self.start_thread()
@@ -182,6 +189,8 @@ class Pico5000Interface(QMainWindow):
         self.ScanValueDifference.editingFinished.connect(self.change_analyse_scanvaluedifference)
         self.ScanLabel.editingFinished.connect(self.change_analyse_scanlabel)
         self.Save_scan_plot_button.clicked.connect(self.save_scan_plot_window)
+        # Delay
+        self.From_Scanvalue.currentTextChanged.connect(self.delay_change_from_scan)
 
         # Device
         self.actionPicoScope5444D.triggered.connect(self.four_channels)
@@ -221,7 +230,7 @@ class Pico5000Interface(QMainWindow):
 # -------------------------------------------------------------------------------
 
     def two_channels(self):
-        if self.device_channels == 2:
+        if self.device_channels == 4:
             self.current_settings['Channels']['C']['Active'] = 0
             self.current_settings['Channels']['D']['Active'] = 0
             if self.current_settings['Trigger']['Channel'] in ['C', 'D']:
@@ -241,9 +250,14 @@ class Pico5000Interface(QMainWindow):
             self.channels = ['A', 'B']
             for i in self.channels:
                 self.channel_changed[i] = True
+            #self.itp.stop_device()
+            #self.itp.close_device
+            #self.itp.start_device()
+            #self.itp.setup_device(self.current_settings['Time']['Resolution'])
+
 
     def four_channels(self):
-        if self.device_channels == 4:
+        if self.device_channels == 2:
             if self.itp.dev.status["openunit"] == 282 or self.itp.dev.status["openunit"] == 286:
                 self.Messages.append('Can not power four channels in USB power mode')
             else:
@@ -257,6 +271,10 @@ class Pico5000Interface(QMainWindow):
                 self.channels = ['A', 'B', 'C', 'D']
                 for i in self.channels:
                     self.channel_changed[i] = True
+                #self.itp.stop_device()
+                #self.itp.close_device
+                #self.itp.start_device()
+                #self.itp.setup_device(self.current_settings['Time']['Resolution'])
 
     def start_thread(self, continuously = False):
         if not self.measurement_running:
@@ -440,7 +458,7 @@ class Pico5000Interface(QMainWindow):
                 pass
             self.newData = False
 
-    def plot_scan(self):
+    def plot_scan(self, datadots = True):
         try:
             self.scan_plot_window.clear()
             try:
@@ -450,7 +468,10 @@ class Pico5000Interface(QMainWindow):
             self.scan_legend = self.scan_plot_window.addLegend()
             for calculator in self.calculators:
                 try:
-                    self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                    if datadots:
+                        self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                    else:
+                        self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
                 except:
                     pass
         except:
@@ -506,7 +527,9 @@ class Pico5000Interface(QMainWindow):
         self.scan_plot_window.win.close()
 
     def save_scan_plot_window(self):
+        self.plot_scan(datadots = False)
         try:
+            #for calculator in self.calculators:
             exp = pg.exporters.ImageExporter(self.scan_plot_window.plotItem)
             exp.params.param('width').setValue(int(self.scan_plot_window.width()*3), blockSignal=exp.widthChanged)
             exp.params.param('height').setValue(int(self.scan_plot_window.height()*3), blockSignal=exp.heightChanged)
@@ -517,6 +540,7 @@ class Pico5000Interface(QMainWindow):
             #self.Messages.append('Scan plot saved to {}'. format(str(file)))
         except AttributeError:
             self.Messages.append('No scanplot available')
+        self.plot_scan()
 
     def set_measurement_settings(self):
         #self.measurement_settings = self.current_settings
@@ -1338,13 +1362,21 @@ class Pico5000Interface(QMainWindow):
 
     def change_analyse_scanlabel(self):
         self.current_settings['Analyse']['ScanLabel'] = str(self.ScanLabel.text())
-        if self.current_settings['Delay']['Active'] > 2 and 'Delay ' in self.current_settings['Analyse']['ScanLabel']:
+        if self.current_settings['Delay']['Active'] > 0 and str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '') in ['A', 'B', 'C', 'D']:
             self.ScanValue.setText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])
             self.current_settings['Analyse']['ScanValue'] = float(ur(str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['Delay'])).m_as('s'))
             self.ScanValueDifference.setText(str(self.current_settings['Analyse']['ScanValueDifference']) + ' s')
+            self.From_Scanvalue.show()
+            self.From_ScanvalueL.show()
+            self.From_Scanvalue.setCurrentText(str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel'].replace('Delay ', ''))]['From']))
             if self.current_settings['Analyse']['ShowPlot'] == 2:
                 self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units = 's')
         else:
+            try:
+                self.From_Scanvalue.hide()
+                self.From_ScanvalueL.hide()
+            except:
+                pass
             if self.current_settings['Analyse']['ShowPlot'] == 2:
                 self.scan_plot_window.setLabel('bottom', self.current_settings['Analyse']['ScanLabel'], units='')
         self.autosave_settings()
@@ -1531,7 +1563,7 @@ class Pico5000Interface(QMainWindow):
                 self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
                 self.Messages.append('Window length must be positive')
                 return
-            if int(str(self.WindowStart.text())) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) > int(self.current_settings['Time']['Samples'])-1:
+            if int(str(self.WindowLength.text())) + int(self.current_settings['Analyse']['Windows'][self.current_window]['Start']) > int(self.current_settings['Time']['Samples'])-1:
                 self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][self.current_window]['Length']))
                 self.Messages.append('Window length too high')
                 return
@@ -1812,12 +1844,14 @@ class Pico5000Interface(QMainWindow):
                 self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
                 self.Messages.append('Delay time must be less than 1000 s')
                 return
-            if abs(unitcheck) < 5*10**(-12):
-                self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
-                self.Messages.append('Delay time must be at least 5 ps')
-                return
             if unitcheck < 0:
                 change_sign = True
+            if abs(unitcheck) < 5*10**(-12) and unitcheck != 0:
+                if change_sign:
+                    self.Delay[connector].setText('-5 ps')
+                else:
+                    self.Delay[connector].setText('5 ps')
+                self.Messages.append('Delay time must be at least 5 ps (or 0)')
             self.current_settings['Delay']['Connectors'][connector]['Delay'] = str(self.Delay[connector].text())
         except:
             self.Delay[connector].setText(str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
@@ -1835,5 +1869,18 @@ class Pico5000Interface(QMainWindow):
         self.current_settings['Delay']['Connectors'][connector]['From'] = str(self.From[connector].currentText())
         if self.current_settings['Delay']['Active'] > 0:
             self.ditp.set_delay_time(connector, str(self.current_settings['Delay']['Connectors'][connector]['From']), str(self.current_settings['Delay']['Connectors'][connector]['Delay']))
+            if str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '') in connector:
+                self.From_Scanvalue.setCurrentText(self.current_settings['Delay']['Connectors'][connector]['From'])
         self.autosave_settings()
 
+    def delay_change_from_scan(self):
+        if str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '') in str(self.From_Scanvalue.currentText()):
+            self.Messages.append('Delay can not be relative to itself')
+            self.From_Scanvalue.setCurrentText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From'])
+            return
+        self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From'] = str(self.From_Scanvalue.currentText())
+        if self.current_settings['Delay']['Active'] > 0:
+            self.ditp.set_delay_time(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''), str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From']), str(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['Delay']))
+            if self.current_settings['Delay']['Active'] == 2:
+                self.From[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setCurrentText(self.current_settings['Delay']['Connectors'][str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')]['From'])
+        self.autosave_settings()

@@ -137,6 +137,9 @@ class Pico5000Interpreter:
 
     def set_timewindow(self, Samples, Timebase):
         # self.user['Trigger']['maxSamples'] = 50 # self.user['Trigger']['PreSamp'] + self.user['Trigger']['PostSamp']
+
+        print(Samples)
+        print(Timebase)
         self.dev.set_timewindow(Samples, Timebase)
         assert_pico_ok(self.dev.status["getTimebase2"])
 
