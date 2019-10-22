@@ -60,7 +60,8 @@ def scan_V(metadatafile):
 if __name__ == '__main__':
     import os
     import matplotlib.pyplot as plt
-    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-07-12', 'Data_2019-07-12_scan_2_metadata.yml')
+    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-10-21', 'DefaultData_2019-10-21_scan_49_metadata.yml')
+    '''
     time = time_ns(file)
     channels = ['A', 'B', 'C', 'D']
     color = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y'}
@@ -73,10 +74,13 @@ if __name__ == '__main__':
     plt.xlabel('Time (ns)')
     plt.ylabel('Voltage (mV)')
     plt.show()
+    '''
+
+    # Plot calculator over scanvalue
     settings = load_settings(file)[0]
     scandata = scan_V(file)
     for calculator in scandata:#settings['Analyse']['Calculators']:
-        if not str(calculator) in 'Scanvalue':
+        if not str(calculator) in 'Scanvalue' and not str(calculator) in 'Scantime':
             try:
                 plt.plot(scandata['Scanvalue'], scandata[calculator], color = tuple([x/255 for x in settings['Analyse']['Calculators'][calculator]['Colour']]), label = settings['Analyse']['Calculators'][calculator][ 'Name'])
             except:
@@ -85,6 +89,19 @@ if __name__ == '__main__':
     plt.legend()
     plt.xlabel(str(settings['Analyse']['ScanLabel']))
     plt.ylabel('Calculator (V)')
+    plt.show()
+
+    # Plot calculator over time
+    for calculator in scandata:#settings['Analyse']['Calculators']:
+        if not str(calculator) in 'Scanvalue' and not str(calculator) in 'Scantime':
+            try:
+                plt.plot(scandata['Scantime'], scandata[calculator], color = tuple([x/255 for x in settings['Analyse']['Calculators'][calculator]['Colour']]), label = settings['Analyse']['Calculators'][calculator][ 'Name'])
+            except:
+                warnings.warn('No metadata saved for Calculator {}'.format(calculator))
+                plt.plot(scandata['Scantime'], scandata[calculator], label = 'Calculator {}'.format(calculator))
+    plt.legend()
+    plt.xlabel(str(settings['Analyse']['ScanLabel']))
+    plt.ylabel('Time (s)')
     plt.show()
 
 

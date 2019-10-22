@@ -36,6 +36,7 @@ class Pico5000Interface(QMainWindow):
 
         # Shorter definition of buttons
         self.ChannelActive = {'A': self.AActive, 'B': self.BActive, 'C': self.CActive, 'D': self.DActive}
+        self.ChannelShow = {'A': self.AShow, 'B': self.BShow, 'C': self.CShow, 'D': self.DShow}
         self.ChannelRange = {'A': self.ARange, 'B': self.BRange, 'C': self.CRange, 'D': self.DRange}
         self.ChannelCoupling = {'A': self.ACoupling, 'B': self.BCoupling, 'C': self.CCoupling, 'D': self.DCoupling}
         self.ChannelName = {'A': self.AName, 'B': self.BName, 'C': self.CName, 'D': self.DName}
@@ -98,6 +99,11 @@ class Pico5000Interface(QMainWindow):
         self.plot_font = pg.Qt.QtGui.QFont()
         self.change_fontsize()
 
+        self.itp.start_device()
+        self.itp.setup_device(self.current_settings['Time']['Resolution'])
+        #if self.itp.dev.status["openunit"] is not 282 and self.itp.dev.status["openunit"] is not 286:
+        #    self.four_channels()
+
         # Do a first measurement
         #self.start_thread()
 
@@ -150,6 +156,7 @@ class Pico5000Interface(QMainWindow):
         # Channels tab
         for i in self.channels:
             self.ChannelActive[i].stateChanged.connect(partial(self.change_channel_active, i))
+            self.ChannelShow[i].stateChanged.connect(partial(self.change_channel_show, i))
             self.ChannelRange[i].currentTextChanged.connect(partial(self.change_channel_range, i))
             self.ChannelCoupling[i].currentTextChanged.connect(partial(self.change_channel_coupling, i))
             self.ChannelName[i].editingFinished.connect(partial(self.change_channel_name, i))
@@ -227,6 +234,8 @@ class Pico5000Interface(QMainWindow):
             # self.Difference[connector].editingFinished.connect(partial(self.delay_change_difference, connector))
             self.From[connector].currentTextChanged.connect(partial(self.delay_change_from, connector))
 
+        #self.autosavecounter = 0
+
 # -------------------------------------------------------------------------------
 
     def two_channels(self):
@@ -280,9 +289,14 @@ class Pico5000Interface(QMainWindow):
         if not self.measurement_running:
             self.timer = QTimer() # Start a timer to update the plot
             if self.current_settings['Analyse']['ShowPlot'] == 2:
-                self.timer.timeout.connect(self.plot_scan)
+                if str(self.current_settings['Analyse']['ScanLabel']) in 'Time (s)':
+                    self.timer.timeout.connect(partial(self.plot_scan, True, 'Scantime'))
+                else:
+                    self.timer.timeout.connect(self.plot_scan)
             if self.current_settings['Plot']['Show'] == 2:
                 self.timer.timeout.connect(self.plot_measurement)
+            if self.current_settings['Analyse']['Active'] == 2:
+                self.timer.timeout.connect(self.autosave_scan)
             self.timer.start(1000)  # Time in millieseconds
             #self.start_measurement()
             measurement_thread = threading.Thread(target = partial(self.start_measurement, continuously))
@@ -291,7 +305,14 @@ class Pico5000Interface(QMainWindow):
         else:
             self.Messages.append('Measurement already running')
 
+    def autosave_scan(self):
+        self.autosavecounter += 1
+        if self.autosavecounter == 60:
+            self.save_scandata(self.scanfile)
+            self.autosavecounter = 0
+
     def start_measurement(self, continuously):
+        self.autosavecounter = 0
         self.current_settings['Previous starttime'] = str(datetime.now())
         self.measurement_running = True
         self.continuously = continuously
@@ -341,6 +362,7 @@ class Pico5000Interface(QMainWindow):
                         self.itp.read_windows(window, int(self.current_settings['Analyse']['Windows'][window]['Start']), int(self.current_settings['Analyse']['Windows'][window]['Start']) + int(self.current_settings['Analyse']['Windows'][window]['Length']), self.current_settings['Analyse']['Windows'][window]['Channel'])
                         # print('Windows read after: ', time() - self.meaurement_start_time)
                     self.itp.compute_scanpoint_scanvalue(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference']))
+                    self.itp.compute_scanpoint_scantime(time())
                     if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                         self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference'])) + ' s')
                         self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
@@ -348,7 +370,7 @@ class Pico5000Interface(QMainWindow):
                         if self.current_settings['Analyse']['Calculators'][calculator]['Show'] == 2:
                             self.itp.compute_scanpoint(int(calculator), int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow']), str(self.current_settings['Analyse']['Calculators'][calculator]['Operation']), int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow']), [str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow'])]['Channel']]['Range']), str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow'])]['Channel']]['Range'])], int(self.current_settings['Time']['maxADC']))
                     #print('Scanpoint computed after: ', time() - self.meaurement_start_time)
-                    self.save_scandata(self.scanfile)
+                    #self.save_scandata(self.scanfile) # Chang for saving scandata every scanpoint (Very slow)
                     #print('Scandata saved after: ', time() - self.meaurement_start_time)
                     if self.averagenumber < self.current_settings['Analyse']['Scans']-1 or continuously:
                         if time() - self.meaurement_start_time > ur(self.current_settings['Analyse']['Pause'].replace(' ', '')).m_as('s'):
@@ -359,7 +381,10 @@ class Pico5000Interface(QMainWindow):
                             while time() - self.meaurement_start_time < ur(self.current_settings['Analyse']['Pause'].replace(' ', '')).m_as('s'):
                                 pass
                     else:
-                        self.measurement_running = False
+                        #self.measurement_running = False
+                        self.stop_measurement()
+            self.save_scandata(self.scanfile)
+            self.save_personal_settings(self.measurement_name, self.measurement_project, self.scanfile.replace('.yml', '_metadata.yml'), metadata=True)
         else:
             self.averagenumber = 0
             if not self.current_settings['Save']['Autosave'] in 'Never':
@@ -382,6 +407,9 @@ class Pico5000Interface(QMainWindow):
             self.measurement_pause = False
             self.continue_after_setting = False
             self.pause_button.setText('Pause')
+            self.timer.stop()
+            if self.current_settings['Analyse']['Active'] == 2:
+                self.save_scandata(self.scanfile)
             #self.Messages.append('Measurement stopped')
 
     def pause_measurement(self):
@@ -389,9 +417,11 @@ class Pico5000Interface(QMainWindow):
             if self.measurement_pause:
                 self.measurement_pause = False
                 self.pause_button.setText('Pause')
+                self.timer.start()
             else:
                 self.measurement_pause = True
                 self.pause_button.setText('Continue')
+                self.timer.stop()
 
     def run_measurement(self):
         self.itp.reset_buffer_sum()
@@ -451,14 +481,14 @@ class Pico5000Interface(QMainWindow):
                 pass
             self.scope_legend = self.plot_window.addLegend()
             try:
-                    for channel in self.active_channels:
-                        self.itp.interpret_data(self.current_settings['Time']['Samples'], ur(str(self.current_settings['Time']['Timestep'])).m_as('ns'), channel, str(self.current_settings['Channels'][channel]['Range']), 1000)
-                    self.plot_data()
+                for channel in self.active_channels:
+                    self.itp.interpret_data(self.current_settings['Time']['Samples'], ur(str(self.current_settings['Time']['Timestep'])).m_as('ns'), channel, str(self.current_settings['Channels'][channel]['Range']), 1000)
+                self.plot_data()
             except KeyError:
                 pass
             self.newData = False
 
-    def plot_scan(self, datadots = True):
+    def plot_scan(self, datadots = True, xaxis = 'Scanvalue'):
         try:
             self.scan_plot_window.clear()
             try:
@@ -469,9 +499,9 @@ class Pico5000Interface(QMainWindow):
             for calculator in self.calculators:
                 try:
                     if datadots:
-                        self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                        self.scan_plot_window.plot(self.itp.scandata[xaxis][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbol='s', symbolPen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), symbolBrush=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
                     else:
-                        self.scan_plot_window.plot(self.itp.scandata['Scanvalue'][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
+                        self.scan_plot_window.plot(self.itp.scandata[xaxis][:], self.itp.scandata[calculator][:], pen=tuple(self.current_settings['Analyse']['Calculators'][calculator]['Colour']), name = str(self.current_settings['Analyse']['Calculators'][calculator]['Name']))
                 except:
                     pass
         except:
@@ -639,7 +669,7 @@ class Pico5000Interface(QMainWindow):
                 self.plot_window.addItem(self.window_start_draw[window])
                 self.plot_window.addItem(self.window_finish_draw[window])
         for i in self.channels:
-            if self.current_settings['Channels'][i]['Active'] == 2:
+            if self.current_settings['Channels'][i]['Show'] == 2:
                 try:
                     self.plot_window.plot([j/1000000000 for j in self.itp.block['Time']], [k/1000 for k in self.itp.block[i][:]], pen=self.channel_colour[i], name = self.current_settings['Channels'][i]['Name'])
                 except KeyError:
@@ -759,6 +789,13 @@ class Pico5000Interface(QMainWindow):
             self.Fontsize.setValue(int(self.current_settings['User']['Fontsize']))
             for i in self.channels:
                 self.ChannelActive[i].setCheckState(self.current_settings['Channels'][i]['Active'])
+                try:
+                    self.ChannelShow[i].setCheckState(self.current_settings['Channels'][i]['Show'])
+                except:
+                    self.ChannelShow[i].setCheckState(self.current_settings['Channels'][i]['Active']) # If there is no Show in settingsfile yet, set Show to true if channel is active
+                    self.change_channel_show(i)
+                    if i in 'A':
+                        self.Messages.append('Show settings for channels not in settingsfile yet, all active channels are set to be shown')
                 self.ChannelRange[i].setCurrentText(str(self.current_settings['Channels'][i]['Range']))
                 self.ChannelCoupling[i].setCurrentText(str(self.current_settings['Channels'][i]['CouplingType']))
                 self.ChannelName[i].setText(str(self.current_settings['Channels'][i]['Name']))
@@ -1225,6 +1262,20 @@ class Pico5000Interface(QMainWindow):
         self.autosave_settings()
 
     def change_channel_active(self, channel):
+        if int(self.ChannelActive[channel].checkState()) == 0:
+            if channel in self.current_settings['Trigger']['Channel']: # Check for triggerchannel
+                self.ChannelActive[channel].setCheckState(2)
+                message = 'Channel ' + str(channel) + ' is used for the trigger, and can therefore not be inactive'
+                self.Messages.append(message)
+            if self.current_settings['Analyse']['Active'] == 2: # Check for channel in any of the windows
+                for window in self.windows:
+                    if channel in self.current_settings['Analyse']['Windows'][window]['Channel']:
+                        self.ChannelActive[channel].setCheckState(2)
+                        message = 'Channel ' + str(channel) + ' is used for window ' + str(window) + ', and can therefore not be inactive'
+                        self.Messages.append(message)
+        if int(self.ChannelActive[channel].checkState()) == 0: # If still set to be inactive, set show to be inactive as well
+            self.ChannelShow[channel].setCheckState(0)
+            self.change_channel_show(channel)
         self.current_settings['Channels'][channel]['Active'] = int(self.ChannelActive[channel].checkState())
         self.channel_changed[channel] = True
         self.buffer_changed[channel] = True
@@ -1232,6 +1283,19 @@ class Pico5000Interface(QMainWindow):
             self.measurement_pause = True
             self.continue_after_setting = True
         self.autosave_settings()
+
+
+    def change_channel_show(self, channel):
+        if int(self.ChannelShow[channel].checkState()) > self.current_settings['Channels'][channel]['Active']:
+            self.ChannelShow[channel].setCheckState(0)
+            self.Messages.append('Can not show inactive channels')
+        else:
+            self.current_settings['Channels'][channel]['Show'] = int(self.ChannelShow[channel].checkState())
+            self.channel_changed[channel] = True
+            if self.measurement_running:
+                self.measurement_pause = True
+                self.continue_after_setting = True
+            self.autosave_settings()
 
     def change_channel_range(self, channel):
         self.current_settings['Channels'][channel]['Range'] = str(self.ChannelRange[channel].currentText())

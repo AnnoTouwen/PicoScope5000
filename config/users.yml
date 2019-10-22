@@ -678,7 +678,7 @@ MaartenMooij:
       ScanValue: 1.0
       ScanValueDifference: 1.0
       Scans: 1000
-      ShowPlot: 0
+      ShowPlot: 2
       Windows:
         1:
           Channel: B
@@ -795,7 +795,7 @@ MaartenMooij:
       WindowsFixed: 2
       WindowsShow: 2
     Average:
-      Blocks: 1
+      Blocks: 10
       Pause: 0 s
       Store: 0
     Channels:
@@ -808,19 +808,19 @@ MaartenMooij:
         Active: 2
         CouplingType: DC
         Name: fs-laser
-        Range: 50 mV
+        Range: 1 V
       C:
         Active: 0
         CouplingType: DC
         Name: Ablation laser
-        Range: 20 mV
+        Range: 500 mV
       D:
         Active: 0
         CouplingType: DC
         Name: D
         Range: 1 V
     Delay:
-      Active: 0
+      Active: 2
       Connectors:
         A:
           Delay: -180 us
@@ -843,11 +843,11 @@ MaartenMooij:
       TriggerRate: 10 Hz
       Type: TTL
     Metadata:
-      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\2019-10-21\Data_2019-10-21_scan_4.yml
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\2019-07-26\
     Plot:
       Show: 2
     Previous endtime: '2019-10-22 08:15:42.071809'
-    Previous starttime: '2019-10-22 10:19:55.679131'
+    Previous starttime: '2019-10-22 08:16:20.726020'
     Save:
       Autosave: Never
       Channels: All Activated

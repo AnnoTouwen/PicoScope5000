@@ -58,7 +58,7 @@ If the programm is started for the first time Default settings are loaded, but i
 
 The save directory for all the data output from the program can be set here, in which a folder will be created named by the current date set on your PC as YYYY-MM-DD. Also the base filename can be set. Note however that the full filename will be different dependent on the datatype and the numbers labelling the measurement or scan. For binary data of the scope readout a separate folder is created in which files will be saved with the extension .bin. These binary files are numbered, with measurementnumber and possibly blocknumber if all readouts are saved separately, not just the avereage over multiple of these. Scanfiles have the extension .yml. These datafiles are accompanied by metadatafiles with the same filname, but with metadata added and extension .yml. The plots for the scope and scan can also be saved, which will have a filename including scope or scan respectively, with extension .png.
 
-The scandata are saved automatically, but you might want to save the raw binary data aswell. Save data lets you select to never, every scopereadout or every average over mutiple scope readouts (if applicable) save the binary data. The datafiles can be read and used by the PicoReadBinary.py script.
+The scandata are saved automatically (autosave every minute and at the end of a scan), but you might want to save the raw binary data as well. Save data lets you select to never, every scopereadout or every average over mutiple scope readouts (if applicable) save the binary data. The datafiles can be read and used by the PicoReadBinary.py script.
 
 ### Time
 
@@ -69,7 +69,7 @@ The trigger is also set in this menu. If you want to measure without a trigger d
 
 ### Channels
 
-Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode. One can also rename channels to make the more destinguishable and easier to retrace afterwards.
+Each of the channels can be activated or deactivated separately. Note that the number of activated channels is restricted by the powermodus, resolution and timeresolution. Inactive channels are never show, active channels can be set not to be shown in the scope plot by the Show tickbox. The voltagerange can be selected from the dropdown menu. Note that the resolution is devided over the range from minus to plus this voltage. Every channel can be used in either AC or DC mode. One can also rename channels to make the more destinguishable and easier to retrace afterwards.
 
 ### Scope
 
@@ -87,7 +87,7 @@ A window can be selected or added from the dropdownmenu to change its settings. 
 
 A calculator can be selected or added from the dropdownmenu to change its settings. The colour of the calculator in the scan plotwindow can be set. It can be selected wether it is shown in the scan plotwindow. Two windows and the operation between these averages can be selected from the dropdownmenus. The name of the calculator can be changed for better labelling in plots. Extra calculators can be deleted, but not Calculator 1.
 
-The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
+The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. If the Scan axislabel is set to "Time (s)" the horizontal axis value is time in seconds from the time of the first scanpoint. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
 
 ## Delay
 
