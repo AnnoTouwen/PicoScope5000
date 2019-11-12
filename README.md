@@ -87,7 +87,7 @@ A window can be selected or added from the dropdownmenu to change its settings. 
 
 A calculator can be selected or added from the dropdownmenu to change its settings. The colour of the calculator in the scan plotwindow can be set. It can be selected wether it is shown in the scan plotwindow. Two windows and the operation between these averages can be selected from the dropdownmenus. The name of the calculator can be changed for better labelling in plots. Extra calculators can be deleted, but not Calculator 1.
 
-The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. If the Scan axislabel is set to "Time (s)" the horizontal axis value is time in seconds from the time of the first scanpoint. If the Scan Axislabel is set to "Voltage (<voltage unit>)" the function generator will output a voltage given by the scanvalue in <voltage unit>. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
+The scans can be plotted in a scanplot, which will be shown in a separate window if show is activated. The horizontal axis initial value and stepsize can be set, next to a label for this axis. If the Scan axislabel is set to "Time (s)" the horizontal axis value is time in seconds from the time of the first scanpoint. If the Scan Axislabel is set to "Voltage ([voltage unit])" the function generator will output a voltage given by the scanvalue in [voltage unit]. This plot can also be exported as png by clicking Save plot. The savelocation and filename are set in the save menu.
 
 ## Delay
 
