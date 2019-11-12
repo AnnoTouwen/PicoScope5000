@@ -154,6 +154,9 @@ class Pico5000Interpreter:
         # create converted type self.maxSamples
         self.cmaxSamples = ctypes.c_int32(Samples)
 
+    def set_voltage(self, voltage):
+        self.dev.set_generator_voltage(int(ur(voltage).m_as('uV')))
+
     def get_block(self, Samples, SamplesBeforeTrigger, Timebase):
         self.dev.get_block(Samples, SamplesBeforeTrigger, Timebase)
         assert_pico_ok(self.dev.status["runBlock"])

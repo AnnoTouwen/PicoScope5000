@@ -10,14 +10,14 @@ Anno:
           - 0
           FirstWindow: 2
           Name: Calculator 1
-          Operation: '-'
-          SecondWindow: 1
+          Operation: +
+          SecondWindow: 2
           Show: 2
-      Pause: 0.001 s
-      ScanLabel: Time (s)
-      ScanValue: 0.0
-      ScanValueDifference: 1.0
-      Scans: 4000
+      Pause: 0.5 s
+      ScanLabel: Voltage (V)
+      ScanValue: -2.0
+      ScanValueDifference: 0.1
+      Scans: 400
       ShowPlot: 2
       Windows:
         1:
@@ -26,28 +26,28 @@ Anno:
           - 255
           - 170
           - 0
-          Length: 2748
-          Start: 5496
+          Length: 0
+          Start: 9999
         2:
           Channel: A
           Colour:
           - 0
           - 170
           - 0
-          Length: '100'
-          Start: '100'
+          Length: 3893
+          Start: 0
       WindowsFixed: 0
       WindowsShow: 2
     Average:
       Blocks: 1
-      Pause: 0.001 s
+      Pause: 0 s
       Store: 0
     Channels:
       A:
         Active: 2
         CouplingType: DC
         Name: A
-        Range: 10 mV
+        Range: 2 V
         Show: 2
       B:
         Active: 2
@@ -94,19 +94,19 @@ Anno:
       Importfile: C:\Users\P275171\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
     Plot:
       Show: 2
-    Previous endtime: '2019-10-21 17:04:22.145538'
-    Previous starttime: '2019-10-21 16:58:47.246967'
+    Previous endtime: '2019-11-12 17:51:44.406135'
+    Previous starttime: '2019-11-12 17:49:52.212681'
     Save:
       Autosave: Never
       Channels: All Activated
       Filename: DefaultData
       Folder: C:\Users\P275171\Documents\PicoscopeData
     Time:
-      Blocklength: 39.996 us
+      Blocklength: 0.9599040000000002 ms
       Resolution: 12BIT
       Samples: 10000
-      Timebase: 2
-      Timestep: 4 ns
+      Timebase: 9
+      Timestep: 96 ns
       maxADC: 32767
     Trigger:
       Active: 2

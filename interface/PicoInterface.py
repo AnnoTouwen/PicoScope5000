@@ -329,6 +329,9 @@ class Pico5000Interface(QMainWindow):
                 scans = 1000000
             else:
                 scans = self.current_settings['Analyse']['Scans']
+            if 'Voltage ' in str(self.current_settings['Analyse']['ScanLabel']):
+                if ur(str(max(abs(float(self.current_settings['Analyse']['ScanValue'])), abs(float(self.current_settings['Analyse']['ScanValue']) + scans*float(self.current_settings['Analyse']['ScanValueDifference'])))) + str(self.current_settings['Analyse']['ScanLabel']).replace('Voltage (', '').replace(')', '')).m_as('V') > 2:
+                    self.Messages.append('Can not generate all voltages in equested range, max +/- 2 V')
             #print('Time before really starting: ', time() - starttime)
             self.scan_start_time = time()
             #
@@ -348,6 +351,8 @@ class Pico5000Interface(QMainWindow):
                     if 'Delay ' in str(self.current_settings['Analyse']['ScanLabel']) and self.current_settings['Delay']['Active'] > 0:
                         self.Delay[str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', '')].setText(str(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference'])) + ' s')
                         self.delay_change_delay(str(self.current_settings['Analyse']['ScanLabel']).replace('Delay ', ''))
+                    elif 'Voltage ' in str(self.current_settings['Analyse']['ScanLabel']):
+                        self.set_voltage(float(self.current_settings['Analyse']['ScanValue']) + int(self.averagenumber)*float(self.current_settings['Analyse']['ScanValueDifference']), str(self.current_settings['Analyse']['ScanLabel']).replace('Voltage (', '').replace(')', ''))
                     for calculator in self.calculators:
                         if self.current_settings['Analyse']['Calculators'][calculator]['Show'] == 2:
                             self.itp.compute_scanpoint(int(calculator), int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow']), str(self.current_settings['Analyse']['Calculators'][calculator]['Operation']), int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow']), [str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['FirstWindow'])]['Channel']]['Range']), str(self.current_settings['Channels'][self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][calculator]['SecondWindow'])]['Channel']]['Range'])], int(self.current_settings['Time']['maxADC']))
@@ -454,6 +459,9 @@ class Pico5000Interface(QMainWindow):
                             message = 'Data saved for ' + self.measurement_project + ' by ' + self.measurement_name + ' to ' + filename
                             #self.Messages.append(message)
         self.newData = True
+
+    def set_voltage(self, value, unit):
+        self.itp.set_voltage(str(value) + unit)
 
     def plot_measurement(self):
         if self.newData:
@@ -823,7 +831,16 @@ class Pico5000Interface(QMainWindow):
             self.WindowSelect.setCurrentText('Window 1')
             self.WindowColour.setStyleSheet('background-color:rgb({}, {}, {})'.format(self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][0], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][1], self.current_settings['Analyse']['Windows'][self.current_window]['Colour'][2]))
             self.WindowChannel.setCurrentText(str(self.current_settings['Analyse']['Windows'][1]['Channel']))
-            self.WindowShow.setCheckState(int(self.current_settings['Analyse']['WindowsShow']))
+            try:
+                self.WindowShow.setCheckState(int(self.current_settings['Analyse']['WindowsShow']))
+            except:
+                self.WindowShow.setCheckState(2) # Show windows in plot by default
+                self.current_settings['Analyse']['WindowsShow'] = 2
+            try:
+                self.WindowFix.setCheckState(int(self.current_settings['Analyse']['WindowsFixed']))
+            except:
+                self.WindowFix.setCheckState(2) # Windows fixed by default
+                self.current_settings['Analyse']['WindowsFixed'] = 2
             self.WindowFix.setCheckState(int(self.current_settings['Analyse']['WindowsFixed']))
             self.WindowStart.setText(str(self.current_settings['Analyse']['Windows'][1]['Start']))
             self.WindowLength.setText(str(self.current_settings['Analyse']['Windows'][1]['Length']))
@@ -1327,6 +1344,7 @@ class Pico5000Interface(QMainWindow):
         self.autosave_settings()
 
     def change_showplot(self):
+        print(self.current_settings)
         self.current_settings['Plot']['Show'] = int(self.ShowPlot.checkState())
         if self.current_settings['Plot']['Show'] == 2:
             self.open_plot_window()
