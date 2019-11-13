@@ -101,6 +101,12 @@ class Pico5000Controller:
         # pointer to overflow = ctypes.byref(overflow))
         self.status["getValues"] = ps.ps5000aGetValues(self.chandle, 0, ctypes.byref(cmaxSamples), 0, 0, 0, ctypes.byref(overflow))
 
+    def set_generator_voltage(self, offsetVoltage):
+        #print('Voltage set to {} uV'.format(offsetVoltage))
+        if not abs(offsetVoltage) > 2e6:
+            self.status["setSigGenBuiltInV2"] = ps.ps5000aSetSigGenBuiltInV2(self.chandle, offsetVoltage, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # wavetype 8 = Constant voltage
+            assert_pico_ok(self.status["setSigGenBuiltInV2"])
+
     def stop(self):
         # Stop the scope
         # handle = chandle

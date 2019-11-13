@@ -10,15 +10,16 @@ AutoSaveDefaultUser:
           - 0
           FirstWindow: 2
           Name: Calculator 1
-          Operation: '-'
-          SecondWindow: 1
+          Operation: +
+          SecondWindow: 2
           Show: 2
-      Pause: 10 us
-      ScanLabel: delay generator
-      ScanValue: 1.0
-      ScanValueDifference: 1.0
-      Scans: 100
-      ShowPlot: 0
+      Pause: 0.5 s
+      ScanLabel: Voltage (V)
+      ScanValue: -2.0
+      ScanValueDifference: 0.1
+      Scans: 400
+      ShowPlot: 2
+
       Windows:
         1:
           Channel: A
@@ -26,6 +27,7 @@ AutoSaveDefaultUser:
           - 255
           - 170
           - 0
+
           Length: 500
           Start: 20
         2:
@@ -34,6 +36,7 @@ AutoSaveDefaultUser:
           - 0
           - 170
           - 0
+
           Length: 500
           Start: 20
       WindowsFixed: 2
@@ -41,6 +44,7 @@ AutoSaveDefaultUser:
     Average:
       Blocks: 10
       Pause: 0.1 s
+
       Store: 0
     Channels:
       A:
@@ -90,19 +94,21 @@ AutoSaveDefaultUser:
       Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
     Plot:
       Show: 2
+
     Previous endtime: '2019-07-15 14:31:32.867578'
     Previous starttime: '2019-07-15 14:35:35.233440'
+
     Save:
       Autosave: Never
       Channels: All Activated
       Filename: Data
       Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
     Time:
-      Blocklength: 39.996 us
+      Blocklength: 0.9599040000000002 ms
       Resolution: 12BIT
       Samples: 10000
-      Timebase: 2
-      Timestep: 4 ns
+      Timebase: 9
+      Timestep: 96 ns
       maxADC: 32767
     Trigger:
       Active: 2
