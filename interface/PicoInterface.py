@@ -69,7 +69,7 @@ class Pico5000Interface(QMainWindow):
         self.load_personal_settings(PreviousUser['Name'], PreviousUser['Project']) # Set settings to Default
         self.device_channels = 4
         #self.two_channels()
-
+        '''
         self.itp.start_device()
         self.itp.setup_device(self.current_settings['Time']['Resolution'])
         if int(self.itp.dev.status["openunit"]) == 282 or int(self.itp.dev.status["openunit"]) == 286:
@@ -78,7 +78,7 @@ class Pico5000Interface(QMainWindow):
         else:
             self.four_channels()
             print("Can switch to four channels, because " + str(self.itp.dev.status["openunit"])) 
-
+        '''
         # Plotparameters and objects
         self.newData = False
         if self.current_settings['Trigger']['Fixed'] == 0:

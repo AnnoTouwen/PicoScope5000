@@ -551,7 +551,7 @@ MaartenMooij:
       Fontsize: 9
   TOFBaF:
     Analyse:
-      Active: 0
+      Active: 2
       Calculators:
         1:
           Colour:
@@ -592,7 +592,7 @@ MaartenMooij:
           Name: Ba
           Operation: '-'
           SecondWindow: 6
-          Show: 0
+          Show: 2
         5:
           Colour:
           - 183
@@ -602,7 +602,7 @@ MaartenMooij:
           Name: SF5
           Operation: '-'
           SecondWindow: 7
-          Show: 0
+          Show: 2
         6:
           Colour:
           - 58
@@ -612,7 +612,7 @@ MaartenMooij:
           Name: BaF
           Operation: '-'
           SecondWindow: 8
-          Show: 0
+          Show: 2
         7:
           Colour:
           - 141
@@ -622,7 +622,7 @@ MaartenMooij:
           Name: Ba2+
           Operation: '-'
           SecondWindow: 9
-          Show: 0
+          Show: 2
         8:
           Colour:
           - 36
@@ -632,7 +632,7 @@ MaartenMooij:
           Name: SF3+
           Operation: '-'
           SecondWindow: 10
-          Show: 0
+          Show: 2
         9:
           Colour:
           - 117
@@ -642,7 +642,7 @@ MaartenMooij:
           Name: S? (m=32)
           Operation: '-'
           SecondWindow: 11
-          Show: 0
+          Show: 2
         10:
           Colour:
           - 23
@@ -652,7 +652,7 @@ MaartenMooij:
           Name: N2? (m=28)
           Operation: '-'
           SecondWindow: 12
-          Show: 0
+          Show: 2
         11:
           Colour:
           - 7
@@ -662,7 +662,7 @@ MaartenMooij:
           Name: S2+
           Operation: '-'
           SecondWindow: 13
-          Show: 0
+          Show: 2
         12:
           Colour:
           - 248
@@ -674,10 +674,10 @@ MaartenMooij:
           SecondWindow: 14
           Show: 2
       Pause: 0 s
-      ScanLabel: calibration single ion
-      ScanValue: 1.0
-      ScanValueDifference: 1.0
-      Scans: 1000
+      ScanLabel: Delay B
+      ScanValue: 0.0
+      ScanValueDifference: -9.999999999999999e-05
+      Scans: 46
       ShowPlot: 2
       Windows:
         1:
@@ -686,8 +686,8 @@ MaartenMooij:
           - 255
           - 170
           - 0
-          Length: '63'
-          Start: '1460'
+          Length: 63
+          Start: 1460
         2:
           Channel: B
           Colour:
@@ -702,100 +702,100 @@ MaartenMooij:
           - 49
           - 71
           - 232
-          Length: '300'
-          Start: '0'
+          Length: 300
+          Start: 0
         4:
           Channel: A
           Colour:
           - 118
           - 44
           - 30
-          Length: '53'
-          Start: '2590'
+          Length: 58
+          Start: 2596
         5:
           Channel: A
           Colour:
           - 49
           - 64
           - 100
-          Length: '53'
-          Start: '2653'
+          Length: 54
+          Start: 2655
         6:
           Channel: A
           Colour:
           - 125
           - 53
           - 16
-          Length: '110'
-          Start: '4530'
+          Length: 112
+          Start: 4528
         7:
           Channel: A
           Colour:
           - 11
           - 80
           - 53
-          Length: '58'
-          Start: '4455'
+          Length: 70
+          Start: 4457
         8:
           Channel: A
           Colour:
           - 81
           - 252
           - 13
-          Length: '100'
-          Start: '4738'
+          Length: 127
+          Start: 4719
         9:
           Channel: A
           Colour:
           - 76
           - 44
           - 119
-          Length: '120'
-          Start: '3628'
+          Length: 126
+          Start: 3622
         10:
           Channel: A
           Colour:
           - 49
           - 57
           - 179
-          Length: '55'
-          Start: '3970'
+          Length: 68
+          Start: 3967
         11:
           Channel: A
           Colour:
           - 183
           - 130
           - 157
-          Length: '74'
-          Start: '2961'
+          Length: 73
+          Start: 2971
         12:
           Channel: A
           Colour:
           - 244
           - 16
           - 145
-          Length: '66'
-          Start: '2867'
+          Length: 60
+          Start: 2876
         13:
           Channel: A
           Colour:
           - 168
           - 245
           - 0
-          Length: '42'
-          Start: '2540'
+          Length: 58
+          Start: 2534
         14:
           Channel: A
           Colour:
           - 71
           - 104
           - 118
-          Length: '38'
-          Start: '2718'
-      WindowsFixed: 2
+          Length: 36
+          Start: 2723
+      WindowsFixed: 0
       WindowsShow: 2
     Average:
-      Blocks: 10
+      Blocks: 25
       Pause: 0 s
       Store: 0
     Channels:
@@ -804,21 +804,25 @@ MaartenMooij:
         CouplingType: DC
         Name: PMT
         Range: 20 mV
+        Show: 2
       B:
         Active: 2
         CouplingType: DC
         Name: fs-laser
         Range: 1 V
+        Show: 0
       C:
         Active: 0
         CouplingType: DC
         Name: Ablation laser
         Range: 500 mV
+        Show: 0
       D:
         Active: 0
         CouplingType: DC
         Name: D
         Range: 1 V
+        Show: 0
     Delay:
       Active: 2
       Connectors:
@@ -826,7 +830,7 @@ MaartenMooij:
           Delay: -180 us
           From: B
         B:
-          Delay: -2.75 ms
+          Delay: -0.0045 s
           From: D
         C:
           Delay: +19 us
@@ -846,8 +850,8 @@ MaartenMooij:
       Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\2019-07-26\
     Plot:
       Show: 2
-    Previous endtime: '2019-10-22 08:15:42.071809'
-    Previous starttime: '2019-10-22 08:16:20.726020'
+    Previous endtime: '2019-11-12 18:36:55.135098'
+    Previous starttime: '2019-11-12 18:34:49.943938'
     Save:
       Autosave: Never
       Channels: All Activated
