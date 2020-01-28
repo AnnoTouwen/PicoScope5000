@@ -8,5 +8,3 @@ app = QApplication([])
 Pico_main = Pico5000Interface(itp)
 Pico_main.show()
 app.exec_()
-
-

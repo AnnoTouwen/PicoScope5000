@@ -116,7 +116,7 @@ class Pico5000Controller:
     def close(self):
         # Close unit Disconnect the scope
         # handle = chandle
-        self.status["close"]=ps.ps5000aCloseUnit(self.chandle)
+        self.status["close"] = ps.ps5000aCloseUnit(self.chandle)
         assert_pico_ok(self.status["close"])
 
     def print_status(self):

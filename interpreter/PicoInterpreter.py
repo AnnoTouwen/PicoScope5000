@@ -5,6 +5,7 @@ from pint import UnitRegistry
 import numpy as np
 from time import sleep
 from controller.PicoControl import Pico5000Controller
+from controller.EmptyControl import EmptyController
 from picosdk.ps5000a import ps5000a as ps
 from picosdk.functions import adc2mV, assert_pico_ok, mV2adc
 import operator
@@ -36,8 +37,12 @@ class Pico5000Interpreter:
         self.dev = Pico5000Controller()
 
     def setup_device(self, resolution):
-        self.dev.setup_device('PS5000A_DR_'+resolution)
-
+        try:
+            self.dev.setup_device('PS5000A_DR_'+resolution)
+        except:
+            print('No could scope started, Empty device started for debugging of software only')
+            self.dev = EmptyController() # No scope is started, for debugging only
+            self.dev.setup_device('PS5000A_DR_'+resolution)
 
     def set_resolution(self, Resolution):
         self.dev.set_resolution('PS5000A_DR_'+Resolution)
@@ -138,8 +143,8 @@ class Pico5000Interpreter:
     def set_timewindow(self, Samples, Timebase):
         # self.user['Trigger']['maxSamples'] = 50 # self.user['Trigger']['PreSamp'] + self.user['Trigger']['PostSamp']
 
-        print(Samples)
-        print(Timebase)
+        #print(Samples)
+        #print(Timebase)
         self.dev.set_timewindow(Samples, Timebase)
         assert_pico_ok(self.dev.status["getTimebase2"])
 
@@ -149,6 +154,7 @@ class Pico5000Interpreter:
         self.buffer[channel]['Max'] = (ctypes.c_int16 * Samples)()
         self.buffer[channel]['Min'] = (ctypes.c_int16 * Samples)()
         self.dev.set_buffer(channel, ps.PS5000A_CHANNEL["PS5000A_CHANNEL_{}".format(channel)], self.buffer[channel], Samples)
+        print(self.buffer)
         assert_pico_ok(self.dev.status["setDataBuffers{}".format(channel)])
 
         # create overflow location
@@ -239,12 +245,12 @@ class Pico5000Interpreter:
             for i in range(Samples):
                 self.buffer[channel]['Average'][i] = round(self.buffer[channel]['Sum'][i]/numberofblocks)
 
-    def read_windows(self, window, start_window, stop_window, channel):
+    def read_windows(self, window, start_window, stop_window, channel, maxADC, range):
         self.windowAverage[window] = 0
         samples_in_window = stop_window - start_window + 1
         for i in np.linspace(start_window, stop_window, samples_in_window):
             self.windowAverage[window] += self.buffer[channel]['Average'][int(i)]
-        self.windowAverage[window] = self.windowAverage[window]/samples_in_window
+        self.windowAverage[window] = self.windowAverage[window]/samples_in_window/maxADC*ur(range).m_as('V')
 
     def reset_scandata(self, calculators):
         self.scandata = {}
@@ -261,17 +267,22 @@ class Pico5000Interpreter:
             self.firstscantime = scantime
         self.scandata['Scantime'].append(scantime-self.firstscantime)
 
-    def compute_scanpoint(self, calculator, first_window, operation, second_window, range, maxADC):
+    def compute_scanpoint(self, calculator, first_window, operation, second_window):
         if calculator not in self.scandata:
             self.scandata[calculator] = [np.nan] * (len(self.scandata['Scanvalue'])-1)
-        self.scandata[calculator].append(self.operators[operation](self.windowAverage[first_window]/maxADC*ur(range[0]).m_as('V'), self.windowAverage[second_window]/maxADC*ur(range[1]).m_as('V')))
+        self.scandata[calculator].append(self.operators[operation](self.windowAverage[first_window], self.windowAverage[second_window]))
+
+    def compute_string_scanpoint(self, calculator, first_window, operation, second_window, range, maxADC):
+        if calculator not in self.scandata: # Fill from start with NaN to ensure alignment
+            self.scandata[calculator] = [np.nan] * (len(self.scandata['Scanvalue'])-1)
+        self.scandata[calculator].append(eval())
 
     def interpret_data(self, setSamples, timestep, channel, Range, maxSamples):
         # Create time data
         #if Samples <= maxSamples:
         Samples = len(self.buffer[channel]['Average'])
-        if Samples != setSamples:
-            print('Number of samples changed during measurement')
+        #if Samples != setSamples:
+        #    print('Number of samples changed during measurement')
         if not 'Time' in self.block:
             self.block['Time'] = np.linspace(0, Samples * timestep, Samples)
         # convert ADC counts data to mV
