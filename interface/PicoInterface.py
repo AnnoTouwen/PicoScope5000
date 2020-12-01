@@ -32,7 +32,7 @@ class Pico5000Interface(QMainWindow):
 
         self.itp = interpreter # Start interpreter
 
-        self.setWindowTitle("Picoscope5000 MainWindow")
+        self.setWindowTitle("Picoscope5000 MainWindow - 4 channels")
         self.setWindowIcon(QIcon(os.path.join(self.base_folder, 'icon.png')))
 
         # Shorter definition of buttons
@@ -71,7 +71,7 @@ class Pico5000Interface(QMainWindow):
         f.close()
         self.load_personal_settings(PreviousUser['Name'], PreviousUser['Project']) # Set settings to Default
         self.device_channels = 4
-        self.two_channels() # Comment for 4 channel scope
+        #self.two_channels() # Comment for 4 channel scope
         '''
         self.itp.start_device()
         self.itp.setup_device(self.current_settings['Time']['Resolution'])
@@ -323,7 +323,7 @@ class Pico5000Interface(QMainWindow):
                 self.timer.timeout.connect(self.plot_measurement)
             if self.current_settings['Analyse']['Active'] == 2:
                 self.timer.timeout.connect(self.autosave_scan)
-            self.timer.start(1000)  # Time in millieseconds
+            self.timer.start(100)  # Time in millieseconds
             #self.start_measurement()
             measurement_thread = threading.Thread(target = partial(self.start_measurement, continuously))
             measurement_thread.daemon = True
@@ -379,13 +379,17 @@ class Pico5000Interface(QMainWindow):
             #print('Time before really starting: ', time() - starttime)
             self.scan_start_time = time()
             scan = 0
-            while continuously or scan < self.current_settings['Analyse']['Scans']: # Loop for scans
+            while self.continuously or scan < self.current_settings['Analyse']['Scans']: # Loop for scans
+                #print("scan num",scan)
                 # Loop for every scanpoint
                 if self.current_settings['Analyse']['ScanDirection'] == 2 and scan%2 == 1:
                     scanpointsArray = reversed(range(scanpoints))
+                    #print("scanPoints reversed",scanpointsArray)
                 else:
                     scanpointsArray = range(scanpoints)
+                    #print("scanPoints ",scanpointsArray)
                 for self.averagenumber in scanpointsArray:
+                    #print("self.averagenumber",self.averagenumber)
                     if 'Voltage ' in str(self.current_settings['Analyse']['ScanLabel']):
                         self.VoltageSlider.setValue(ur(str(self.current_settings['Analyse']['ScanValue'] + int(self.averagenumber) * float(self.current_settings['Analyse']['ScanValueDifference'])) + str(self.current_settings['Analyse']['ScanLabel']).replace('Voltage (', '').replace(')', '')).m_as('uV'))
                     self.meaurement_start_time = time()
@@ -407,7 +411,7 @@ class Pico5000Interface(QMainWindow):
                         #print('Scanpoint computed after: ', time() - self.meaurement_start_time)
                         #self.save_scandata(self.scanfile) # Chang for saving scandata every scanpoint (Very slow)
                         #print('Scandata saved after: ', time() - self.meaurement_start_time)
-                        if self.averagenumber < self.current_settings['Analyse']['Scanpoints']-1 or continuously:
+                        if self.averagenumber < self.current_settings['Analyse']['Scanpoints']-1 or self.continuously:
                             if time() - self.meaurement_start_time > ur(self.current_settings['Analyse']['Pause'].replace(' ', '')).m_as('s'):
                                 if not scan_too_slow:
                                     self.Messages.append('Can not keep up with scanrate, increase Time between scans ({})'.format(str(round(time() - self.meaurement_start_time, 4)) + ' s'))
@@ -417,10 +421,11 @@ class Pico5000Interface(QMainWindow):
                                     pass
                         else:
                             #self.measurement_running = False
-                            self.stop_measurement()
+                            print("end scan")
                 scan += 1
             self.save_scandata(self.scanfile)
             self.save_personal_settings(self.measurement_name, self.measurement_project, self.scanfile.replace('.yml', '_metadata.yml'), metadata=True)
+            self.stop_measurement()
         else:
             self.averagenumber = 0
             if not str(self.current_settings['Save']['Autosave']) == 'Never':
@@ -433,12 +438,13 @@ class Pico5000Interface(QMainWindow):
             while self.measurement_running:
                 self.meaurement_start_time = time()
                 self.run_measurement()
-                if not continuously:
+                if not self.continuously:
                     self.measurement_running = False
         #self.Messages.append('Measurement finished')
 
     def stop_measurement(self):
         if self.measurement_running:
+            self.continuously = False
             self.measurement_running = False
             self.measurement_pause = False
             self.continue_after_setting = False
@@ -551,7 +557,7 @@ class Pico5000Interface(QMainWindow):
             pass
 
     def open_plot_window(self):
-        self.plot_window = pg.plot(title='Picoscope5000 Scope', icon=os.path.join(self.base_folder, 'icon.png'), background='w')
+        self.plot_window = pg.plot(title='Picoscope5000 Scope - 4 channels', icon=os.path.join(self.base_folder, 'icon.png'), background='w')
         #self.plot_window.setWindowIcon(QIcon(os.path.join(self.base_folder, 'icon.png')))
         self.plot_window.showGrid(x=True, y=True)
         self.change_plot_fontsize()
@@ -585,7 +591,7 @@ class Pico5000Interface(QMainWindow):
         #self.Messages.append('Scope plot saved to {}'. format(str(file)))
 
     def open_scan_plot_window(self):
-        self.scan_plot_window = pg.plot(title='Picoscope5000 Scan', background='w')
+        self.scan_plot_window = pg.plot(title='Picoscope5000 Scan - 4 channels', background='w')
         #self.scan_plot_window.setWindowIcon(QIcon(os.path.join(self.base_folder, 'icon.png')))
         self.scan_plot_window.showGrid(x=True, y=True)
         self.scan_plot_window.setXRange(float(self.current_settings['Analyse']['ScanValue']), float(self.current_settings['Analyse']['ScanValue']) + float(self.current_settings['Analyse']['ScanValueDifference']) * (int(self.current_settings['Analyse']['Scanpoints']) - 1))
@@ -1861,7 +1867,7 @@ class Pico5000Interface(QMainWindow):
 
     def get_window(self, name):
         for window in self.windows:
-            if str(self.current_settings['Analyse']['Windows'][window]['Name']) in name:
+            if str(self.current_settings['Analyse']['Windows'][window]['Name']) in name and name in str(self.current_settings['Analyse']['Windows'][window]['Name']):
                 return window
         self.Messages.append('Window with name ' + name + ' not found')
         return 0
@@ -1924,7 +1930,7 @@ class Pico5000Interface(QMainWindow):
             self.autosave_settings()
         else:
             self.FirstWindow.setCurrentText(self.current_settings['Analyse']['Windows'][int(self.current_settings['Analyse']['Calculators'][self.current_calculator]['FirstWindow'])]['Name'])
-
+        
     def change_operation(self):
         self.current_settings['Analyse']['Calculators'][self.current_calculator]['Operation'] = str(self.Operation.currentText())
         self.autosave_settings()
@@ -1966,7 +1972,7 @@ class Pico5000Interface(QMainWindow):
 
     def get_calculator(self, name):
         for calculator in self.calculators:
-            if str(self.current_settings['Analyse']['Calculators'][calculator]['Name']) in name:
+            if str(self.current_settings['Analyse']['Calculators'][calculator]['Name']) in name and name in str(self.current_settings['Analyse']['Calculators'][calculator]['Name']):
                 return calculator
         self.Messages.append('Calculator with name ' + name + ' not found')
         return 0

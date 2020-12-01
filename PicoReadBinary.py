@@ -7,6 +7,8 @@ import ctypes
 from pint import UnitRegistry
 import warnings
 ur = UnitRegistry()
+from pyqtgraph.Qt import QtGui, QtCore
+import pyqtgraph as pg
 
 def load_settings(metadatafile):
     #metadatafile = file.replace('binary', 'metadata').replace('bin', 'yml')
@@ -60,48 +62,67 @@ def scan_V(metadatafile):
 if __name__ == '__main__':
     import os
     import matplotlib.pyplot as plt
-    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData', '2019-10-21', 'DefaultData_2019-10-21_scan_49_metadata.yml')
-    '''
-    time = time_ns(file)
+
+    
+    app = QtGui.QApplication([])
+
+    win = pg.GraphicsWindow(title="Basic plotting examples")
+    win.resize(1000,500)
+    win.setWindowTitle('pyqtgraph example: Plotting')
+
+    p1 = win.addPlot(title="Basic array plotting")
+
+    file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PicoscopeData_4_channels', '2020-06-11', 'DataAbsorption_2020-06-11_scan_40_metadata.yml')
+
+    time = time_ns(file)*1e-9
     channels = ['A', 'B', 'C', 'D']
     color = {'A': 'b', 'B': 'r', 'C': 'g', 'D': 'y'}
     for channel in channels:
         try:
-            plt.plot(time, block_mV(file, channel, measurementnumber = False, blocknumber = False), color[channel], label = channel)
+            plt.plot(time, block_mV(file, channel, measurementnumber = 69, blocknumber = False), color[channel], label = channel)
+            p1.plot(time,block_mV(file, channel, measurementnumber = 69, blocknumber = False),pen=color[channel], name=channel)
         except KeyError:
             pass
-    plt.legend()
-    plt.xlabel('Time (ns)')
-    plt.ylabel('Voltage (mV)')
-    plt.show()
-    '''
+    p1.addLegend()
+    p1.setLabel('bottom', "Time" , units='s')
+    p1.setLabel('left', "Voltage", units='V')
+    
+##    plt.legend()
+##    plt.xlabel('Time (ns)')
+##    plt.ylabel('Voltage (mV)')
+##    plt.show()
 
-    # Plot calculator over scanvalue
-    settings = load_settings(file)[0]
-    scandata = scan_V(file)
-    for calculator in scandata:#settings['Analyse']['Calculators']:
-        if not str(calculator) in 'Scanvalue' and not str(calculator) in 'Scantime':
-            try:
-                plt.plot(scandata['Scanvalue'], scandata[calculator], color = tuple([x/255 for x in settings['Analyse']['Calculators'][calculator]['Colour']]), label = settings['Analyse']['Calculators'][calculator][ 'Name'])
-            except:
-                warnings.warn('No metadata saved for Calculator {}'.format(calculator))
-                plt.plot(scandata['Scanvalue'], scandata[calculator], label = 'Calculator {}'.format(calculator))
-    plt.legend()
-    plt.xlabel(str(settings['Analyse']['ScanLabel']))
-    plt.ylabel('Calculator (V)')
-    plt.show()
-
-    # Plot calculator over time
-    for calculator in scandata:#settings['Analyse']['Calculators']:
-        if not str(calculator) in 'Scanvalue' and not str(calculator) in 'Scantime':
-            try:
-                plt.plot(scandata['Scantime'], scandata[calculator], color = tuple([x/255 for x in settings['Analyse']['Calculators'][calculator]['Colour']]), label = settings['Analyse']['Calculators'][calculator][ 'Name'])
-            except:
-                warnings.warn('No metadata saved for Calculator {}'.format(calculator))
-                plt.plot(scandata['Scantime'], scandata[calculator], label = 'Calculator {}'.format(calculator))
-    plt.legend()
-    plt.xlabel(str(settings['Analyse']['ScanLabel']))
-    plt.ylabel('Time (s)')
-    plt.show()
+    if __name__ == '__main__':
+        import sys
+        if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+            QtGui.QApplication.instance().exec_()
+##
+##    # Plot calculator over scanvalue
+##    settings = load_settings(file)[0]
+##    scandata = scan_V(file)
+##    for calculator in scandata:#settings['Analyse']['Calculators']:
+##        if not str(calculator) in 'Scanvalue' and not str(calculator) in 'Scantime':
+##            try:
+##                plt.plot(scandata['Scanvalue'], scandata[calculator], color = tuple([x/255 for x in settings['Analyse']['Calculators'][calculator]['Colour']]), label = settings['Analyse']['Calculators'][calculator][ 'Name'])
+##            except:
+##                warnings.warn('No metadata saved for Calculator {}'.format(calculator))
+##                plt.plot(scandata['Scanvalue'], scandata[calculator], label = 'Calculator {}'.format(calculator))
+##    plt.legend()
+##    plt.xlabel(str(settings['Analyse']['ScanLabel']))
+##    plt.ylabel('Calculator (V)')
+##    plt.show()
+##
+##    # Plot calculator over time
+##    for calculator in scandata:#settings['Analyse']['Calculators']:
+##        if not str(calculator) in 'Scanvalue' and not str(calculator) in 'Scantime':
+##            try:
+##                plt.plot(scandata['Scantime'], scandata[calculator], color = tuple([x/255 for x in settings['Analyse']['Calculators'][calculator]['Colour']]), label = settings['Analyse']['Calculators'][calculator][ 'Name'])
+##            except:
+##                warnings.warn('No metadata saved for Calculator {}'.format(calculator))
+##                plt.plot(scandata['Scantime'], scandata[calculator], label = 'Calculator {}'.format(calculator))
+##    plt.legend()
+##    plt.xlabel(str(settings['Analyse']['ScanLabel']))
+##    plt.ylabel('Time (s)')
+##    plt.show()
 
 

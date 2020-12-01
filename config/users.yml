@@ -4,7 +4,10 @@ AutoSaveDefaultUser:
       Active: 0
       Calculators:
         1:
-          Colour: [0, 0, 0]
+          Colour:
+          - 0
+          - 0
+          - 0
           FirstWindow: 2
           Name: Calculator 1
           Operation: +
@@ -19,29 +22,62 @@ AutoSaveDefaultUser:
       Windows:
         1:
           Channel: A
-          Colour: [255, 170, 0]
+          Colour:
+          - 255
+          - 170
+          - 0
           Length: 500
           Start: 20
         2:
           Channel: A
-          Colour: [0, 170, 0]
+          Colour:
+          - 0
+          - 170
+          - 0
           Length: 500
           Start: 20
       WindowsFixed: 2
       WindowsShow: 0
-    Average: {Blocks: 10, Pause: 0.1 s, Store: 0}
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: A, Range: 50 mV}
-      B: {Active: 2, CouplingType: DC, Name: B, Range: 1 V}
-      C: {Active: 0, CouplingType: DC, Name: C, Range: 1 V}
-      D: {Active: 0, CouplingType: DC, Name: D, Range: 1 V}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 50 mV
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: -180 us, From: B}
-        B: {Delay: -2.5 ms, From: D}
-        C: {Delay: 20 us, From: D}
-        D: {Delay: 99.98 ms, From: T0}
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: -2.5 ms
+          From: D
+        C:
+          Delay: 20 us
+          From: D
+        D:
+          Delay: 99.98 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -50,104 +86,129 @@ AutoSaveDefaultUser:
       TriggerMode: External
       TriggerRate: 10 Hz
       Type: TTL
-    Metadata: {Importfile: 'C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml'}
-    Plot: {Show: 2}
+    Metadata:
+      Importfile: C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      Show: 2
     Previous endtime: '2019-07-15 14:31:32.867578'
     Previous starttime: '2019-07-15 14:35:35.233440'
-    Save: {Autosave: Never, Channels: All Activated, Filename: Data, Folder: 'C:\Users\EDGE\Documents\Maarten\PicoscopeData'}
-    Time: {Blocklength: 0.9599040000000002 ms, Resolution: 12BIT, Samples: 10000,
-      Timebase: 9, Timestep: 96 ns, maxADC: 32767}
-    Trigger: {Active: 2, Auto: 1000 ms, Channel: External, Delay: 0, Fixed: 2, Level: 1V,
-      Position: 0, Show: 0, Type: Rising}
-    User: {Fontsize: 9}
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: Data
+      Folder: C:\Users\EDGE\Documents\Maarten\PicoscopeData
+    Time:
+      Blocklength: 0.9599040000000002 ms
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 1000 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 1V
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
   DefaultProject:
     Analyse:
       Active: 2
       Calculators:
         1:
           Active: 2
-          Colour: &id001 [255, 170, 0]
-          FirstWindow: 3
-          Name: Background
-          Operation: '-'
-          SecondWindow: 1
-          Show: 2
-        2:
-          Active: 2
-          Colour: &id002 [0, 170, 0]
+          Colour:
+          - 0
+          - 0
+          - 0
           FirstWindow: 2
-          Name: BaF
-          Operation: '-'
-          SecondWindow: 1
-          Show: 2
-        3:
-          Active: 2
-          Colour: &id003 [219, 3, 19]
-          FirstWindow: 3
-          Name: BaOH
-          Operation: '-'
-          SecondWindow: 1
-          Show: 2
-        4:
-          Active: 2
-          Colour: &id004 [85, 0, 127]
-          FirstWindow: 1
-          Name: SF6
+          Name: Calculator 1
           Operation: '-'
           SecondWindow: 1
           Show: 2
       Marker: s
-      Pause: 0 s
+      Pause: 1 s
       ScanDirection: 0
-      ScanLabel: Voltage (mV)
+      ScanLabel: Scannumber
       ScanMaxPointsShown: 0
-      ScanValue: -100.0
-      ScanValueDifference: 1.0
+      ScanValue: 1
+      ScanValueDifference: 1
       Scanpoints: 10
       Scans: 1
-      ShowCalculatorNames: 2
-      ShowPlot: 2
+      ShowCalculatorNames: 0
+      ShowPlot: 0
       Windows:
         1:
           Channel: A
-          Colour: *id001
-          Length: 467
-          Name: Background
-          Start: 4
+          Colour:
+          - 255
+          - 170
+          - 0
+          Length: 500
+          Name: Window 1
+          Start: 1
         2:
           Channel: A
-          Colour: *id002
-          Length: 46
-          Name: BaF
-          Start: 43
-        3:
-          Channel: A
-          Colour: *id003
-          Length: 53
-          Name: BaOH
-          Start: 324
-        4:
-          Channel: A
-          Colour: *id004
-          Length: 63
-          Name: SF6
-          Start: 174
-      WindowsFixed: 0
-      WindowsShow: 2
-      WindowsShowName: 2
-    Average: {Average: 2, Blocks: 1, Pause: 0 s, Store: 0}
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 500
+          Name: Window 2
+          Start: 500
+      WindowsFixed: 2
+      WindowsShow: 0
+      WindowsShowName: 0
+    Average:
+      Average: 2
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: A, Range: 2 V, Show: 2}
-      B: {Active: 2, CouplingType: DC, Name: B, Range: 1 V, Show: 2}
-      C: {Active: 0, CouplingType: DC, Name: C, Range: 1 V, Show: 0}
-      D: {Active: 0, CouplingType: DC, Name: D, Range: 1 V, Show: 0}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 5 V
+        Show: 2
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+        Show: 2
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+        Show: 0
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
+        Show: 0
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: 1 ms, From: T0}
-        B: {Delay: 2 ms, From: T0}
-        C: {Delay: 3 ms, From: T0}
-        D: {Delay: 4 ms, From: T0}
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -156,24 +217,49 @@ AutoSaveDefaultUser:
       TriggerMode: Internal
       TriggerRate: 10 Hz
       Type: TTL
-    Generator: {Offset: 0 V}
-    Metadata: {Importfile: 'C:\Users\annot\Documents\eEDM\PicoscopeData\DefaultData_start_time_metadata.yml'}
-    Plot: {ScopeMaxPointsShown: 0, Show: 2}
-    Previous endtime: '2019-12-22 13:55:31.437272'
-    Previous starttime: '2019-12-22 13:55:31.327083'
-    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: 'C:\Users\annot\Documents\eEDM\PicoscopeData'}
-    Time: {Blocklength: 15.999984000000003 ms, Resolution: 12BIT, Samples: 1000, Timebase: 1004,
-      Timestep: 16016 ns, maxADC: 4096}
-    Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Fixed: 2, Level: 200
-        mV, Position: 5000, Show: 0, Type: Rising}
-    User: {Fontsize: 9}
+    Generator:
+      Offset: 0 V
+    Metadata:
+      Importfile: C:\Users\HBM400\Documents\PicoscopeData\DefaultData_start_time_metadata.yml
+    Plot:
+      ScopeMaxPointsShown: 0
+      Show: 2
+    Previous endtime: '2020-01-28 18:55:46.464960'
+    Previous starttime: '2020-01-28 18:55:46.460969'
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: C:\Users\HBM400\Documents\PicoscopeData
+    Time:
+      Blocklength: 0.9599040000000002 ms
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: A
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 9
 DefaultUser:
   DefaultProject:
     Analyse:
       Active: 2
       Calculators:
         1:
-          Colour: [0, 0, 0]
+          Colour:
+          - 0
+          - 0
+          - 0
           FirstWindow: 2
           Name: Calculator 1
           Operation: '-'
@@ -188,29 +274,62 @@ DefaultUser:
       Windows:
         1:
           Channel: A
-          Colour: [255, 170, 0]
+          Colour:
+          - 255
+          - 170
+          - 0
           Length: 500
           Start: 1
         2:
           Channel: A
-          Colour: [0, 170, 0]
+          Colour:
+          - 0
+          - 170
+          - 0
           Length: 500
           Start: 500
       WindowsFixed: 2
       WindowsShow: 0
-    Average: {Blocks: 10, Pause: 0.1 s, Store: 0}
+    Average:
+      Blocks: 10
+      Pause: 0.1 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: A, Range: 1 V}
-      B: {Active: 2, CouplingType: DC, Name: B, Range: 1 V}
-      C: {Active: 0, CouplingType: DC, Name: C, Range: 1 V}
-      D: {Active: 0, CouplingType: DC, Name: D, Range: 1 V}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 1 V
+      B:
+        Active: 2
+        CouplingType: DC
+        Name: B
+        Range: 1 V
+      C:
+        Active: 0
+        CouplingType: DC
+        Name: C
+        Range: 1 V
+      D:
+        Active: 0
+        CouplingType: DC
+        Name: D
+        Range: 1 V
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: 1 ms, From: T0}
-        B: {Delay: 2 ms, From: T0}
-        C: {Delay: 3 ms, From: T0}
-        D: {Delay: 4 ms, From: T0}
+        A:
+          Delay: 1 ms
+          From: T0
+        B:
+          Delay: 2 ms
+          From: T0
+        C:
+          Delay: 3 ms
+          From: T0
+        D:
+          Delay: 4 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -219,113 +338,159 @@ DefaultUser:
       TriggerMode: Internal
       TriggerRate: 10 Hz
       Type: TTL
-    Metadata: {Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml}
-    Plot: {Show: 2}
-    Save: {Autosave: Never, Channels: All Activated, Filename: DefaultData, Folder: BaseDirectory\PicoscopeData}
-    Time: {Blocklength: 959904 ns, Resolution: 12BIT, Samples: 10000, Timebase: 9,
-      Timestep: 96 ns, maxADC: 32767}
-    Trigger: {Active: 2, Auto: 100 ms, Channel: A, Delay: 0, Fixed: 2, Level: 200
-        mV, Position: 5000, Show: 0, Type: Rising}
-    User: {Fontsize: '9'}
+    Metadata:
+      Importfile: BaseDirectory\PicoscopeData\Date\DefaultData_Date_scan_number_metadata.yml
+    Plot:
+      Show: 2
+    Save:
+      Autosave: Never
+      Channels: All Activated
+      Filename: DefaultData
+      Folder: BaseDirectory\PicoscopeData
+    Time:
+      Blocklength: 959904 ns
+      Resolution: 12BIT
+      Samples: 10000
+      Timebase: 9
+      Timestep: 96 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: A
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 5000
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: '9'
 MaartenMooij:
-  BaF:
+  AblationLaser:
     Analyse:
       Active: 0
       Calculators:
         1:
-          Colour: [0, 0, 0]
+          Active: 2
+          Colour:
+          - 224
+          - 236
+          - 35
           FirstWindow: 1
-          Name: Laser
+          Name: Cal Ablation laser
           Operation: '-'
           SecondWindow: 2
           Show: 2
         2:
-          Colour: [227, 104, 210]
+          Active: 2
+          Colour:
+          - 232
+          - 218
+          - 83
           FirstWindow: 3
-          Name: H2O
+          Name: Cal Abl laser after vacuum
           Operation: '-'
           SecondWindow: 4
           Show: 2
-        3:
-          Colour: [210, 126, 110]
-          FirstWindow: 5
-          Name: Ne
-          Operation: '-'
-          SecondWindow: 4
-          Show: 2
-        4:
-          Colour: [153, 243, 133]
-          FirstWindow: 6
-          Name: SF5
-          Operation: '-'
-          SecondWindow: 4
-          Show: 2
-        5:
-          Colour: [186, 183, 217]
-          FirstWindow: 1
-          Name: Ba
-          Operation: '-'
-          SecondWindow: 2
-          Show: 0
-        6:
-          Colour: [95, 66, 29]
-          FirstWindow: 2
-          Name: BaF
-          Operation: '-'
-          SecondWindow: 1
-          Show: 0
-      Pause: 10 us
-      ScanLabel: SF6 cooling tube
-      ScanValue: 1.0
-      ScanValueDifference: 1.0
-      Scans: 2000
+      Marker: +
+      Pause: 0 ms
+      ScanDirection: 0
+      ScanLabel: Time (s)
+      ScanMaxPointsShown: 200000
+      ScanValue: 0.0
+      ScanValueDifference: 0.1
+      Scanpoints: 100
+      Scans: 1
+      ShowCalculatorNames: 2
       ShowPlot: 2
       Windows:
         1:
-          Channel: B
-          Colour: [255, 170, 0]
-          Length: 20
-          Start: '1211'
+          Channel: D
+          Colour:
+          - 246
+          - 146
+          - 65
+          Length: 250
+          Name: Ablation laser
+          Start: 45
         2:
-          Channel: B
-          Colour: [0, 170, 0]
-          Length: '300'
-          Start: '0'
+          Channel: D
+          Colour:
+          - 212
+          - 18
+          - 68
+          Length: 1000
+          Name: ref Ablation laser
+          Start: 999
         3:
-          Channel: A
-          Colour: [64, 252, 24]
-          Length: 45
-          Start: '2322'
+          Channel: C
+          Colour:
+          - 131
+          - 243
+          - 143
+          Length: '250'
+          Name: Abl laser after vacuum
+          Start: '45'
         4:
-          Channel: A
-          Colour: [208, 231, 247]
-          Length: '300'
-          Start: '0'
-        5:
-          Channel: A
-          Colour: [142, 57, 47]
-          Length: 49
-          Start: '2381'
-        6:
-          Channel: A
-          Colour: [72, 198, 116]
-          Length: 64
-          Start: '4148'
-      WindowsFixed: 0
+          Channel: C
+          Colour:
+          - 120
+          - 52
+          - 164
+          Length: '1000'
+          Name: ref Abl laser after vacuum
+          Start: '999'
+      WindowsFixed: 2
       WindowsShow: 2
-    Average: {Blocks: 20, Pause: 0.1 s, Store: 0}
+      WindowsShowName: 2
+    Average:
+      Average: 2
+      Blocks: 1
+      Pause: 0 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: A, Range: 50 mV}
-      B: {Active: 2, CouplingType: DC, Name: B, Range: 1 V}
-      C: {Active: 2, CouplingType: DC, Name: C, Range: 1 V}
-      D: {Active: 2, CouplingType: DC, Name: D, Range: 1 V}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 2 V
+        Show: 2
+      B:
+        Active: 2
+        Coupling: DC
+        CouplingType: DC
+        Name: B
+        Range: 2 V
+        Show: 2
+      C:
+        Active: 2
+        Coupling: DC
+        CouplingType: DC
+        Name: C
+        Range: 100 mV
+        Show: 2
+      D:
+        Active: 2
+        CouplingType: DC
+        Name: D
+        Range: 50 mV
+        Show: 2
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: -180 us, From: B}
-        B: {Delay: -2.5 ms, From: D}
-        C: {Delay: 20 us, From: D}
-        D: {Delay: 99.98 ms, From: T0}
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: 0 ms
+          From: D
+        C:
+          Delay: 19 us
+          From: D
+        D:
+          Delay: 10 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -334,196 +499,454 @@ MaartenMooij:
       TriggerMode: External
       TriggerRate: 10 Hz
       Type: TTL
-    Metadata: {Importfile: 'C:\Users\EDGE\Documents\Maarten\PicoscopeData\DefaultData_start_time_metadata.yml'}
-    Plot: {Show: 2}
-    Previous endtime: '2019-07-15 15:16:50.847037'
-    Previous starttime: '2019-07-17 12:05:30.913824'
-    Save: {Autosave: Never, Channels: All Activated, Filename: Data, Folder: 'C:\Users\EDGE\Documents\Maarten\PicoscopeData'}
-    Time: {Blocklength: 39.996 us, Resolution: 12BIT, Samples: 10000, Timebase: 2,
-      Timestep: 4 ns, maxADC: 32767}
-    Trigger: {Active: 0, Auto: 1000 ms, Channel: External, Delay: 0, Fixed: 2, Level: 1V,
-      Position: 0, Show: 0, Type: Rising}
-    User: {Fontsize: 9}
-  TOFBaF:
+    Generator:
+      Offset: 0 V
+    Metadata:
+      Importfile: C:\Users\HBM400\Documents\PicoscopeData_4_channels\DefaultData_start_time_metadata.yml
+    Plot:
+      ScopeMaxPointsShown: 10000
+      Show: 2
+    Previous endtime: '2020-10-22 09:11:49.559874'
+    Previous starttime: '2020-10-22 09:11:49.558882'
+    Save:
+      Autosave: Every scope average
+      Channels: All Activated
+      Filename: DataAbsorption
+      Folder: C:\Users\HBM400\Documents\PicoscopeData_4_channels
+    Time:
+      Blocklength: 7.996000000000001 ms
+      Resolution: 14BIT
+      Samples: 2000
+      Timebase: 502
+      Timestep: 4000 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 100 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 10
+  BaF:
     Analyse:
       Active: 2
       Calculators:
         1:
-          Colour: [0, 0, 0]
+          Active: 2
+          Colour:
+          - 85
+          - 0
+          - 255
           FirstWindow: 1
-          Name: laser
+          Name: Cal AbsPD
           Operation: '-'
-          SecondWindow: 2
+          SecondWindow: 1
           Show: 2
         2:
-          Colour: [156, 231, 128]
+          Active: 2
+          Colour:
+          - 252
+          - 63
+          - 14
           FirstWindow: 3
-          Name: H2O
+          Name: Cal refPD
           Operation: '-'
           SecondWindow: 4
           Show: 2
         3:
-          Colour: [211, 145, 28]
-          FirstWindow: 3
-          Name: Ne
-          Operation: '-'
-          SecondWindow: 5
-          Show: 2
-        4:
-          Colour: [255, 85, 0]
-          FirstWindow: 3
-          Name: Ba
+          Active: 2
+          Colour:
+          - 226
+          - 96
+          - 210
+          FirstWindow: 5
+          Name: Cal RFsignal
           Operation: '-'
           SecondWindow: 6
           Show: 2
+        4:
+          Active: 2
+          Colour:
+          - 40
+          - 162
+          - 89
+          FirstWindow: 10
+          Name: SumAbsRef
+          Operation: +
+          SecondWindow: 10
+          Show: 2
         5:
-          Colour: [183, 32, 36]
-          FirstWindow: 3
-          Name: SF5
-          Operation: '-'
-          SecondWindow: 7
+          Active: 2
+          Colour:
+          - 246
+          - 18
+          - 30
+          FirstWindow: 4
+          Name: SumRefPD
+          Operation: +
+          SecondWindow: 4
           Show: 2
         6:
-          Colour: [58, 13, 40]
-          FirstWindow: 3
-          Name: BaF
+          Active: 2
+          Colour:
+          - 231
+          - 138
+          - 167
+          FirstWindow: 6
+          Name: SumRF
+          Operation: +
+          SecondWindow: 6
+          Show: 2
+        7:
+          Active: 2
+          Colour:
+          - 224
+          - 236
+          - 35
+          FirstWindow: 7
+          Name: Cal Ablation laser
           Operation: '-'
           SecondWindow: 8
           Show: 2
-        7:
-          Colour: [141, 188, 175]
-          FirstWindow: 3
-          Name: Ba2+
-          Operation: '-'
-          SecondWindow: 9
-          Show: 2
         8:
-          Colour: [36, 218, 19]
-          FirstWindow: 3
-          Name: SF3+
+          Active: 2
+          Colour:
+          - 225
+          - 223
+          - 160
+          FirstWindow: 9
+          Name: Cal RF_abs_ion
           Operation: '-'
-          SecondWindow: 10
+          SecondWindow: 8
           Show: 2
         9:
-          Colour: [117, 10, 53]
-          FirstWindow: 3
-          Name: S? (m=32)
+          Active: 2
+          Colour:
+          - 12
+          - 34
+          - 210
+          FirstWindow: 10
+          Name: Cal Abs_cell
           Operation: '-'
-          SecondWindow: 11
+          SecondWindow: 2
           Show: 2
         10:
-          Colour: [23, 72, 213]
-          FirstWindow: 3
-          Name: N2? (m=28)
+          Active: 2
+          Colour:
+          - 48
+          - 54
+          - 18
+          FirstWindow: 11
+          Name: Cal Ref_cell
           Operation: '-'
-          SecondWindow: 12
+          SecondWindow: 4
           Show: 2
         11:
-          Colour: [7, 90, 183]
-          FirstWindow: 3
-          Name: S2+
+          Active: 2
+          Colour:
+          - 32
+          - 175
+          - 126
+          FirstWindow: 12
+          Name: Cal RF_cell
           Operation: '-'
-          SecondWindow: 13
+          SecondWindow: 6
           Show: 2
         12:
-          Colour: [248, 209, 238]
-          FirstWindow: 3
-          Name: Ne22?
+          Active: 2
+          Colour:
+          - 133
+          - 219
+          - 130
+          FirstWindow: 13
+          Name: Cal RF balPD2
           Operation: '-'
           SecondWindow: 14
           Show: 2
-      Pause: 0 s
-      ScanLabel: Delay B
-      ScanValue: 0.0
-      ScanValueDifference: -9.999999999999999e-05
-      Scans: 46
+        13:
+          Active: 2
+          Colour:
+          - 237
+          - 30
+          - 215
+          FirstWindow: 15
+          Name: Cal RF BalPD2 cell
+          Operation: '-'
+          SecondWindow: 14
+          Show: 2
+        14:
+          Active: 2
+          Colour:
+          - 10
+          - 18
+          - 230
+          FirstWindow: 14
+          Name: Sum RF balPD2
+          Operation: +
+          SecondWindow: 14
+          Show: 2
+        15:
+          Active: 2
+          Colour:
+          - 245
+          - 101
+          - 117
+          FirstWindow: 16
+          Name: Cal Abs balPD2
+          Operation: '-'
+          SecondWindow: 17
+          Show: 2
+        16:
+          Active: 2
+          Colour:
+          - 125
+          - 155
+          - 251
+          FirstWindow: 17
+          Name: Sum Abs balPD2
+          Operation: +
+          SecondWindow: 17
+          Show: 2
+        17:
+          Active: 2
+          Colour:
+          - 134
+          - 235
+          - 5
+          FirstWindow: 18
+          Name: Cal Abl after vacuum
+          Operation: '-'
+          SecondWindow: 6
+          Show: 2
+      Marker: +
+      Pause: 0 ms
+      ScanDirection: 2
+      ScanLabel: Voltage (mV)
+      ScanMaxPointsShown: 200000
+      ScanValue: -1400.0
+      ScanValueDifference: 5.0
+      Scanpoints: 50
+      Scans: 1
+      ShowCalculatorNames: 2
       ShowPlot: 2
       Windows:
         1:
-          Channel: B
-          Colour: [255, 170, 0]
-          Length: 63
-          Start: 1460
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 170
+          Length: 750
+          Name: Abs PD
+          Start: 52
         2:
-          Channel: B
-          Colour: [0, 170, 0]
-          Length: '300'
-          Start: '0'
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 1000
+          Name: ref AbsPD
+          Start: 999
         3:
-          Channel: A
-          Colour: [49, 71, 232]
-          Length: 300
-          Start: 0
+          Channel: B
+          Colour:
+          - 96
+          - 255
+          - 28
+          Length: 750
+          Name: ref PD
+          Start: 52
         4:
-          Channel: A
-          Colour: [118, 44, 30]
-          Length: 58
-          Start: 2596
+          Channel: B
+          Colour:
+          - 26
+          - 69
+          - 155
+          Length: 1000
+          Name: ref refPD
+          Start: 999
         5:
-          Channel: A
-          Colour: [49, 64, 100]
-          Length: 54
-          Start: 2655
+          Channel: C
+          Colour:
+          - 170
+          - 170
+          - 0
+          Length: 750
+          Name: RFsignal
+          Start: 52
         6:
-          Channel: A
-          Colour: [125, 53, 16]
-          Length: 112
-          Start: 4528
+          Channel: C
+          Colour:
+          - 270
+          - 270
+          - 0
+          Length: 1000
+          Name: ref RFsignal
+          Start: 999
         7:
-          Channel: A
-          Colour: [11, 80, 53]
-          Length: 70
-          Start: 4457
+          Channel: D
+          Colour:
+          - 246
+          - 146
+          - 65
+          Length: '500'
+          Name: Ablation laser
+          Start: 45
         8:
-          Channel: A
-          Colour: [81, 252, 13]
-          Length: 127
-          Start: 4719
+          Channel: D
+          Colour:
+          - 212
+          - 18
+          - 68
+          Length: 1000
+          Name: ref Ablation laser
+          Start: 999
         9:
-          Channel: A
-          Colour: [76, 44, 119]
-          Length: 126
-          Start: 3622
+          Channel: D
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 250
+          Name: RF_abs_ion
+          Start: 500
         10:
           Channel: A
-          Colour: [49, 57, 179]
-          Length: 68
-          Start: 3967
+          Colour:
+          - 223
+          - 253
+          - 65
+          Length: 250
+          Name: Abs_cell
+          Start: 52
         11:
-          Channel: A
-          Colour: [183, 130, 157]
-          Length: 73
-          Start: 2971
+          Channel: B
+          Colour:
+          - 221
+          - 101
+          - 8
+          Length: 250
+          Name: Ref Abs_cell
+          Start: 52
         12:
-          Channel: A
-          Colour: [244, 16, 145]
-          Length: 60
-          Start: 2876
+          Channel: C
+          Colour:
+          - 203
+          - 177
+          - 84
+          Length: 250
+          Name: RF Abs_cell
+          Start: 52
         13:
-          Channel: A
-          Colour: [168, 245, 0]
-          Length: 58
-          Start: 2534
+          Channel: D
+          Colour:
+          - 67
+          - 241
+          - 77
+          Length: 750
+          Name: RF BalPD2
+          Start: 52
         14:
-          Channel: A
-          Colour: [71, 104, 118]
-          Length: 36
-          Start: 2723
-      WindowsFixed: 0
+          Channel: D
+          Colour:
+          - 106
+          - 213
+          - 96
+          Length: 1000
+          Name: ref RF balPD2
+          Start: 999
+        15:
+          Channel: D
+          Colour:
+          - 163
+          - 91
+          - 203
+          Length: 250
+          Name: RF BalPD2 cell
+          Start: 52
+        16:
+          Channel: B
+          Colour:
+          - 120
+          - 47
+          - 71
+          Length: 750
+          Name: Abs balPD2
+          Start: 52
+        17:
+          Channel: B
+          Colour:
+          - 145
+          - 204
+          - 128
+          Length: 1000
+          Name: Ref Abs balPD2
+          Start: 999
+        18:
+          Channel: C
+          Colour:
+          - 231
+          - 204
+          - 235
+          Length: '500'
+          Name: Abl after vacuum
+          Start: '45'
+      WindowsFixed: 2
       WindowsShow: 2
-    Average: {Blocks: 25, Pause: 0 s, Store: 0}
+      WindowsShowName: 2
+    Average:
+      Average: 2
+      Blocks: 50
+      Pause: 0 s
+      Store: 0
     Channels:
-      A: {Active: 2, CouplingType: DC, Name: PMT, Range: 20 mV, Show: 2}
-      B: {Active: 2, CouplingType: DC, Name: fs-laser, Range: 1 V, Show: 0}
-      C: {Active: 0, CouplingType: DC, Name: Ablation laser, Range: 500 mV, Show: 0}
-      D: {Active: 0, CouplingType: DC, Name: D, Range: 1 V, Show: 0}
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 10 mV
+        Show: 2
+      B:
+        Active: 2
+        Coupling: DC
+        CouplingType: DC
+        Name: B
+        Range: 10 mV
+        Show: 2
+      C:
+        Active: 2
+        Coupling: DC
+        CouplingType: DC
+        Name: C
+        Range: 50 mV
+        Show: 2
+      D:
+        Active: 2
+        CouplingType: DC
+        Name: D
+        Range: 50 mV
+        Show: 2
     Delay:
       Active: 0
       Connectors:
-        A: {Delay: -180 us, From: B}
-        B: {Delay: -0.0045 s, From: D}
-        C: {Delay: +19 us, From: D}
-        D: {Delay: +99.98 ms, From: T0}
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: 0 ms
+          From: D
+        C:
+          Delay: 19 us
+          From: D
+        D:
+          Delay: 10 ms
+          From: T0
       Load: 50 Ohm
       Port: COM3
       TriggerEdge: Rising
@@ -532,14 +955,386 @@ MaartenMooij:
       TriggerMode: External
       TriggerRate: 10 Hz
       Type: TTL
-    Metadata: {Importfile: 'C:\Users\EDGE\Documents\Maarten\PicoscopeData\2019-07-26\'}
-    Plot: {Show: 2}
-    Previous endtime: '2019-11-12 18:36:55.135098'
-    Previous starttime: '2019-11-12 18:34:49.943938'
-    Save: {Autosave: Never, Channels: All Activated, Filename: Data, Folder: 'C:\Users\EDGE\Documents\Maarten\PicoscopeData'}
-    Time: {Blocklength: 23.996000000000002 us, Resolution: 12BIT, Samples: 6000, Timebase: 2,
-      Timestep: 4 ns, maxADC: 32767}
-    Trigger: {Active: 2, Auto: 1000 ms, Channel: External, Delay: 0, Fixed: 2, Level: 0.2
-        V, Position: 0, Show: 0, Type: Rising}
-    User: {Fontsize: 9}
-PreviousUser: {Name: AutoSaveDefaultUser, Project: DefaultProject}
+    Generator:
+      Offset: -1280.0 mV
+    Metadata:
+      Importfile: C:\Users\HBM400\Documents\PicoscopeData_4_channels\DefaultData_start_time_metadata.yml
+    Plot:
+      ScopeMaxPointsShown: 10000
+      Show: 2
+    Previous endtime: '2020-11-10 16:28:28.062874'
+    Previous starttime: '2020-11-10 16:26:14.877784'
+    Save:
+      Autosave: Every scope average
+      Channels: All Activated
+      Filename: DataAbsorption
+      Folder: C:\Users\HBM400\Documents\PicoscopeData_4_channels
+    Time:
+      Blocklength: 7.996000000000001 ms
+      Resolution: 14BIT
+      Samples: 2000
+      Timebase: 502
+      Timestep: 4000 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 2000 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 10
+  BaF_twoAbsorptionPositions:
+    Analyse:
+      Active: 2
+      Calculators:
+        1:
+          Active: 2
+          Colour:
+          - 85
+          - 0
+          - 255
+          FirstWindow: 5
+          Name: Cal LaserP cell
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+        2:
+          Active: 2
+          Colour:
+          - 252
+          - 63
+          - 14
+          FirstWindow: 6
+          Name: Cal LaserP ion
+          Operation: '-'
+          SecondWindow: 2
+          Show: 2
+        3:
+          Active: 2
+          Colour:
+          - 226
+          - 96
+          - 210
+          FirstWindow: 7
+          Name: Cal RF cell
+          Operation: '-'
+          SecondWindow: 3
+          Show: 2
+        4:
+          Active: 2
+          Colour:
+          - 40
+          - 162
+          - 89
+          FirstWindow: 8
+          Name: Cal RF ion
+          Operation: '-'
+          SecondWindow: 4
+          Show: 2
+        5:
+          Active: 2
+          Colour:
+          - 246
+          - 18
+          - 30
+          FirstWindow: 1
+          Name: Sum LaserP cell
+          Operation: +
+          SecondWindow: 1
+          Show: 2
+        6:
+          Active: 2
+          Colour:
+          - 231
+          - 138
+          - 167
+          FirstWindow: 2
+          Name: Sum LaserP ion
+          Operation: +
+          SecondWindow: 2
+          Show: 2
+        7:
+          Active: 2
+          Colour:
+          - 224
+          - 236
+          - 35
+          FirstWindow: 3
+          Name: Sum RF cell
+          Operation: +
+          SecondWindow: 3
+          Show: 2
+        8:
+          Active: 2
+          Colour:
+          - 225
+          - 223
+          - 160
+          FirstWindow: 4
+          Name: Sum RF ion
+          Operation: +
+          SecondWindow: 4
+          Show: 2
+        9:
+          Active: 2
+          Colour:
+          - 12
+          - 34
+          - 210
+          FirstWindow: 9
+          Name: Cal LaserP cell short
+          Operation: '-'
+          SecondWindow: 1
+          Show: 2
+        10:
+          Active: 2
+          Colour:
+          - 48
+          - 54
+          - 18
+          FirstWindow: 10
+          Name: Cal LaserP ion short
+          Operation: '-'
+          SecondWindow: 2
+          Show: 2
+        11:
+          Active: 2
+          Colour:
+          - 32
+          - 175
+          - 126
+          FirstWindow: 11
+          Name: Cal RF cell short
+          Operation: '-'
+          SecondWindow: 3
+          Show: 2
+        12:
+          Active: 2
+          Colour:
+          - 133
+          - 219
+          - 130
+          FirstWindow: 12
+          Name: Cal RF ion short
+          Operation: '-'
+          SecondWindow: 4
+          Show: 2
+      Marker: +
+      Pause: 0 ms
+      ScanDirection: 0
+      ScanLabel: Voltage (mV)
+      ScanMaxPointsShown: 200000
+      ScanValue: 0.0
+      ScanValueDifference: 0.1
+      Scanpoints: 1000
+      Scans: 1
+      ShowCalculatorNames: 2
+      ShowPlot: 2
+      Windows:
+        1:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 170
+          Length: '1000'
+          Name: ref LaserP cell
+          Start: '999'
+        2:
+          Channel: B
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 1000
+          Name: ref LaserP ion
+          Start: 999
+        3:
+          Channel: C
+          Colour:
+          - 96
+          - 255
+          - 28
+          Length: '1000'
+          Name: ref RF cell
+          Start: '999'
+        4:
+          Channel: D
+          Colour:
+          - 26
+          - 69
+          - 155
+          Length: 1000
+          Name: ref RF ion
+          Start: 999
+        5:
+          Channel: A
+          Colour:
+          - 170
+          - 170
+          - 0
+          Length: 750
+          Name: LaserP cell
+          Start: 52
+        6:
+          Channel: B
+          Colour:
+          - 270
+          - 270
+          - 0
+          Length: '750'
+          Name: LaserP ion
+          Start: '52'
+        7:
+          Channel: C
+          Colour:
+          - 246
+          - 146
+          - 65
+          Length: '750'
+          Name: RF cell
+          Start: '52'
+        8:
+          Channel: D
+          Colour:
+          - 212
+          - 18
+          - 68
+          Length: '750'
+          Name: RF ion
+          Start: '52'
+        9:
+          Channel: A
+          Colour:
+          - 0
+          - 170
+          - 0
+          Length: 250
+          Name: LaserP cell short
+          Start: '52'
+        10:
+          Channel: B
+          Colour:
+          - 223
+          - 253
+          - 65
+          Length: 250
+          Name: LaserP ion short
+          Start: '500'
+        11:
+          Channel: C
+          Colour:
+          - 221
+          - 101
+          - 8
+          Length: 250
+          Name: RF cell short
+          Start: 52
+        12:
+          Channel: D
+          Colour:
+          - 203
+          - 177
+          - 84
+          Length: 250
+          Name: RF ion short
+          Start: '500'
+      WindowsFixed: 2
+      WindowsShow: 2
+      WindowsShowName: 2
+    Average:
+      Average: 2
+      Blocks: 1
+      Pause: 0 s
+      Store: 0
+    Channels:
+      A:
+        Active: 2
+        CouplingType: DC
+        Name: A
+        Range: 200 mV
+        Show: 2
+      B:
+        Active: 2
+        Coupling: DC
+        CouplingType: DC
+        Name: B
+        Range: 10 mV
+        Show: 2
+      C:
+        Active: 2
+        Coupling: DC
+        CouplingType: DC
+        Name: C
+        Range: 50 mV
+        Show: 0
+      D:
+        Active: 2
+        CouplingType: DC
+        Name: D
+        Range: 50 mV
+        Show: 0
+    Delay:
+      Active: 0
+      Connectors:
+        A:
+          Delay: -180 us
+          From: B
+        B:
+          Delay: 0 ms
+          From: D
+        C:
+          Delay: 19 us
+          From: D
+        D:
+          Delay: 10 ms
+          From: T0
+      Load: 50 Ohm
+      Port: COM3
+      TriggerEdge: Rising
+      TriggerLevel: 1 V
+      TriggerLoad: 50 Ohm
+      TriggerMode: External
+      TriggerRate: 10 Hz
+      Type: TTL
+    Generator:
+      Offset: 99.9 mV
+    Metadata:
+      Importfile: C:\Users\HBM400\Documents\PicoscopeData_4_channels\DefaultData_start_time_metadata.yml
+    Plot:
+      ScopeMaxPointsShown: 10000
+      Show: 2
+    Previous endtime: '2020-12-01 12:44:23.303896'
+    Previous starttime: '2020-12-01 12:42:42.359634'
+    Save:
+      Autosave: Every scope average
+      Channels: All Activated
+      Filename: DataAbsorption
+      Folder: C:\Users\HBM400\Documents\PicoscopeData_4_channels
+    Time:
+      Blocklength: 7.996000000000001 ms
+      Resolution: 14BIT
+      Samples: 2000
+      Timebase: 502
+      Timestep: 4000 ns
+      maxADC: 32767
+    Trigger:
+      Active: 2
+      Auto: 2000 ms
+      Channel: External
+      Delay: 0
+      Fixed: 2
+      Level: 200 mV
+      Position: 0
+      Show: 0
+      Type: Rising
+    User:
+      Fontsize: 10
+PreviousUser:
+  Name: MaartenMooij
+  Project: BaF_twoAbsorptionPositions

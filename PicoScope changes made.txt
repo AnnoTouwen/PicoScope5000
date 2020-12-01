@@ -1,0 +1,28 @@
+Before: 
+Delete and change windows/calculators added If "name" in ... and if ... in "name", to identify the correct calculator/window.
+
+
+21/10/2020:
+In function "start_thread" time between plot update changed from 1000 ms to 100 ms
+    
+    def start_thread(self, continuously = False):
+        if not self.measurement_running:
+            self.timer = QTimer() # Start a timer to update the plot
+            if self.current_settings['Analyse']['ShowPlot'] == 2:
+                if str(self.current_settings['Analyse']['ScanLabel']) == 'Time (s)':
+                    self.timer.timeout.connect(partial(self.plot_scan, True, 'Scantime'))
+                else:
+                    self.timer.timeout.connect(self.plot_scan)
+            if self.current_settings['Plot']['Show'] == 2:
+                self.timer.timeout.connect(self.plot_measurement)
+            if self.current_settings['Analyse']['Active'] == 2:
+                self.timer.timeout.connect(self.autosave_scan)
+            self.timer.start(100)  # Time in millieseconds
+            #self.start_measurement()
+            measurement_thread = threading.Thread(target = partial(self.start_measurement, continuously))
+            measurement_thread.daemon = True
+            measurement_thread.start()
+        else:
+            self.Messages.append('Measurement already running')
+
+
